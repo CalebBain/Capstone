@@ -4,26 +4,27 @@ import org.w3c.dom.NodeList;
 import com.trolltech.qt.gui.*;
 
 public class QT extends QApplication{
-    private NodeList nodeList;
+    private Node Window;
 
     public QT(NodeList nodeList, String[] args) {
         super(args);
-        this.nodeList = nodeList;
+        Window = nodeList.item(0);
     }
 
     public void CompileElements(String[] args) {
-        int q = nodeList.getLength();
-        for(int i = 1; i < nodeList.getLength(); i++) {
+        QWidget window = Window();
+        NodeList nodeList = Window.getChildNodes();
+        for(int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             switch(node.getNodeName()){
-                case "button": Button(node); break;
+                case "button": Button(node, window); break;
             }
         }
-        Window(nodeList.item(0));
+        window.show();
         this.exec();
     }
 
-    public void Window(Node Window) {
+    public QWidget Window() {
         QWidget window = new QWidget();
         NamedNodeMap nodeMap = Window.getAttributes();
         String title = nodeMap.getNamedItem("title").getNodeValue();
@@ -31,15 +32,15 @@ public class QT extends QApplication{
         Node w = nodeMap.getNamedItem("width");
         window.setWindowTitle(tr((!title.isEmpty())? title : "JAML Applicaiton"));
         window.resize(((w != null) ? Integer.parseInt(w.getNodeValue()) : 400), ((h != null) ? Integer.parseInt(h.getNodeValue()) : 200));
-        window.show();
+        return window;
     }
 
-    public void Button(Node Button) {
-        QPushButton button = new QPushButton();
+    public void Button(Node Button, QWidget window) {
+        QPushButton button = new QPushButton(window);
         NamedNodeMap nodeMap = Button.getAttributes();
         String h = nodeMap.getNamedItem("height").getNodeValue();
         String w = nodeMap.getNamedItem("width").getNodeValue();
         button.setText(tr(Button.getTextContent()));
-        button.resize(((!h.isEmpty())? Integer.parseInt(h) : 10), ((!w.isEmpty())? Integer.parseInt(w) : 20));
+        button.resize(((!w.isEmpty())? Integer.parseInt(w) : 20), ((!h.isEmpty())? Integer.parseInt(h) : 10));
     }
 }
