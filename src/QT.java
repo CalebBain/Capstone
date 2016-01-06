@@ -11,10 +11,15 @@ public class QT extends QApplication{
         this.nodeList = nodeList;
     }
 
-    public void CompileElements() {
-
-        Node window = nodeList.item(0);
-        Window(window);
+    public void CompileElements(String[] args) {
+        int q = nodeList.getLength();
+        for(int i = 1; i < nodeList.getLength(); i++) {
+            Node node = nodeList.item(i);
+            switch(node.getNodeName()){
+                case "button": Button(node); break;
+            }
+        }
+        Window(nodeList.item(0));
         this.exec();
     }
 

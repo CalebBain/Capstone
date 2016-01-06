@@ -7,24 +7,25 @@ public class Assembler {
     public static void  main(String[] args)
     {
         Assembler a = new Assembler();
-        a.input(args);
+        a.input();
     }
 
-    public void input(String[] args) {
+    public void input() {
         try {
             File fXmlFile = new File("jaml_files/main.jaml");
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
             System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
-            if (doc.hasChildNodes()) parseFlavor(doc.getChildNodes(), args);
+            if (doc.hasChildNodes()) parseFlavor(doc.getChildNodes());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void parseFlavor(NodeList nodeList, String[] args){
+    public void parseFlavor(NodeList nodeList){
+        String[] args = new String[0];
         printNote(nodeList);
         Node node = nodeList.item(0);
         NamedNodeMap nodeMap = node.getAttributes();
@@ -32,7 +33,7 @@ public class Assembler {
         switch (s.toLowerCase()){
             case "qt":
                 QT app = new QT(nodeList, args);
-                app.CompileElements();
+                app.CompileElements(args);
                 break;
             case "fx": break;
             case"swing": break;
