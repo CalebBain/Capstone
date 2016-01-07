@@ -32,9 +32,8 @@ public class QT extends QApplication{
         String title = nodeMap.getNamedItem("title").getNodeValue();
         Node h = nodeMap.getNamedItem("height");
         Node w = nodeMap.getNamedItem("width");
-        window.setWindowTitle(tr((!title.isEmpty())? title : "JAML Applicaiton"));
-        window.resize(((w != null) ? Integer.parseInt(w.getNodeValue()) : 400),
-                ((h != null) ? Integer.parseInt(h.getNodeValue()) : 200));
+        window.setWindowTitle(tr((!title.isEmpty()) ? title : "JAML Applicaiton"));
+        window.resize(((w != null) ? Integer.parseInt(w.getNodeValue()) : 400), ((h != null) ? Integer.parseInt(h.getNodeValue()) : 200));
         return window;
     }
 
@@ -45,44 +44,37 @@ public class QT extends QApplication{
         String w = nodeMap.getNamedItem("width").getNodeValue();
         button.setText(tr(Button.getTextContent()));
         button.resize(((!w.isEmpty())? Integer.parseInt(w) : 20), ((!h.isEmpty())? Integer.parseInt(h) : 10));
-        button.setFont(Font(nodeMap.getNamedItem("font-family").getNodeValue(),
-                nodeMap.getNamedItem("font-size").getNodeValue(), nodeMap.getNamedItem("font-style").getNodeValue(),
-                nodeMap.getNamedItem("font-weight").getNodeValue()));
+        button.setFont(Font(nodeMap.getNamedItem("font-family").getNodeValue(), nodeMap.getNamedItem("font-size").getNodeValue(), nodeMap.getNamedItem("font-style").getNodeValue(), nodeMap.getNamedItem("font-weight").getNodeValue()));
     }
 
-    public QFont Font(String family, String size, String style, String weight) {
+    public QFont Font(String family, String size, String style, String weight, String decoration) {
         QFont font = new QFont();
         QFontDatabase database = new QFontDatabase();
         List<String> families = database.families();
         List<Integer> sizes = database.pointSizes(family);
-        if(families.contains(family)) font.setFamily(family);
+        font.setFamily((families.contains(family))? family : font.defaultFamily());
         try {
             int Size = Integer.parseInt(size);
             if(sizes.contains(Size)) font.setPixelSize(Size);
-        }catch (NumberFormatException nfe){}
-        QFont.Style Style = QFont.Style.StyleNormal;
-        switch(style) {
-            case "italic":
-                Style = QFont.Style.StyleItalic;
-                break;
-            case "oblique":
-                Style = QFont.Style.StyleOblique;
-                break;
-        }
-        font.setStyle(Style);
-        font.setWeight(bold(weight));
+        }catch (NumberFormatException nfe){ font.setPixelSize(10); }
+        font.setUnderline(decoration.contains("underline"));
+        font.setOverline(decoration.contains("overline"));
+        font.setStrikeOut(decoration.contains("strike-out"));
+        if(style.contains("italic")) font.setStyle(QFont.Style.StyleItalic);
+        else if(style.contains("Oblique")) font.setStyle(QFont.Style.StyleOblique);
+        else font.setStyle(QFont.Style.StyleNormal);
+        font.setWeight(Bold(weight));
         return font;
     }
 
-    public int bold(String keyword){
-        int weight = 50;
+    public int Bold(String keyword){
+        int weight;
         try {
             weight = Integer.parseInt(keyword);
         }catch (NumberFormatException nfe){
             switch(keyword){
                 case "lighter":     weight = 15; break;
                 case "light":       weight = 25; break;
-                case "normal":      weight = 50; break;
                 case "bold":        weight = 75; break;
                 case "bolder":      weight = 85; break;
                 default:            weight = 50;

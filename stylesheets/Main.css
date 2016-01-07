@@ -1,0 +1,11 @@
+/*noinspection ALL*/
+button{
+    width: 80;
+    height: 40;
+    font-family: Times;
+    font-size: 18;
+    font-style: italic;
+    font-weight: bold;
+    text-decoration: underline overline strike-out;
+}
+
