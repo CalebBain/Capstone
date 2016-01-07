@@ -1,17 +1,17 @@
 <component name="libraryTable">
   <library name="qtjambi-4.8.7">
     <CLASSES>
-      <root url="jar://E:/school/capstone/qtjambi-community-4.8.7-win64-msvc2013/qtjambi-4.8.7.jar!/" />
-      <root url="jar://E:/school/capstone/qtjambi-community-4.8.7-win64-msvc2013/qtjambi-examples-4.8.7.jar!/" />
-      <root url="jar://E:/school/capstone/qtjambi-community-4.8.7-win64-msvc2013/qtjambi-designer-4.8.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../qtjambi-community-4.8.7-win64-msvc2013/qtjambi-4.8.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../qtjambi-community-4.8.7-win64-msvc2013/qtjambi-examples-4.8.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../qtjambi-community-4.8.7-win64-msvc2013/qtjambi-designer-4.8.7.jar!/" />
     </CLASSES>
     <JAVADOC />
     <NATIVE>
-      <root url="file://E:/school/capstone/qtjambi-community-4.8.7-win64-msvc2013/lib" />
+      <root url="file://$PROJECT_DIR$/../qtjambi-community-4.8.7-win64-msvc2013/lib" />
     </NATIVE>
     <SOURCES>
-      <root url="jar://E:/school/capstone/qtjambi-community-4.8.7-win64-msvc2013/qtjambi-src.jar!/" />
-      <root url="jar://E:/school/capstone/qtjambi-community-4.8.7-win64-msvc2013/qtjambi-examples-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../qtjambi-community-4.8.7-win64-msvc2013/qtjambi-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../qtjambi-community-4.8.7-win64-msvc2013/qtjambi-examples-src.jar!/" />
     </SOURCES>
   </library>
 </component>

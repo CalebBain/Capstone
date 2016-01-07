@@ -55,15 +55,20 @@ public class QT extends QApplication{
         QFontDatabase database = new QFontDatabase();
         List<String> families = database.families();
         List<Integer> sizes = database.pointSizes(family);
-        List<String> styles = database.styles(family);
         if(families.contains(family)) font.setFamily(family);
         try {
             int Size = Integer.parseInt(size);
             if(sizes.contains(Size)) font.setPixelSize(Size);
         }catch (NumberFormatException nfe){}
-        QFont.Style Style = styles.get(0);
-
-
+        QFont.Style Style = QFont.Style.StyleNormal;
+        switch(style) {
+            case "italic":
+                Style = QFont.Style.StyleItalic;
+                break;
+            case "oblique":
+                Style = QFont.Style.StyleOblique;
+                break;
+        }
         font.setStyle(Style);
         font.setWeight(bold(weight));
         return font;
