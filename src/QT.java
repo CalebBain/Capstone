@@ -2,7 +2,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import com.trolltech.qt.gui.*;
+import QtComponents.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
  */
 public class QT extends QApplication{
     private Node Window;
+    private List<QWidget> components = new ArrayList<>();
 
     public QT(NodeList nodeList, String[] args) {
         super(args);
@@ -22,7 +25,9 @@ public class QT extends QApplication{
         for(int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             switch(node.getNodeName()){
-                case "button": Button(node, window); break;
+                case "button":
+                    Button(node, node.getParentNode().getNodeName());
+                    break;
             }
         }
         window.show();
@@ -30,59 +35,29 @@ public class QT extends QApplication{
     }
 
     public QWidget Window() {
-        QWidget window = new QWidget();
         NamedNodeMap nodeMap = Window.getAttributes();
-        String title = nodeMap.getNamedItem("title").getNodeValue();
-        Node h = nodeMap.getNamedItem("height");
-        Node w = nodeMap.getNamedItem("width");
-        window.setWindowTitle(tr((!title.isEmpty()) ? title : "JAML Applicaiton"));
-        window.resize(((w != null) ? Integer.parseInt(w.getNodeValue()) : 400), ((h != null) ? Integer.parseInt(h.getNodeValue()) : 200));
+        Window window = new Window(nodeMap.getNamedItem("name").getNodeValue(), nodeMap.getNamedItem("id").getNodeValue());
+        window.setSize(nodeMap.getNamedItem("width").getNodeValue(), nodeMap.getNamedItem("height").getNodeValue());
+        window.setTitle(nodeMap.getNamedItem("title").getNodeValue());
         return window;
     }
 
-    public void Button(Node Button, QWidget window) {
-        QPushButton button = new QPushButton(window);
+    public void Button(Node Button, QWidget parent) {
         NamedNodeMap nodeMap = Button.getAttributes();
-        String h = nodeMap.getNamedItem("height").getNodeValue();
-        String w = nodeMap.getNamedItem("width").getNodeValue();
-        button.setText(tr(Button.getTextContent()));
-        button.resize(((!w.isEmpty())? Integer.parseInt(w) : 20), ((!h.isEmpty())? Integer.parseInt(h) : 10));
-        //button.setFont(Font(nodeMap.getNamedItem("font-family").getNodeValue(), nodeMap.getNamedItem("font-size").getNodeValue(), nodeMap.getNamedItem("font-style").getNodeValue(), nodeMap.getNamedItem("font-weight").getNodeValue()));
+        Button button = new Button(parent, nodeMap.getNamedItem("name").getNodeValue(), nodeMap.getNamedItem("id").getNodeValue());
+        button.setSize(nodeMap.getNamedItem("width").getNodeValue(), nodeMap.getNamedItem("height").getNodeValue());
+        button.setTextFont(Font(nodeMap));
+        button.setButtonText(Button.getTextContent());
+        button.setMargins(nodeMap.getNamedItem("margin").getNodeValue());
     }
 
-    public QFont Font(String family, String size, String style, String weight, String decoration) {
-        QFont font = new QFont();
-        QFontDatabase database = new QFontDatabase();
-        List<String> families = database.families();
-        List<Integer> sizes = database.pointSizes(family);
-        font.setFamily((families.contains(family))? family : font.defaultFamily());
-        try {
-            int Size = Integer.parseInt(size);
-            if(sizes.contains(Size)) font.setPixelSize(Size);
-        }catch (NumberFormatException nfe){ font.setPixelSize(10); }
-        font.setUnderline(decoration.contains("underline"));
-        font.setOverline(decoration.contains("overline"));
-        font.setStrikeOut(decoration.contains("strike-out"));
-        if(style.contains("italic")) font.setStyle(QFont.Style.StyleItalic);
-        else if(style.contains("Oblique")) font.setStyle(QFont.Style.StyleOblique);
-        else font.setStyle(QFont.Style.StyleNormal);
-        font.setWeight(Bold(weight));
+    public Font Font(NamedNodeMap nodeMap){
+        Font font = new Font();
+        font.setFontFamily(nodeMap.getNamedItem("font-family").getNodeValue());
+        font.setFontWeight(nodeMap.getNamedItem("font-weight").getNodeValue());
+        font.setFontStyle(nodeMap.getNamedItem("font-style").getNodeValue());
+        font.setFontSize(nodeMap.getNamedItem("font-size").getNodeValue());
+        font.setTextDecoration(nodeMap.getNamedItem("text-decoration").getNodeValue());
         return font;
-    }
-
-    public int Bold(String keyword){
-        int weight;
-        try {
-            weight = Integer.parseInt(keyword);
-        }catch (NumberFormatException nfe){
-            switch(keyword){
-                case "lighter":     weight = 15; break;
-                case "light":       weight = 25; break;
-                case "bold":        weight = 75; break;
-                case "bolder":      weight = 85; break;
-                default:            weight = 50;
-            }
-        }
-        return weight;
     }
 }
