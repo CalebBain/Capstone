@@ -47,7 +47,7 @@ public class QT extends QApplication{
         String w = nodeMap.getNamedItem("width").getNodeValue();
         button.setText(tr(Button.getTextContent()));
         button.resize(((!w.isEmpty())? Integer.parseInt(w) : 20), ((!h.isEmpty())? Integer.parseInt(h) : 10));
-        button.setFont(Font(nodeMap.getNamedItem("font-family").getNodeValue(), nodeMap.getNamedItem("font-size").getNodeValue(), nodeMap.getNamedItem("font-style").getNodeValue(), nodeMap.getNamedItem("font-weight").getNodeValue()));
+        //button.setFont(Font(nodeMap.getNamedItem("font-family").getNodeValue(), nodeMap.getNamedItem("font-size").getNodeValue(), nodeMap.getNamedItem("font-style").getNodeValue(), nodeMap.getNamedItem("font-weight").getNodeValue()));
     }
 
     public QFont Font(String family, String size, String style, String weight, String decoration) {
