@@ -6,14 +6,6 @@ import com.trolltech.qt.gui.QWidget;
  * Created by Caleb Bain on 1/7/2016.
  */
 public class Window extends QWidget {
-    private final String name;
-    private final String id;
-
-    public Window(String name, String id) {
-        this.name = name;
-        this.id = id;
-    }
-
 
     public void setHeight(String height) {
         this.setHeight(height);

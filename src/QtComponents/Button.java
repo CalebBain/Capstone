@@ -8,18 +8,9 @@ import com.trolltech.qt.gui.QWidget;
  * Created by Caleb Bain on 1/7/2016.
  */
 public class Button extends QPushButton {
-    private final String name;
-    private final String id;
 
-    public Button(String name, String id) {
-        this.name = name;
-        this.id = id;
-    }
-
-    public Button(QWidget parent, String name, String id) {
+    public Button(QWidget parent) {
         super(parent);
-        this.name = name;
-        this.id = id;
     }
 
     public void setHeight(String height) {
