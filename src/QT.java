@@ -5,6 +5,9 @@ import com.trolltech.qt.gui.*;
 
 import java.util.List;
 
+/**
+ * Created by Caleb Bain on 1/7/2016.
+ */
 public class QT extends QApplication{
     private Node Window;
 
