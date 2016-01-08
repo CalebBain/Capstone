@@ -41,11 +41,18 @@ public class QT extends QApplication{
     private QWidget findParent(Node node){
         NamedNodeMap nodeMap = node.getAttributes();
         String Class = node.getNodeName();
-        String name = nodeMap.getNamedItem("name").getNodeValue();
-        String id = nodeMap.getNamedItem("id").getNodeValue();
-        for(Map.Entry<String, QWidget> Id : ids.entrySet())               if(Id.getKey().equals(Class))        return Id.getValue();
-        for(Map.Entry<String, QWidget> Name : names.entrySet())           if(Name.getKey().equals(Class))      return Name.getValue();
-        for(Map.Entry<String, QWidget> component : components.entrySet()) if(component.getKey().equals(Class)) return component.getValue();
+        Node name = nodeMap.getNamedItem("name");
+        Node id = nodeMap.getNamedItem("id");
+
+        for(Map.Entry<String, QWidget> Id : ids.entrySet())
+            if(Id.getKey().equals(Class))
+                return Id.getValue();
+        for(Map.Entry<String, QWidget> Name : names.entrySet())
+            if(Name.getKey().equals((name != null) ? name.getNodeValue() : ""))
+                return Name.getValue();
+        for(Map.Entry<String, QWidget> component : components.entrySet())
+            if(component.getKey().equals((id != null) ? id.getNodeValue() : ""))
+                return component.getValue();
         return components.get("window");
     }
 
@@ -53,8 +60,10 @@ public class QT extends QApplication{
         NamedNodeMap nodeMap = Window.getAttributes();
         Window window = new Window();
         components.put("window", window);
-        names.put(nodeMap.getNamedItem("name").getNodeValue(), window);
-        ids.put(nodeMap.getNamedItem("id").getNodeValue(), window);
+        Node name = nodeMap.getNamedItem("name");
+        Node id = nodeMap.getNamedItem("id");
+        names.put((name != null) ? name.getNodeValue() : "", window);
+        ids.put((id != null) ? id.getNodeValue() : "", window);
         window.setSize(nodeMap.getNamedItem("width").getNodeValue(), nodeMap.getNamedItem("height").getNodeValue());
         window.setTitle(nodeMap.getNamedItem("title").getNodeValue());
         return window;
@@ -64,8 +73,10 @@ public class QT extends QApplication{
         NamedNodeMap nodeMap = Button.getAttributes();
         Button button = new Button(parent);
         components.put("button", button);
-        names.put(nodeMap.getNamedItem("name").getNodeValue(), button);
-        ids.put(nodeMap.getNamedItem("id").getNodeValue(), button);
+        Node name = nodeMap.getNamedItem("name");
+        Node id = nodeMap.getNamedItem("id");
+        names.put((name != null) ? name.getNodeValue() : "", button);
+        ids.put((id != null) ? id.getNodeValue() : "", button);
         button.setSize(nodeMap.getNamedItem("width").getNodeValue(), nodeMap.getNamedItem("height").getNodeValue());
         button.setTextFont(Font(nodeMap));
         button.setButtonText(Button.getTextContent());

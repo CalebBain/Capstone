@@ -18,7 +18,6 @@ public class Assembler {
             doc.getDocumentElement().normalize();
             System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
             if (doc.hasChildNodes()) parseFlavor(doc.getChildNodes());
-
         } catch (Exception e) {
             e.printStackTrace();
         }
