@@ -1,7 +1,11 @@
 <window title="Hello World" flavor="qt">
+    <number id="lcd" style="filled" digit-count="2" mode="dec" margin="0 0 30 70"/>
+    <slider  range="0 99" value="0" margin="70 40 30 70" onvalue-change="lcd:display(int)" />
 
-        <button font-family="Times" font-size="18" font-weight="bold" onclick="quit()">Quit!</button>
-        <number id="lcd" style="filled" digit-count="2" mode="dec" margin="0 40 70 70"/>
-        <slider orientation="horizontal" range="0 99" value="0" onvalue-change="lcd:display(int)" />
-    <layout type="Box" orientation="vertical"></layout>
+    <!--layout type="Box" orientation="vertical">
+    orientation="horizontal"
+    <button font-family="Times" font-size="18" font-weight="bold" onclick="quit()">Quit!</button>
+    <button font-family="Times" font-size="18" font-weight="bold" onclick="quit()">Quit!</button>
+
+    </layout-->
 </window>

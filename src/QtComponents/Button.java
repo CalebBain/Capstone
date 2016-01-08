@@ -1,33 +1,56 @@
 package QtComponents;
 
 import Assemble.QT;
-import com.sun.javafx.scene.layout.region.Margins;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
  * Created by Caleb Bain on 1/7/2016.
  */
 public class Button extends QPushButton {
 
-    public Button(QWidget parent) {
+    public Button(QWidget parent, Node node) {
         super(parent);
+        NamedNodeMap nodeMap = node.getAttributes();
+        setSize(check(nodeMap, "width"), check(nodeMap, "height"));
+        setTextFont(new Font(nodeMap));
+        setButtonText(node.getTextContent());
+        setMargins(check(nodeMap, "margin"));
+        onClick(check(nodeMap, "onclick"));
+    }
+
+    public String check(NamedNodeMap nodeMap, String keyword){
+        Node word = nodeMap.getNamedItem(keyword);
+        return (word != null) ? word.getNodeValue() : "";
     }
 
     public void setHeight(String height) {
-        this.setHeight(height);
+        try {
+            this.resize(width(), Integer.parseInt(height));
+        }catch (NumberFormatException nfe) {
+        }
     }
 
     public void setWidth(String width) {
-        this.setWidth(width);
+        try {
+            this.resize(Integer.parseInt(width), height());
+        }catch (NumberFormatException nfe) {
+        }
     }
 
     public void setSize(String width, String height) {
-        try{
-            this.resize(Integer.parseInt(width), Integer.parseInt(height));
-        } catch (NumberFormatException nfe){}
+        if(width.isEmpty()) setHeight(height);
+        else if (height.isEmpty()) setWidth(width);
+        else {
+            try {
+                this.resize(Integer.parseInt(width), Integer.parseInt(height));
+            } catch (NumberFormatException nfe) {
+            }
+        }
     }
 
     public void setSize(int width, int height) {
@@ -58,15 +81,13 @@ public class Button extends QPushButton {
     }
 
     public void onClick(String call) {
-        String[] callParts = call.split(":");
-        if(callParts.length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
-        else this.clicked.connect(findComponent(callParts[0]), callParts[1]);
+        if(!call.equals("")){
+            String[] callParts = call.split(":");
+            if(callParts.length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
+            else this.clicked.connect(QT.findComponent(callParts[0]), callParts[1]);
+        }
+
     }
 
-    public QWidget findComponent(String component){
-        if(QT.ids.containsKey(component)) return QT.ids.get(component);
-        if(QT.names.containsKey(component)) return QT.names.get(component);
-        if(QT.components.containsKey(component)) return QT.components.get(component);
-        return QT.components.get("window");
-    }
+
 }

@@ -2,6 +2,8 @@ package QtComponents;
 
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QFontDatabase;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import java.util.List;
 
@@ -12,15 +14,17 @@ public class Font extends QFont {
     private QFontDatabase database = new QFontDatabase();
     private String family;
 
-    public Font() {
+    public Font(NamedNodeMap nodeMap) {
+        setFontFamily(check(nodeMap, "font-family"));
+        setFontWeight(check(nodeMap, "font-weight"));
+        setFontStyle(check(nodeMap, "font-style"));
+        setFontSize(check(nodeMap, "font-size"));
+        setTextDecoration(check(nodeMap, "text-decoration"));
     }
 
-    public Font(String family, String size, String style, String weight, String decoration) {
-        setFontFamily(family);
-        setFontSize(size);
-        setTextDecoration(decoration);
-        setFontStyle(style);
-        setFontWeight(weight);
+    public String check(NamedNodeMap nodeMap, String keyword){
+        Node word = nodeMap.getNamedItem(keyword);
+        return (word != null) ? word.getNodeValue() : "";
     }
 
     public void setFontFamily(String family) {

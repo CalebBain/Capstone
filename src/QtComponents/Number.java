@@ -2,29 +2,52 @@ package QtComponents;
 
 import com.trolltech.qt.gui.QLCDNumber;
 import com.trolltech.qt.gui.QWidget;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
  * Created by Caleb Bain on 1/8/2016.
  */
 public class Number extends QLCDNumber{
 
-    public Number(QWidget parent) {
+    public Number(QWidget parent, Node node) {
         super(parent);
+        NamedNodeMap nodeMap = node.getAttributes();
         this.setSmallDecimalPoint(true);
+        setSize(check(nodeMap, "width"), check(nodeMap, "height"));
+        setDigitCount(check(nodeMap, "digit-count"));
+        setStyle(check(nodeMap, "style"));
+        setMargins(check(nodeMap, "margin"));
+    }
+
+    public String check(NamedNodeMap nodeMap, String keyword){
+        Node word = nodeMap.getNamedItem(keyword);
+        return (word != null) ? word.getNodeValue() : "";
     }
 
     public void setHeight(String height) {
-        this.setHeight(height);
+        try {
+            this.resize(width(), Integer.parseInt(height));
+        }catch (NumberFormatException nfe) {
+        }
     }
 
     public void setWidth(String width) {
-        this.setWidth(width);
+        try {
+            this.resize(Integer.parseInt(width), height());
+        }catch (NumberFormatException nfe) {
+        }
     }
 
     public void setSize(String width, String height) {
-        try {
-            this.resize(((!width.isEmpty())? Integer.parseInt(width) : 20), ((!height.isEmpty())? Integer.parseInt(height) : 10));
-        } catch (NumberFormatException nfe){}
+        if(width.isEmpty()) setHeight(height);
+        else if (height.isEmpty()) setWidth(width);
+        else {
+            try {
+                this.resize(Integer.parseInt(width), Integer.parseInt(height));
+            } catch (NumberFormatException nfe) {
+            }
+        }
     }
 
     public void setSize(int width, int height) {
