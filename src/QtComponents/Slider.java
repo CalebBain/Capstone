@@ -1,6 +1,7 @@
 package QtComponents;
 
 import Assemble.QT;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QSlider;
 import com.trolltech.qt.gui.QWidget;
@@ -45,7 +46,10 @@ public class Slider extends QSlider{
     }
 
     public void setOrientation(String orientation){
-        this.set(orientation);
+        switch (orientation){
+            case "horizontal": this.setOrientation(Qt.Orientation.Horizontal); break;
+            case "vertical": this.setOrientation(Qt.Orientation.Vertical); break;
+        }
     }
 
     public void setSize(String width, String height) {
