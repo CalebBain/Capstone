@@ -1,7 +1,7 @@
-<window width="200" height="100" title="Hello World" flavor="qt" stylesheet="">
-    <button  width="80" height="40" margin="10 40 180 40"
-             font-family="Times" font-size="18" font-style="italic" font-weight="bold"
-             text-decoration="underline overline strike-out"
-             onclick="quit()"
-             >Quit!</button>
+<window title="Hello World" flavor="qt">
+
+        <button font-family="Times" font-size="18" font-weight="bold" onclick="quit()">Quit!</button>
+        <number id="lcd" style="filled" digit-count="2" mode="dec" margin="0 40 70 70"/>
+        <slider orientation="horizontal" range="0 99" value="0" onvalue-change="lcd:display(int)" />
+    <layout type="Box" orientation="vertical"></layout>
 </window>

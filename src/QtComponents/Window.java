@@ -16,7 +16,9 @@ public class Window extends QWidget {
     }
 
     public void setSize(String width, String height) {
-        this.resize(((!width.isEmpty())? Integer.parseInt(width) : 400), ((!height.isEmpty())? Integer.parseInt(height) : 200));
+        try{
+            this.resize(Integer.parseInt(width), Integer.parseInt(height));
+        }catch (NumberFormatException nfe){}
     }
 
     public void setSize(int width, int height) {

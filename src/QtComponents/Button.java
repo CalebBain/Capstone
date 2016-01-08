@@ -1,13 +1,11 @@
 package QtComponents;
 
 import Assemble.QT;
+import com.sun.javafx.scene.layout.region.Margins;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-
 
 /**
  * Created by Caleb Bain on 1/7/2016.
@@ -27,7 +25,9 @@ public class Button extends QPushButton {
     }
 
     public void setSize(String width, String height) {
-        this.resize(((!width.isEmpty())? Integer.parseInt(width) : 20), ((!height.isEmpty())? Integer.parseInt(height) : 10));
+        try{
+            this.resize(Integer.parseInt(width), Integer.parseInt(height));
+        } catch (NumberFormatException nfe){}
     }
 
     public void setSize(int width, int height) {
@@ -43,7 +43,8 @@ public class Button extends QPushButton {
     }
 
     public void setMargins(String margins) {
-        String[] Margins = margins.split(" ");
+        String[] Margins = new String[0];
+        if(!margins.isEmpty()) Margins = margins.split(" ");
         int l = Margins.length;
         int[] m = new int[l];
         for(int i = 0; i < l; i++) m[i] = Integer.parseInt(Margins[i]);
@@ -51,7 +52,8 @@ public class Button extends QPushButton {
             case  4: this.setGeometry(m[0], m[1], m[2], m[3]); break;
             case  3: this.setGeometry(m[0], m[1], m[2], m[1]); break;
             case  2: this.setGeometry(m[0], m[1], m[0], m[1]); break;
-            default: this.setGeometry(m[0], m[0], m[0], m[0]);
+            case  1: this.setGeometry(m[0], m[0], m[0], m[0]); break;
+            default:
         }
     }
 
