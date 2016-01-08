@@ -1,3 +1,5 @@
+package Assemble;
+
 import jdk.nashorn.internal.runtime.regexp.joni.exception.SyntaxException;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -24,15 +26,14 @@ public class Assembler {
     }
 
     public void parseFlavor(NodeList nodeList){
-        String[] args = new String[0];
         printNote(nodeList);
         Node node = nodeList.item(0);
         NamedNodeMap nodeMap = node.getAttributes();
         String s = nodeMap.getNamedItem("flavor").getNodeValue();
         switch (s.toLowerCase()){
             case "qt":
-                QT app = new QT(nodeList, args);
-                app.CompileElements(args);
+                QT app = new QT(nodeList, new String[0]);
+                app.CompileElements();
                 break;
             case "fx": break;
             case"swing": break;

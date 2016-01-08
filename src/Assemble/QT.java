@@ -1,12 +1,12 @@
+package Assemble;
+
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import com.trolltech.qt.gui.*;
 import QtComponents.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,16 +14,16 @@ import java.util.Map;
  */
 public class QT extends QApplication{
     private Node Window;
-    private Map<String, QWidget> components = new HashMap();
-    private Map<String, QWidget> names = new HashMap();
-    private Map<String, QWidget> ids = new HashMap();
+    public static Map<String, QWidget> components = new HashMap();
+    public static Map<String, QWidget> names = new HashMap();
+    public static Map<String, QWidget> ids = new HashMap();
 
     public QT(NodeList nodeList, String[] args) {
         super(args);
         Window = nodeList.item(0);
     }
 
-    public void CompileElements(String[] args) {
+    public void CompileElements() {
         QWidget window = Window();
         NodeList nodeList = Window.getChildNodes();
         for(int i = 0; i < nodeList.getLength(); i++) {
@@ -38,21 +38,14 @@ public class QT extends QApplication{
         this.exec();
     }
 
-    private QWidget findParent(Node node){
+    public QWidget findParent(Node node){
         NamedNodeMap nodeMap = node.getAttributes();
-        String Class = node.getNodeName();
+        String component = node.getNodeName();
         Node name = nodeMap.getNamedItem("name");
         Node id = nodeMap.getNamedItem("id");
-
-        for(Map.Entry<String, QWidget> Id : ids.entrySet())
-            if(Id.getKey().equals(Class))
-                return Id.getValue();
-        for(Map.Entry<String, QWidget> Name : names.entrySet())
-            if(Name.getKey().equals((name != null) ? name.getNodeValue() : ""))
-                return Name.getValue();
-        for(Map.Entry<String, QWidget> component : components.entrySet())
-            if(component.getKey().equals((id != null) ? id.getNodeValue() : ""))
-                return component.getValue();
+        if(ids.containsKey(id)) return ids.get(id);
+        if(names.containsKey(name)) return names.get(name);
+        if(components.containsKey(component)) return components.get(component);
         return components.get("window");
     }
 
@@ -81,6 +74,7 @@ public class QT extends QApplication{
         button.setTextFont(Font(nodeMap));
         button.setButtonText(Button.getTextContent());
         button.setMargins(nodeMap.getNamedItem("margin").getNodeValue());
+        button.onClick(nodeMap.getNamedItem("onclick").getNodeValue());
     }
 
     public Font Font(NamedNodeMap nodeMap) {
