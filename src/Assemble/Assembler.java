@@ -33,15 +33,15 @@ public class Assembler {
             Node style = docElement.getElementsByTagName("style").item(0);
             if(style != null) new StyleParser();
             Node window = docElement.getElementsByTagName("window").item(0);
-            if(window != null) ParseFlavor(window, window.getChildNodes());
+            if(window != null) ParseFlavor(window);
         }else throw new SyntaxException("the file must begin with a jaml tag");
     }
 
-    private void ParseFlavor(Node window, NodeList nodeList){
+    private void ParseFlavor(Node window){
         NamedNodeMap nodeMap = window.getAttributes();
         String s = nodeMap.getNamedItem("flavor").getNodeValue();
         switch (s.toLowerCase()){
-            case "qt": QT app = new QT(nodeList, new String[0]); break;
+            case "qt": QT app = new QT(window, new String[0]); break;
         }
     }
 

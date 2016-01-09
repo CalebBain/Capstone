@@ -18,29 +18,27 @@ import java.util.Map;
  * Created by Caleb Bain on 1/7/2016.
  */
 public class QT extends QApplication{
-    private Node Window;
-    public static List<QWidget> components = new ArrayList<>();
+    public static List<Component> components = new ArrayList<>();
 
-    public QT(NodeList nodeList, String[] args) {
+    public QT(Node window, String[] args) {
         super(args);
-        Window = nodeList.item(0);
-        CompileElements();
+        CompileElements(window);
     }
 
-    public void CompileElements() {
+    public void CompileElements(Node Window) {
         QWidget window = new Window(Window);
-        components.add(window);
+        components.add((Component) window);
         NodeList nodeList = Window.getChildNodes();
         for(int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             QWidget component = null;
-            findParent(node.getParentNode());
+            //findParent(node.getParentNode());
             switch(node.getNodeName()){
                 case "button": component = new Button(window, node); break;
                 case "number": component = new Number(window, node); break;
                 case "slider": component = new Slider(window, node); break;
             }
-            components.add(component);
+            components.add((Component) component);
         }
         window.show();
         this.exec();
@@ -51,8 +49,8 @@ public class QT extends QApplication{
         String component = node.getNodeName();
         Node name = nodeMap.getNamedItem("name");
         Node id = nodeMap.getNamedItem("id");
-        for (QWidget com : components){
-            String s = com.getClass().getName();
+        for (Component com : components){
+            String s = com.Id();
             //if() return ids.get(id);
         }
 
