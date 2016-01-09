@@ -1,11 +1,19 @@
-<window title="Hello World" flavor="qt">
-    <number id="lcd" style="filled" digit-count="2" mode="dec" margin="0 0 70 30"/>
-    <slider orientation="horizontal" range="0 99" value="0" margin="70 40 70 30" onvalue-change="lcd:display(int)" />
+<jaml>
+    <!--style>
+        window {
+            width: 20
+        }
 
-    <!--layout type="Box" orientation="vertical">
+    </style-->
+    <window title="Hello World" flavor="qt">
+        <number id="lcd" style="filled" digit-count="2" mode="dec" margin="0 40 70 30"/>
+        <slider class="" orientation="horizontal" range="0 99" value="0" />
 
-    <button font-family="Times" font-size="18" font-weight="bold" onclick="quit()">Quit!</button>
-    <button font-family="Times" font-size="18" font-weight="bold" onclick="quit()">Quit!</button>
+        <!--layout type="Box" orientation="vertical">
+        onvalue-change="lcd:display(int)"
+        <button font-family="Times" font-size="18" font-weight="bold" margin="0 70 70 30" onclick="quit()">Quit!</button>
 
-    </layout-->
-</window>
+        </layout-->
+    </window>
+</jaml>
+

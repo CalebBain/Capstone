@@ -1,13 +1,14 @@
 package QtComponents;
 
-import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QSpacerItem;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
  * Created by Caleb Bain on 1/7/2016.
  */
-public class Window extends QWidget {
+public class Window extends QMainWindow {
 
     public Window(Node node) {
         NamedNodeMap nodeMap = node.getAttributes();

@@ -13,14 +13,25 @@ import org.w3c.dom.Node;
  */
 public class Button extends QPushButton {
 
+    private String Id;
+    private String Name;
+    private String Class;
+
     public Button(QWidget parent, Node node) {
         super(parent);
         NamedNodeMap nodeMap = node.getAttributes();
+        setIdentity(nodeMap);
         setSize(check(nodeMap, "width"), check(nodeMap, "height"));
         setTextFont(new Font(nodeMap));
         setButtonText(node.getTextContent());
         setMargins(check(nodeMap, "margin"));
         onClick(check(nodeMap, "onclick"));
+    }
+
+    public void setIdentity(NamedNodeMap nodeMap){
+        this.Id = check(nodeMap, "id");
+        this.Name = check(nodeMap, "name");
+        this.Class = check(nodeMap, "class");
     }
 
     public String check(NamedNodeMap nodeMap, String keyword){
@@ -72,10 +83,14 @@ public class Button extends QPushButton {
         int[] m = new int[l];
         for(int i = 0; i < l; i++) m[i] = Integer.parseInt(Margins[i]);
         switch(l){
-            case  4: this.setGeometry(m[0], m[1], m[2], m[3]); break;
-            case  3: this.setGeometry(m[0], m[1], m[2], m[1]); break;
-            case  2: this.setGeometry(m[0], m[1], m[0], m[1]); break;
-            case  1: this.setGeometry(m[0], m[0], m[0], m[0]); break;
+            case  4:
+                this.setGeometry(m[0], m[1], this.width(), this.height()); break;
+            case  3:
+                this.setGeometry(m[0], m[1], this.height(), this.height()); break;
+            case  2:
+                this.setGeometry(m[0], m[1], this.height(), this.height()); break;
+            case  1:
+                this.setGeometry(m[0], m[0], this.height(), this.height()); break;
             default:
         }
     }
@@ -89,5 +104,19 @@ public class Button extends QPushButton {
 
     }
 
+    public String Id(){
+        return Id;
+    }
 
+    public String Name(){
+        return Name;
+    }
+
+    public String Class(){
+        return Class;
+    }
+
+    public String Component(){
+        return this.getClass().getName();
+    }
 }

@@ -19,25 +19,29 @@ public class Assembler {
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
             System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
-            if (doc.hasChildNodes()) parseFlavor(doc.getChildNodes());
+            if (doc.hasChildNodes()) parse(doc.getChildNodes());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void parseFlavor(NodeList nodeList){
+    public void parse(NodeList nodeList){
         printNote(nodeList);
         Node node = nodeList.item(0);
-        NamedNodeMap nodeMap = node.getAttributes();
+        if(node instanceof Element && node.getNodeName().equals("jaml")){
+            Element docElement = (Element)node;
+            Node style = docElement.getElementsByTagName("style").item(0);
+            if(style != null) new StyleParser();
+            Node window = docElement.getElementsByTagName("window").item(0);
+            if(window != null) ParseFlavor(window, window.getChildNodes());
+        }else throw new SyntaxException("the file must begin with a jaml tag");
+    }
+
+    private void ParseFlavor(Node window, NodeList nodeList){
+        NamedNodeMap nodeMap = window.getAttributes();
         String s = nodeMap.getNamedItem("flavor").getNodeValue();
         switch (s.toLowerCase()){
-            case "qt":
-                QT app = new QT(nodeList, new String[0]);
-                app.CompileElements();
-                break;
-            case "fx": break;
-            case"swing": break;
-            default: throw new SyntaxException("didn't recognized the language you were trying to use");
+            case "qt": QT app = new QT(nodeList, new String[0]); break;
         }
     }
 
