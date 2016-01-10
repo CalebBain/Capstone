@@ -22,8 +22,12 @@ public class Number extends QLCDNumber implements Component {
     }
 
     public String check(NamedNodeMap nodeMap, String keyword) {
-        Node word = nodeMap.getNamedItem(keyword);
-        return (word != null) ? word.getNodeValue() : "";
+        try {
+            Node word = nodeMap.getNamedItem(keyword);
+            return (word != null) ? word.getNodeValue() : "";
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public void setHeight(String height) {
@@ -51,10 +55,6 @@ public class Number extends QLCDNumber implements Component {
         }
     }
 
-    public void setSize(int width, int height) {
-        this.resize(width, height);
-    }
-
     public void setMargins(String margins) {
         String[] Margins = new String[0];
         if (!margins.isEmpty()) Margins = margins.split(" ");
@@ -74,7 +74,6 @@ public class Number extends QLCDNumber implements Component {
             case 1:
                 this.setGeometry(m[0], m[0], m[0], m[0]);
                 break;
-            default:
         }
     }
 
@@ -95,7 +94,7 @@ public class Number extends QLCDNumber implements Component {
                 break;
         }
     }
-    
+
     public void setIdentity(NamedNodeMap nodeMap) {
         this.Id = check(nodeMap, "id");
         this.Name = check(nodeMap, "name");
@@ -123,12 +122,17 @@ public class Number extends QLCDNumber implements Component {
     }
 
     @Override
+    public QLCDNumber Widgit() {
+        return this;
+    }
+
+    @Override
     public void setStyle() {
         this.setSmallDecimalPoint(true);
         setSize(check(nodeMap, "width"), check(nodeMap, "height"));
         setDigitCount(check(nodeMap, "digit-count"));
         setStyle(check(nodeMap, "style"));
-        setMargins(check(nodeMap, "margin"));
+        //setMargins(check(nodeMap, "margin"));
     }
 
     @Override

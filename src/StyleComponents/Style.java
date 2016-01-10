@@ -1,22 +1,29 @@
 package StyleComponents;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Caleb Bain on 1/9/2016.
  */
 public class Style {
     private final String name;
-    private List<String> attrabutes;
+
+    private Map<String, String> attrabutes = new HashMap<>();
 
     public Style(String name) {
         this.name = name;
     }
 
-    public Style(String name, List<String> attrabutes) {
-        this.name = name;
-        this.attrabutes = attrabutes;
+    public void addAttrabute(String key, String value) {
+        attrabutes.put(key, value);
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public Map<String, String> getAttrabutes() {
+        return attrabutes;
+    }
 }

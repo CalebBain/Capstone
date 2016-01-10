@@ -26,8 +26,12 @@ public class Slider extends QSlider implements Component {
     }
 
     public String check(NamedNodeMap nodeMap, String keyword) {
-        Node word = nodeMap.getNamedItem(keyword);
-        return (word != null) ? word.getNodeValue() : "";
+        try {
+            Node word = nodeMap.getNamedItem(keyword);
+            return (word != null) ? word.getNodeValue() : "";
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public void setHeight(String height) {
@@ -63,10 +67,6 @@ public class Slider extends QSlider implements Component {
             } catch (NumberFormatException nfe) {
             }
 
-    }
-
-    public void setSize(int width, int height) {
-        this.resize(width, height);
     }
 
     public void setMargins(String margins) {
@@ -117,10 +117,6 @@ public class Slider extends QSlider implements Component {
         }
     }
 
-    public void setInterval(int interval) {
-        this.setTickInterval(interval);
-    }
-
     public void onValueChange(String call) {
         if (!call.equals("")) {
             String[] callParts = call.split(":");
@@ -169,6 +165,11 @@ public class Slider extends QSlider implements Component {
     @Override
     public String Component() {
         return this.getClass().getName();
+    }
+
+    @Override
+    public QSlider Widgit() {
+        return this;
     }
 
     @Override

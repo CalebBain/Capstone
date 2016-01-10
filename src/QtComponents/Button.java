@@ -26,8 +26,12 @@ public class Button extends QPushButton implements Component {
     }
 
     public String check(NamedNodeMap nodeMap, String keyword) {
-        Node word = nodeMap.getNamedItem(keyword);
-        return (word != null) ? word.getNodeValue() : "";
+        try {
+            Node word = nodeMap.getNamedItem(keyword);
+            return (word != null) ? word.getNodeValue() : "";
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
     public void setHeight(String height) {
@@ -53,10 +57,6 @@ public class Button extends QPushButton implements Component {
             } catch (NumberFormatException nfe) {
             }
         }
-    }
-
-    public void setSize(int width, int height) {
-        this.resize(width, height);
     }
 
     public void setTextFont(QFont font) {
@@ -126,10 +126,15 @@ public class Button extends QPushButton implements Component {
     }
 
     @Override
+    public QPushButton Widgit() {
+        return this;
+    }
+
+    @Override
     public void setStyle() {
         setSize(check(nodeMap, "width"), check(nodeMap, "height"));
         setTextFont(new Font(nodeMap));
-        setMargins(check(nodeMap, "margin"));
+        //setMargins(check(nodeMap, "margin"));
         onClick(check(nodeMap, "onclick"));
     }
 
