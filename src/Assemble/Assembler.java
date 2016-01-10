@@ -1,9 +1,12 @@
 package Assemble;
 
+import StyleComponents.Style;
 import jdk.nashorn.internal.runtime.regexp.joni.exception.SyntaxException;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Assembler {
     public static void  main(String[] args)
@@ -31,7 +34,7 @@ public class Assembler {
         if(node instanceof Element && node.getNodeName().equals("jaml")){
             Element docElement = (Element)node;
             Node style = docElement.getElementsByTagName("style").item(0);
-            if(style != null) new StyleParser();
+            if(style != null) new StyleParser(style);
             Node window = docElement.getElementsByTagName("window").item(0);
             if(window != null) ParseFlavor(window);
         }else throw new SyntaxException("the file must begin with a jaml tag");
@@ -48,13 +51,10 @@ public class Assembler {
     private void printNote(NodeList nodeList) {
         for (int count = 0; count < nodeList.getLength(); count++) {
             Node tempNode = nodeList.item(count);
-            // make sure it's element node.
             if (tempNode.getNodeType() == Node.ELEMENT_NODE) {
-                // get node name and value
                 System.out.println("\nNode Name = " + tempNode.getNodeName() + " [OPEN]");
                 System.out.println("Node Value = " + tempNode.getTextContent());
                 if (tempNode.hasAttributes()) {
-                    // get attributes names and values
                     NamedNodeMap nodeMap = tempNode.getAttributes();
                     for (int i = 0; i < nodeMap.getLength(); i++) {
                         Node node = nodeMap.item(i);
@@ -63,7 +63,7 @@ public class Assembler {
                         System.out.println("attr value : " + node.getNodeValue());
                     }
                 }
-                if (tempNode.hasChildNodes()) printNote(tempNode.getChildNodes()); // loop again if has child nodes
+                if (tempNode.hasChildNodes()) printNote(tempNode.getChildNodes());
                 System.out.println("Node Name = " + tempNode.getNodeName() + " [CLOSE]");
             }
         }

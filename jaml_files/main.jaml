@@ -1,13 +1,23 @@
 <jaml>
-    <!--style>
+    <style>
         window {
-            width: 20
+            width: 400;
+            height: 200;
         }
 
-    </style-->
+        ldc {
+            style: filled;
+            digit-count: 2;
+        }
+
+        slide:hover {
+            orientation: horizontal;
+        }
+
+    </style>
     <window title="Hello World" flavor="qt">
-        <number id="lcd" style="filled" digit-count="2" mode="dec" margin="0 40 70 30"/>
-        <slider class="" orientation="horizontal" range="0 99" value="0" />
+        <number id="lcd" mode="dec" margin="0 40 70 30"/>
+        <slider class="slide"  range="0 99" value="0" />
 
         <!--layout type="Box" orientation="vertical">
         onvalue-change="lcd:display(int)"
