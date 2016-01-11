@@ -4,10 +4,7 @@ import StyleComponents.Style;
 import org.w3c.dom.Node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Created by Caleb Bain on 1/9/2016.
@@ -15,63 +12,32 @@ import java.util.regex.Pattern;
 public class StyleParser {
 
     public StyleParser(Node style) {
-        Map<String, Character> tokens = GetContent(style.getTextContent());
+        List<Style> styles = GetContent(style.getTextContent());
     }
 
-    private Map<String, Character> GetContent(String s){
-        char currentState = 'a';
-        char[][] states = {{'a','b','~','~','e','~'}, {'a','b','c','~','e','~'},
-                           {'c','c','~','d','~','~'}, {'a','b','~','~','~','f'},
-                           {'a','b','~','~','~','f'}, {'a','b','~','~','~','~'}};
-        Map<String, Character> tokens = new HashMap<>();
-        char[] list = s.toCharArray();
-        int count = 0;
-        while(count++ < s.length()){
-            String token = "";
-            for(;count < s.length(); count++){
-                char c = list[count];
-                int j = 0, i = currentState - 97;
-                String t = c + "";
-                if(c == ' ') j = 0;
-                else if(t.matches("[A-z0-9\\-]")) j = 1;
-                else if(c == ':') j = 2;
-                else if(c == ';') j = 3;
-                else if(c == '{') j = 4;
-                else if(c == '}') j = 5;
-                char state = states[i][j];
-                if(state == 'a' || state == 'e') {
-                    if(!token.isEmpty()) tokens.put(token, state);
-                    currentState = state;
-                    break;
-                }
-                if(c != ';' && c!=' ') token += c;
-                currentState = state;
+    private List<Style> GetContent(String s) {
+        List<Style> tokens = new ArrayList<>();
+        s = s.replaceAll("\\s+"," ");
+        s = s.replaceAll("} ","}|");
+        s = s.replaceAll(": ",":");
+        s = s.substring(1, s.length()-2);
+        String[] commands = s.split(" }\\|");
+        for(String command : commands){
+            String[] parts = command.split(" \\{ ");
+            Style style = new Style(parts[0]);
+            parts = parts[1].split(" ");
+            for(String part : parts){
+                part.replaceAll(";", "");
+                String[] params = part.split(":");
+                style.addAttrabute(params[0], params[1]);
             }
-
+            tokens.add(style);
         }
         return tokens;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private void ParseStyle(Node style){
+    private void ParseStyle(Node style) {
         List<Style> styles = new ArrayList<>();
         //NamedNodeMap nodeMap = style.getAttributes();
         //String link = nodeMap.getNamedItem("link").getNodeValue();

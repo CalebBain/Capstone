@@ -1,5 +1,5 @@
 <jaml>
-    <style>
+    <style link="">
         window {
             width: 400;
             height: 200;
@@ -13,7 +13,6 @@
         slide:hover {
             orientation: horizontal;
         }
-
     </style>
     <window title="Hello World" flavor="qt">
         <number id="lcd" mode="dec" margin="0 40 70 30"/>
