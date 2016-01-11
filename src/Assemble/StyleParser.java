@@ -8,7 +8,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Caleb Bain on 1/9/2016.
@@ -16,43 +18,46 @@ import java.util.List;
 public class StyleParser {
 
     public StyleParser(Node style) {
-        List<Style> styles = new ArrayList<>();
+        Map<String, Style> styles = new HashMap<>();
         NamedNodeMap nodeMap = style.getAttributes();
-        Node link = nodeMap.getNamedItem("link");
+        Node Link = nodeMap.getNamedItem("link");
 
-        if(link != null){
-            String sheet = "";
-            try(BufferedReader br = new BufferedReader(new FileReader(link.getNodeValue()))){
-                String sCurrentLine;
-                while ((sCurrentLine = br.readLine()) != null) sheet += sCurrentLine;
-            }catch(IOException e){}
-            styles.addAll(GetContent(sheet));
+        if(Link != null){
+            String[] links = Link.getNodeValue().split(" ");
+            for(String link : links){
+                String sheet = "";
+                try(BufferedReader br = new BufferedReader(new FileReader(link))){
+                    String sCurrentLine;
+                    while ((sCurrentLine = br.readLine()) != null) sheet += sCurrentLine;
+                }catch(IOException e){}
+                styles.putAll(GetContent(sheet));
+            }
         }
-        styles.addAll(GetContent(style.getTextContent()));
+        styles.putAll(GetContent(style.getTextContent()));
     }
 
-    private List<Style> GetContent(String s) {
-        List<Style> tokens = new ArrayList<>();
-        s = s.replaceAll("\\s+"," ");
-        s = s.replaceAll("} ","}|");
-        s = s.replaceAll(": ",":");
-        s = s.substring(1, s.length()-2);
-        String[] commands = s.split(" }\\|");
-        for(String command : commands){
-            String[] parts = command.split(" \\{ ");
-            String name = parts[0];
-            Style style = null;
-            if(name.contains(":")){
-                String[] temp = name.split(":");
-                style = new Style(temp[0], temp[1]);
-            }else style = new Style(name);
-            parts = parts[1].split(" ");
-            for(String part : parts){
-                part.replaceAll(";", "");
-                String[] params = part.split(":");
-                style.addAttrabute(params[0], params[1]);
+    private Map<String, Style> GetContent(String s) {
+        Map<String, Style> tokens = new HashMap<>();
+        if(!s.isEmpty()){
+            s = s.replaceAll("\\s+", " ").replaceAll(" } ", "}").replaceAll(": ", ":");
+            s = s.substring(1, s.length()-2);
+            String[] commands = s.split("}");
+            for(String command : commands){
+                String[] parts = command.split(" \\{ ");
+                String name = parts[0];
+                Style style;
+                if(name.contains(":")){
+                    String[] temp = name.split(":");
+                    style = new Style(temp[0], temp[1]);
+                }else style = new Style(name);
+                parts = parts[1].split(" ");
+                for(String part : parts){
+                    part.replaceAll(";", "");
+                    String[] params = part.split(":");
+                    style.addAttrabute(params[0], params[1]);
+                }
+                tokens.put(name, style);
             }
-            tokens.add(style);
         }
         return tokens;
     }

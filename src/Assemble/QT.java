@@ -29,7 +29,7 @@ public class QT extends QApplication {
 
     public static QWidget findComponent(String component) {
         for (Component com : components)
-            if (com.Id().equals(component) || com.Name().equals(component) || com.Class().equals(component) || com.Component().equals(component))
+            if (com.Name().equals(component) || com.Class().equals(component) || com.Component().equals(component))
                 return com.Widgit();
         return components.get(0).Widgit();
     }
@@ -64,9 +64,8 @@ public class QT extends QApplication {
         String component = node.getNodeName();
         Node Class = nodeMap.getNamedItem("class");
         Node name = nodeMap.getNamedItem("name");
-        Node id = nodeMap.getNamedItem("id");
         for (Component com : components)
-            if (com.Id().equals(id) || com.Name().equals(name) || com.Class().equals(Class) || com.Component().equals(component))
+            if (com.Name().equals(name) || com.Class().equals(Class) || com.Component().equals(component))
                 return com.Widgit();
         return components.get(0).Widgit();
     }
