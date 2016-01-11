@@ -1,5 +1,6 @@
 package QtComponents;
 
+import StyleComponents.Style;
 import com.trolltech.qt.gui.QMainWindow;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -9,6 +10,7 @@ import org.w3c.dom.Node;
  */
 public class Window extends QMainWindow implements Component {
 
+    private Style style;
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
@@ -16,6 +18,16 @@ public class Window extends QMainWindow implements Component {
     public Window(Node node) {
         this.nodeMap = node.getAttributes();
         setIdentity(nodeMap);
+    }
+
+    public void setIdentity(NamedNodeMap nodeMap) {
+        this.Name = check(nodeMap, "name");
+        this.Class = check(nodeMap, "class");
+        if(!Name.isEmpty()){
+            this.style = new Style(Name);
+            this.setAccessibleName(Name);
+        }else
+            this.style = new Style("number");
     }
 
     public String check(NamedNodeMap nodeMap, String keyword) {
@@ -27,39 +39,21 @@ public class Window extends QMainWindow implements Component {
         }
     }
 
-    public void setHeight(String height) {
-        try {
-            this.resize(width(), Integer.parseInt(height));
-        } catch (NumberFormatException nfe) {
-        }
-    }
-
-    public void setWidth(String width) {
-        try {
-            this.resize(Integer.parseInt(width), height());
-        } catch (NumberFormatException nfe) {
-        }
-    }
-
     public void setSize(String width, String height) {
-        if (width.isEmpty()) setHeight(height);
-        else if (height.isEmpty()) setWidth(width);
-        else {
-            try {
-                this.resize(Integer.parseInt(width), Integer.parseInt(height));
-            } catch (NumberFormatException nfe) {
-            }
+        if (!height.isEmpty())     style.addAttrabute("height", height);
+        else if (!width.isEmpty()) style.addAttrabute("width", width);
+        else if (!height.isEmpty()&&!width.isEmpty()) {
+            style.addAttrabute("height", height);
+            style.addAttrabute("width", width);
         }
+    }
+
+    public void setAltBackground(String color){
+        style.addAttrabute("alternate-background-color", color);
     }
 
     public void setTitle(String title) {
         this.setWindowTitle(tr((!title.isEmpty()) ? title : "JAML Applicaiton"));
-    }
-
-    public void setIdentity(NamedNodeMap nodeMap) {
-        this.Name = check(nodeMap, "name");
-        if(!Name.isEmpty()) this.setAccessibleName(Name);
-        this.Class = check(nodeMap, "class");
     }
 
     @Override

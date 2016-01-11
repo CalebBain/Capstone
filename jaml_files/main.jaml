@@ -5,22 +5,23 @@
             height: 200;
         }
 
-        ldc {
+        .ldc {
             style: filled;
             digit-count: 2;
         }
 
-        slide:hover {
+        #slide::groove {
             orientation: horizontal;
         }
     </style>
     <window title="Hello World" flavor="qt">
         <number name="lcd" mode="dec" margin="0 40 70 30"/>
-        <slider class="slide"  range="0 99" value="0" />
+        <slider class="slide"  range="0 99" value="0" tick-position="above" />
+        <button font-family="Times" font-size="18" font-weight="bold" margin="0 70 70 30" onclick="quit()">Quit!</button>
 
         <!--layout type="Box" orientation="vertical">
         onvalue-change="lcd:display(int)"
-        <button font-family="Times" font-size="18" font-weight="bold" margin="0 70 70 30" onclick="quit()">Quit!</button>
+
 
         </layout-->
     </window>

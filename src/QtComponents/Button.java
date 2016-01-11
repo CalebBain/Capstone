@@ -1,6 +1,7 @@
 package QtComponents;
 
 import Assemble.QT;
+import StyleComponents.Style;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QPushButton;
@@ -13,6 +14,7 @@ import org.w3c.dom.Node;
  */
 public class Button extends QPushButton implements Component {
 
+    private Style style;
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
@@ -21,6 +23,16 @@ public class Button extends QPushButton implements Component {
         super(node.getTextContent(), parent);
         this.nodeMap = node.getAttributes();
         setIdentity(nodeMap);
+    }
+
+    public void setIdentity(NamedNodeMap nodeMap) {
+        this.Name = check(nodeMap, "name");
+        this.Class = check(nodeMap, "class");
+        if(!Name.isEmpty()){
+            this.style = new Style(Name);
+            this.setAccessibleName(Name);
+        }else
+            this.style = new Style("button");
     }
 
     public String check(NamedNodeMap nodeMap, String keyword) {
@@ -66,8 +78,14 @@ public class Button extends QPushButton implements Component {
     }
 
     public void setMargins(String margins) {
-        String[] Margins = new String[0];
-        if (!margins.isEmpty()) Margins = margins.split(" ");
+
+
+
+
+
+
+        /*String[] Margins = new String[0];
+
         int l = Margins.length;
         int[] m = new int[l];
         for (int i = 0; i < l; i++) m[i] = Integer.parseInt(Margins[i]);
@@ -85,7 +103,7 @@ public class Button extends QPushButton implements Component {
                 this.setGeometry(m[0], m[0], this.height(), this.height());
                 break;
             default:
-        }
+        }*/
     }
 
     public void onClick(String call) {
@@ -97,11 +115,7 @@ public class Button extends QPushButton implements Component {
 
     }
 
-    public void setIdentity(NamedNodeMap nodeMap) {
-        this.Name = check(nodeMap, "name");
-        if(!Name.isEmpty()) this.setAccessibleName(Name);
-        this.Class = check(nodeMap, "class");
-    }
+
 
     @Override
     public String Name() {

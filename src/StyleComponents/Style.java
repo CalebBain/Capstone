@@ -1,14 +1,14 @@
 package StyleComponents;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Caleb Bain on 1/9/2016.
- */
 public class Style {
     private final String name;
     private final String nameAttrabute;
+    private List<String> PseudoStates = new ArrayList<>();
     private Map<String, String> attrabutes = new HashMap<>();
 
     public Style(String name) {
@@ -19,6 +19,10 @@ public class Style {
     public Style(String name, String nameAttrabute) {
         this.name = name;
         this.nameAttrabute = nameAttrabute;
+    }
+
+    public void addPseudoState(String state){
+        PseudoStates.add(state);
     }
 
     public void addAttrabute(String key, String value) {

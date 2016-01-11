@@ -1,6 +1,7 @@
 package QtComponents;
 
 import Assemble.QT;
+import StyleComponents.Style;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QSlider;
@@ -13,6 +14,7 @@ import org.w3c.dom.Node;
  */
 public class Slider extends QSlider implements Component {
 
+    private Style style;
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
@@ -24,6 +26,16 @@ public class Slider extends QSlider implements Component {
 
     }
 
+    public void setIdentity(NamedNodeMap nodeMap) {
+        this.Name = check(nodeMap, "name");
+        this.Class = check(nodeMap, "class");
+        if(!Name.isEmpty()){
+            this.style = new Style(Name);
+            this.setAccessibleName(Name);
+        }else
+            this.style = new Style("number");
+    }
+
     public String check(NamedNodeMap nodeMap, String keyword) {
         try {
             Node word = nodeMap.getNamedItem(keyword);
@@ -33,62 +45,17 @@ public class Slider extends QSlider implements Component {
         }
     }
 
-    public void setHeight(String height) {
-        try {
-            this.resize(width(), Integer.parseInt(height));
-        } catch (NumberFormatException nfe) {
-        }
-    }
-
-    public void setWidth(String width) {
-        try {
-            this.resize(Integer.parseInt(width), height());
-        } catch (NumberFormatException nfe) {
+    public void setSize(String width, String height) {
+        if (!height.isEmpty())     style.addAttrabute("height", height);
+        else if (!width.isEmpty()) style.addAttrabute("width", width);
+        else if (!height.isEmpty()&&!width.isEmpty()) {
+            style.addAttrabute("height", height);
+            style.addAttrabute("width", width);
         }
     }
 
     public void setOrientation(String orientation) {
-        switch (orientation) {
-            case "horizontal":
-                this.setOrientation(Qt.Orientation.Horizontal);
-                break;
-            case "vertical":
-                this.setOrientation(Qt.Orientation.Vertical);
-                break;
-        }
-    }
-
-    public void setSize(String width, String height) {
-        if (width.isEmpty()) setHeight(height);
-        else if (height.isEmpty()) setWidth(width);
-        else try {
-                this.resize(Integer.parseInt(width), Integer.parseInt(height));
-            } catch (NumberFormatException nfe) {
-            }
-
-    }
-
-    public void setMargins(String margins) {
-        String[] Margins = new String[0];
-        if (!margins.isEmpty()) Margins = margins.split(" ");
-        int l = Margins.length;
-        int[] m = new int[l];
-        for (int i = 0; i < l; i++) m[i] = Integer.parseInt(Margins[i]);
-        switch (l) {
-            case 4:
-                this.setGeometry(m[0], m[1], m[2], m[3]);
-                break;
-            case 3:
-                this.setGeometry(m[0], m[1], m[2], m[1]);
-                break;
-            case 2:
-                this.setGeometry(m[0], m[1], m[0], m[1]);
-                break;
-            case 1:
-                this.setGeometry(m[0], m[0], m[0], m[0]);
-                break;
-            default:
-        }
+        style.addPseudoState(orientation);
     }
 
     public void setTickPosition(String position) {
@@ -107,6 +74,10 @@ public class Slider extends QSlider implements Component {
             default:
                 this.setTickPosition(TickPosition.NoTicks);
         }
+    }
+
+    public void setMargins(String margins) {
+        style.addAttrabute("margin", margins);
     }
 
     public void setInterval(String interval) {
@@ -138,12 +109,6 @@ public class Slider extends QSlider implements Component {
             if (callParts.length == 1) this.sliderReleased.connect(QApplication.instance(), callParts[0]);
             else this.sliderReleased.connect(QT.findComponent(callParts[0]), callParts[1]);
         }
-    }
-
-    public void setIdentity(NamedNodeMap nodeMap) {
-        this.Name = check(nodeMap, "name");
-        if(!Name.isEmpty()) this.setAccessibleName(Name);
-        this.Class = check(nodeMap, "class");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package QtComponents;
 
+import StyleComponents.Style;
 import com.trolltech.qt.gui.QLCDNumber;
 import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.NamedNodeMap;
@@ -10,6 +11,7 @@ import org.w3c.dom.Node;
  */
 public class Number extends QLCDNumber implements Component {
 
+    private Style style;
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
@@ -18,6 +20,16 @@ public class Number extends QLCDNumber implements Component {
         super(parent);
         this.nodeMap = node.getAttributes();
         setIdentity(nodeMap);
+    }
+
+    public void setIdentity(NamedNodeMap nodeMap) {
+        this.Name = check(nodeMap, "name");
+        this.Class = check(nodeMap, "class");
+        if(!Name.isEmpty()){
+            this.style = new Style(Name);
+            this.setAccessibleName(Name);
+        }else
+            this.style = new Style("number");
     }
 
     public String check(NamedNodeMap nodeMap, String keyword) {
@@ -92,12 +104,6 @@ public class Number extends QLCDNumber implements Component {
                 this.setSegmentStyle(SegmentStyle.Flat);
                 break;
         }
-    }
-
-    public void setIdentity(NamedNodeMap nodeMap) {
-        this.Name = check(nodeMap, "name");
-        if(!Name.isEmpty()) this.setAccessibleName(Name);
-        this.Class = check(nodeMap, "class");
     }
 
     @Override
