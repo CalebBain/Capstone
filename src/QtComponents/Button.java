@@ -13,16 +13,14 @@ import org.w3c.dom.Node;
  */
 public class Button extends QPushButton implements Component {
 
-    private String Id;
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
 
     public Button(QWidget parent, Node node) {
-        super(parent);
+        super(node.getTextContent(), parent);
         this.nodeMap = node.getAttributes();
         setIdentity(nodeMap);
-        setButtonText(node.getTextContent());
     }
 
     public String check(NamedNodeMap nodeMap, String keyword) {
@@ -100,14 +98,9 @@ public class Button extends QPushButton implements Component {
     }
 
     public void setIdentity(NamedNodeMap nodeMap) {
-        this.Id = check(nodeMap, "id");
         this.Name = check(nodeMap, "name");
+        if(!Name.isEmpty()) this.setAccessibleName(Name);
         this.Class = check(nodeMap, "class");
-    }
-
-    @Override
-    public String Id() {
-        return Id;
     }
 
     @Override

@@ -13,7 +13,6 @@ import org.w3c.dom.Node;
  */
 public class Slider extends QSlider implements Component {
 
-    private String Id;
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
@@ -142,14 +141,9 @@ public class Slider extends QSlider implements Component {
     }
 
     public void setIdentity(NamedNodeMap nodeMap) {
-        this.Id = check(nodeMap, "id");
         this.Name = check(nodeMap, "name");
+        if(!Name.isEmpty()) this.setAccessibleName(Name);
         this.Class = check(nodeMap, "class");
-    }
-
-    @Override
-    public String Id() {
-        return Id;
     }
 
     @Override

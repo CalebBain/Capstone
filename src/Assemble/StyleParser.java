@@ -1,8 +1,12 @@
 package Assemble;
 
 import StyleComponents.Style;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +16,19 @@ import java.util.List;
 public class StyleParser {
 
     public StyleParser(Node style) {
-        List<Style> styles = GetContent(style.getTextContent());
+        List<Style> styles = new ArrayList<>();
+        NamedNodeMap nodeMap = style.getAttributes();
+        Node link = nodeMap.getNamedItem("link");
+
+        if(link != null){
+            String sheet = "";
+            try(BufferedReader br = new BufferedReader(new FileReader(link.getNodeValue()))){
+                String sCurrentLine;
+                while ((sCurrentLine = br.readLine()) != null) sheet += sCurrentLine;
+            }catch(IOException e){}
+            styles.addAll(GetContent(sheet));
+        }
+        styles.addAll(GetContent(style.getTextContent()));
     }
 
     private List<Style> GetContent(String s) {
@@ -24,7 +40,12 @@ public class StyleParser {
         String[] commands = s.split(" }\\|");
         for(String command : commands){
             String[] parts = command.split(" \\{ ");
-            Style style = new Style(parts[0]);
+            String name = parts[0];
+            Style style = null;
+            if(name.contains(":")){
+                String[] temp = name.split(":");
+                style = new Style(temp[0], temp[1]);
+            }else style = new Style(name);
             parts = parts[1].split(" ");
             for(String part : parts){
                 part.replaceAll(";", "");
