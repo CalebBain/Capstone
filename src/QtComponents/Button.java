@@ -3,7 +3,6 @@ package QtComponents;
 import Assemble.QT;
 import StyleComponents.Style;
 import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.NamedNodeMap;
@@ -28,14 +27,14 @@ public class Button extends QPushButton implements Component {
     private void setIdentity(NamedNodeMap nodeMap) {
         this.Name = check("name");
         this.Class = check("class");
-        if(!Name.isEmpty()){
+        if (!Name.isEmpty()) {
             this.style = new Style(Name);
             this.setAccessibleName(Name);
-        }else
+        } else
             this.style = new Style("button");
     }
 
-    private boolean tryValue(String value){
+    private boolean tryValue(String value) {
         try {
             Integer.parseInt(value);
             return true;
@@ -53,32 +52,31 @@ public class Button extends QPushButton implements Component {
         }
     }
 
-    private void setProps(){
-        if(check("exclusive").equals("true")) this.setAutoExclusive(true);
-        else if(check("exclusive").equals("false")) this.setAutoExclusive(false);
+    private void setProps() {
+        if (check("exclusive").equals("true")) this.setAutoExclusive(true);
+        else if (check("exclusive").equals("false")) this.setAutoExclusive(false);
 
-        if(check("repeatable").equals("true")) this.setAutoRepeat(true);
-        else if(check("repeatable").equals("false")) this.setAutoRepeat(false);
+        if (check("repeatable").equals("true")) this.setAutoRepeat(true);
+        else if (check("repeatable").equals("false")) this.setAutoRepeat(false);
 
-        if(check("checkable").equals("true")) this.setCheckable(true);
-        else if(check("checkable").equals("false")) this.setCheckable(false);
+        if (check("checkable").equals("true")) this.setCheckable(true);
+        else if (check("checkable").equals("false")) this.setCheckable(false);
 
-        if(check("checked").equals("true")) this.setChecked(true);
-        else if(check("checked").equals("false")) this.setChecked(false);
+        if (check("checked").equals("true")) this.setChecked(true);
+        else if (check("checked").equals("false")) this.setChecked(false);
 
-        if(check("default").equals("true")) this.setDefault(true);
-        else if(check("default").equals("false")) this.setDefault(false);
+        if (check("default").equals("true")) this.setDefault(true);
+        else if (check("default").equals("false")) this.setDefault(false);
 
-        if(check("flat").equals("true")) this.setFlat(true);
-        else if(check("flat").equals("false")) this.setFlat(false);
+        if (check("flat").equals("true")) this.setFlat(true);
+        else if (check("flat").equals("false")) this.setFlat(false);
 
         String count;
-        if(tryValue((count = check("repeatable-delay")))) this.setAutoRepeatDelay(Integer.parseInt(count));
-        if(tryValue((count = check("repeatable-interval")))) this.setAutoRepeatInterval(Integer.parseInt(count));
+        if (tryValue((count = check("repeatable-delay")))) this.setAutoRepeatDelay(Integer.parseInt(count));
+        if (tryValue((count = check("repeatable-interval")))) this.setAutoRepeatInterval(Integer.parseInt(count));
 
         onFunction();
     }
-
 
 
     private void onFunction() {
@@ -100,8 +98,6 @@ public class Button extends QPushButton implements Component {
             if (callParts.length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
             else this.pressed.connect(QT.findComponent(callParts[0]), callParts[1]);
         }
-
-
     }
 
     @Override
@@ -150,13 +146,14 @@ public class Button extends QPushButton implements Component {
         if (!(prop = check("width")).isEmpty()) style.addAttrabute("width", prop);
         if (!(prop = check("gridline-color")).isEmpty()) style.addAttrabute("gridline-color", prop);
         if (!(prop = check("button-layout")).isEmpty()) style.addAttrabute("button-layout", prop);
-        if (!(prop = check("button-icon")).isEmpty()) style.addAttrabute("color", prop);
-        if (!(prop = check("color")).isEmpty()) style.addAttrabute("dialogbuttonbox-buttons-have-icons", prop);
+        if (!(prop = check("button-icon")).isEmpty()) style.addAttrabute("dialogbuttonbox-buttons-have-icons", prop);
+        if (!(prop = check("color")).isEmpty()) style.addAttrabute("color", prop);
         if (!(prop = check("font")).isEmpty()) style.addAttrabute("font", prop);
         if (!(prop = check("font-family")).isEmpty()) style.addAttrabute("font-family", prop);
         if (!(prop = check("font-size")).isEmpty()) style.addAttrabute("font-size", prop);
         if (!(prop = check("font-style")).isEmpty()) style.addAttrabute("font-style", prop);
         if (!(prop = check("font-weight")).isEmpty()) style.addAttrabute("font-weight", prop);
+        if (!(prop = check("icon")).isEmpty()) style.addAttrabute("file-icon", prop);
         if (!(prop = check("icon-size")).isEmpty()) style.addAttrabute("icon-size", prop);
         if (!(prop = check("image")).isEmpty()) style.addAttrabute("image", prop);
         if (!(prop = check("image-position")).isEmpty()) style.addAttrabute("image-position", prop);
@@ -208,7 +205,6 @@ public class Button extends QPushButton implements Component {
     public QPushButton Widgit() {
         return this;
     }
-
 
 
     @Override

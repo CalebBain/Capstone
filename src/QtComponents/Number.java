@@ -185,8 +185,8 @@ public class Number extends QLCDNumber implements Component {
         if (!(prop = check("width")).isEmpty()) style.addAttrabute("width", prop);
         if (!(prop = check("gridline-color")).isEmpty()) style.addAttrabute("gridline-color", prop);
         if (!(prop = check("button-layout")).isEmpty()) style.addAttrabute("button-layout", prop);
-        if (!(prop = check("button-icon")).isEmpty()) style.addAttrabute("color", prop);
-        if (!(prop = check("color")).isEmpty()) style.addAttrabute("dialogbuttonbox-buttons-have-icons", prop);
+        if (!(prop = check("button-icon")).isEmpty()) style.addAttrabute("dialogbuttonbox-buttons-have-icons", prop);
+        if (!(prop = check("color")).isEmpty()) style.addAttrabute("color", prop);
         if (!(prop = check("font")).isEmpty()) style.addAttrabute("font", prop);
         if (!(prop = check("font-family")).isEmpty()) style.addAttrabute("font-family", prop);
         if (!(prop = check("font-size")).isEmpty()) style.addAttrabute("font-size", prop);

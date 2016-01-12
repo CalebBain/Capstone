@@ -1,21 +1,25 @@
 package QtComponents;
 
+import Assemble.QT;
 import StyleComponents.Style;
-import com.trolltech.qt.gui.QMainWindow;
+import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QRadioButton;
+import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
- * Created by Caleb Bain on 1/7/2016.
+ * Created by Caleb Bain on 1/12/2016.
  */
-public class Window extends QMainWindow implements Component {
+public class Radio extends QRadioButton implements Component {
 
     private Style style;
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
 
-    public Window(Node node) {
+    public Radio(QWidget parent, Node node) {
+        super(node.getTextContent(), parent);
         this.nodeMap = node.getAttributes();
         setIdentity(nodeMap);
     }
@@ -23,11 +27,11 @@ public class Window extends QMainWindow implements Component {
     private void setIdentity(NamedNodeMap nodeMap) {
         this.Name = check("name");
         this.Class = check("class");
-        if (!Name.isEmpty()) {
+        if(!Name.isEmpty()){
             this.style = new Style(Name);
             this.setAccessibleName(Name);
-        } else
-            this.style = new Style("number");
+        }else
+            this.style = new Style("button");
     }
 
     private String check(String keyword) {
@@ -39,10 +43,59 @@ public class Window extends QMainWindow implements Component {
         }
     }
 
+    private boolean tryValue(String value){
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+
+    private void setProps() {
+        if (check("exclusive").equals("true")) this.setAutoExclusive(true);
+        else if (check("exclusive").equals("false")) this.setAutoExclusive(false);
+
+        if (check("repeatable").equals("true")) this.setAutoRepeat(true);
+        else if (check("repeatable").equals("false")) this.setAutoRepeat(false);
+
+        if (check("checkable").equals("true")) this.setCheckable(true);
+        else if (check("checkable").equals("false")) this.setCheckable(false);
+
+        if (check("checked").equals("true")) this.setChecked(true);
+        else if (check("checked").equals("false")) this.setChecked(false);
+
+        String count;
+        if (tryValue((count = check("repeatable-delay")))) this.setAutoRepeatDelay(Integer.parseInt(count));
+        if (tryValue((count = check("repeatable-interval")))) this.setAutoRepeatInterval(Integer.parseInt(count));
+
+        onFunction();
+    }
+
+    private void onFunction() {
+        String call;
+        if (!(call = check("on-click")).isEmpty()) {
+            String[] callParts = call.split(":");
+            if (callParts.length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
+            else this.clicked.connect(QT.findComponent(callParts[0]), callParts[1]);
+        }
+
+        if (!(call = check("on-release")).isEmpty()) {
+            String[] callParts = call.split(":");
+            if (callParts.length == 1) this.released.connect(QApplication.instance(), callParts[0]);
+            else this.released.connect(QT.findComponent(callParts[0]), callParts[1]);
+        }
+
+        if (!(call = check("on-press")).isEmpty()) {
+            String[] callParts = call.split(":");
+            if (callParts.length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
+            else this.pressed.connect(QT.findComponent(callParts[0]), callParts[1]);
+        }
+    }
+
     @Override
     public void setStyle() {
         String prop;
-        this.setWindowTitle(tr((!(prop = check("title")).isEmpty()) ? prop : "JAML Applicaiton"));
         if (!(prop = check("alt-background-color")).isEmpty()) style.addAttrabute("alternate-background-color", prop);
         if (!(prop = check("background")).isEmpty()) style.addAttrabute("background", prop);
         if (!(prop = check("background-color")).isEmpty()) style.addAttrabute("background-color", prop);
@@ -86,14 +139,15 @@ public class Window extends QMainWindow implements Component {
         if (!(prop = check("width")).isEmpty()) style.addAttrabute("width", prop);
         if (!(prop = check("gridline-color")).isEmpty()) style.addAttrabute("gridline-color", prop);
         if (!(prop = check("button-layout")).isEmpty()) style.addAttrabute("button-layout", prop);
-        if (!(prop = check("button-icon")).isEmpty()) style.addAttrabute("dialogbuttonbox-buttons-have-icons", prop);
         if (!(prop = check("color")).isEmpty()) style.addAttrabute("color", prop);
         if (!(prop = check("font")).isEmpty()) style.addAttrabute("font", prop);
         if (!(prop = check("font-family")).isEmpty()) style.addAttrabute("font-family", prop);
         if (!(prop = check("font-size")).isEmpty()) style.addAttrabute("font-size", prop);
         if (!(prop = check("font-style")).isEmpty()) style.addAttrabute("font-style", prop);
         if (!(prop = check("font-weight")).isEmpty()) style.addAttrabute("font-weight", prop);
-        //if (!(prop = check("icon-size")).isEmpty()) style.addAttrabute("icon-size", prop);
+        if (!(prop = check("icon")).isEmpty()) style.addAttrabute("file-icon", prop);
+        if (!(prop = check("icon-size")).isEmpty()) style.addAttrabute("icon-size", prop);
+        if (!(prop = check("button-icon")).isEmpty()) style.addAttrabute("dialogbuttonbox-buttons-have-icons", prop);
         if (!(prop = check("image")).isEmpty()) style.addAttrabute("image", prop);
         if (!(prop = check("image-position")).isEmpty()) style.addAttrabute("image-position", prop);
         if (!(prop = check("margin")).isEmpty()) style.addAttrabute("margin", prop);
@@ -122,6 +176,7 @@ public class Window extends QMainWindow implements Component {
         if (!(prop = check("subcontrol-position")).isEmpty()) style.addAttrabute("subcontrol-position", prop);
         if (!(prop = check("text-align")).isEmpty()) style.addAttrabute("text-align", prop);
         if (!(prop = check("text-decoration")).isEmpty()) style.addAttrabute("text-decoration", prop);
+        setProps();
     }
 
     @Override
@@ -140,9 +195,10 @@ public class Window extends QMainWindow implements Component {
     }
 
     @Override
-    public QMainWindow Widgit() {
+    public QRadioButton Widgit() {
         return this;
     }
+
 
     @Override
     public void SetStylesheet() {

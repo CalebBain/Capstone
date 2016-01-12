@@ -34,6 +34,15 @@ public class QT extends QApplication {
         return components.get(0).Widgit();
     }
 
+    private String check(NamedNodeMap nodeMap, String keyword) {
+        try {
+            Node word = nodeMap.getNamedItem(keyword);
+            return (word != null) ? word.getNodeValue() : "";
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
+
     public void CompileElements(Node Window) {
         QWidget window = new Window(Window);
         components.add((Component) window);
@@ -43,7 +52,11 @@ public class QT extends QApplication {
             QWidget component = null;
             switch (node.getNodeName()) {
                 case "button":
-                    component = new Button(findParent(node.getParentNode()), node);
+                    String type = check(node.getAttributes(), "type");
+                    if (type.equals("radio")) component = new Radio(findParent(node.getParentNode()), node);
+                    else if (type.equals("checkbox")) component = new Checkbox(findParent(node.getParentNode()), node, false);
+                    else if (type.equals("tri-state")) component = new Checkbox(findParent(node.getParentNode()), node, true);
+                    else component = new Button(findParent(node.getParentNode()), node);
                     break;
                 case "number":
                     component = new Number(findParent(node.getParentNode()), node);
@@ -68,12 +81,5 @@ public class QT extends QApplication {
             if (com.Name().equals(name) || com.Class().equals(Class) || com.Component().equals(component))
                 return com.Widgit();
         return components.get(0).Widgit();
-    }
-
-    public String MakeStyleSheet(){
-
-
-
-        return "";
     }
 }
