@@ -39,14 +39,6 @@ public class Window extends QMainWindow implements Component {
         }
     }
 
-    private void Title(String prop) {
-
-    }
-
-    private void AltBackground(String prop) {
-
-    }
-
     @Override
     public void setStyle() {
         String prop;
@@ -101,7 +93,7 @@ public class Window extends QMainWindow implements Component {
         if (!(prop = check("font-size")).isEmpty()) style.addAttrabute("font-size", prop);
         if (!(prop = check("font-style")).isEmpty()) style.addAttrabute("font-style", prop);
         if (!(prop = check("font-weight")).isEmpty()) style.addAttrabute("font-weight", prop);
-        if (!(prop = check("icon-size")).isEmpty()) style.addAttrabute("icon-size", prop);
+        //if (!(prop = check("icon-size")).isEmpty()) style.addAttrabute("icon-size", prop);
         if (!(prop = check("image")).isEmpty()) style.addAttrabute("image", prop);
         if (!(prop = check("image-position")).isEmpty()) style.addAttrabute("image-position", prop);
         if (!(prop = check("margin")).isEmpty()) style.addAttrabute("margin", prop);
