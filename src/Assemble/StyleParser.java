@@ -51,7 +51,7 @@ public class StyleParser {
                 String[] parts = command.split(" \\{ ");
                 String[] names = parts[0].split(", ");
                 for (String name : names) {
-                    Style style;
+                    Style style = null;
                     boolean spec = (name.startsWith("."));
                     name = name.replaceAll(".", "");
                     if(name.contains("::")){

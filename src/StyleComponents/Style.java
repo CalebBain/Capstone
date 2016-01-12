@@ -1,7 +1,5 @@
 package StyleComponents;
 
-import QtComponents.Component;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +26,7 @@ public class Style {
         this.special = special;
     }
 
-    public void addAll(Style style){
+    public void addAll(Style style) {
         this.attributes.putAll(style.getAttrabutes());
     }
 
@@ -62,6 +60,10 @@ public class Style {
 
     public void setNameAttributes(List<String> nameAttributes) {
         this.nameAttributes = nameAttributes;
+    }
+
+    public void addNameAttributes(String prop){
+        if(!nameAttributes.contains(prop)) nameAttributes.add(prop);
     }
 
     public boolean isSpecial() {

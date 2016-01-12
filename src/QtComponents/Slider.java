@@ -29,10 +29,10 @@ public class Slider extends QSlider implements Component {
         this.Name = check("name");
         this.Class = check("class");
         if(!Name.isEmpty()){
-            this.style = new Style(Name, this, true);
+            this.style = new Style(Name, Component(), true);
             this.setAccessibleName(Name);
         }else
-            this.style = new Style("number", this, false);
+            this.style = new Style("number", Component(), false);
     }
 
     private String check(String keyword) {
@@ -58,6 +58,7 @@ public class Slider extends QSlider implements Component {
         setTick();
         setValue();
         setInvert();
+        setSteps();
     }
 
     private void setSteps(){
@@ -209,7 +210,7 @@ public class Slider extends QSlider implements Component {
         if (!(prop = check("subcontrol-position")).isEmpty()) style.addAttribute("subcontrol-position", prop);
         if (!(prop = check("text-align")).isEmpty()) style.addAttribute("text-align", prop);
         if (!(prop = check("text-decoration")).isEmpty()) style.addAttribute("text-decoration", prop);
-        if (!(prop = check("orientation")).isEmpty()) style.addPseudoState(prop);
+        if (!(prop = check("orientation")).isEmpty()) style.addNameAttributes(prop);
         setProps();
     }
 

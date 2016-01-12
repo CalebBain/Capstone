@@ -28,10 +28,10 @@ public class Number extends QLCDNumber implements Component {
         this.Name = check("name");
         this.Class = check("class");
         if(!Name.isEmpty()){
-            this.style = new Style(Name, this, true);
+            this.style = new Style(Name, Component(), true);
             this.setAccessibleName(Name);
         }else
-            this.style = new Style("number", this, false);
+            this.style = new Style("number", Component(), false);
     }
 
     private String check(String keyword) {
