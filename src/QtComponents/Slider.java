@@ -54,10 +54,6 @@ public class Slider extends QSlider implements Component {
         }
     }
 
-    private int Value(String value){
-        return Integer.parseInt(value);
-    }
-
     private void setProps(){
         onFunction();
         setTick();
@@ -67,8 +63,8 @@ public class Slider extends QSlider implements Component {
 
     private void setSteps(){
         String steps;
-        if(tryValue((steps = check("page-steps")))) this.setPageStep(Value(steps));
-        if(tryValue((steps = check("arrow-steps")))) this.setSingleStep(Value(steps));
+        if(tryValue((steps = check("page-steps")))) this.setPageStep(Integer.parseInt(steps));
+        if(tryValue((steps = check("arrow-steps")))) this.setSingleStep(Integer.parseInt(steps));
     }
 
     private void setInvert(){
@@ -122,14 +118,14 @@ public class Slider extends QSlider implements Component {
         }
 
         String interval;
-        if(tryValue((interval = check("interval")))) this.setMinimum(Value(interval));
+        if(tryValue((interval = check("interval")))) this.setMinimum(Integer.parseInt(interval));
     }
 
     private void setValue(){
         String minValue, maxValue, value;
-        if(tryValue((minValue = check("min-value")))) this.setMinimum(Value(minValue));
-        if(tryValue((maxValue = check("max-value")))) this.setMaximum(Value(maxValue));
-        if(tryValue((value = check("value"))))        this.setValue(Value(value));
+        if(tryValue((minValue = check("min-value")))) this.setMinimum(Integer.parseInt(minValue));
+        if(tryValue((maxValue = check("max-value")))) this.setMaximum(Integer.parseInt(maxValue));
+        if(tryValue((value = check("value"))))        this.setValue(Integer.parseInt(value));
     }
 
     @Override

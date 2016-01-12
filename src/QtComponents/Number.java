@@ -1,6 +1,8 @@
 package QtComponents;
 
+import Assemble.QT;
 import StyleComponents.Style;
+import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QLCDNumber;
 import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.NamedNodeMap;
@@ -19,12 +21,12 @@ public class Number extends QLCDNumber implements Component {
     public Number(QWidget parent, Node node) {
         super(parent);
         this.nodeMap = node.getAttributes();
-        setIdentity(nodeMap);
+        setIdentity();
     }
 
-    public void setIdentity(NamedNodeMap nodeMap) {
-        this.Name = check(nodeMap, "name");
-        this.Class = check(nodeMap, "class");
+    private void setIdentity() {
+        this.Name = check("name");
+        this.Class = check("class");
         if(!Name.isEmpty()){
             this.style = new Style(Name);
             this.setAccessibleName(Name);
@@ -32,7 +34,7 @@ public class Number extends QLCDNumber implements Component {
             this.style = new Style("number");
     }
 
-    public String check(NamedNodeMap nodeMap, String keyword) {
+    private String check(String keyword) {
         try {
             Node word = nodeMap.getNamedItem(keyword);
             return (word != null) ? word.getNodeValue() : "";
@@ -41,59 +43,17 @@ public class Number extends QLCDNumber implements Component {
         }
     }
 
-    public void setHeight(String height) {
+    private boolean tryValue(String value){
         try {
-            this.resize(width(), Integer.parseInt(height));
+            Integer.parseInt(value);
+            return true;
         } catch (NumberFormatException nfe) {
+            return false;
         }
     }
 
-    public void setWidth(String width) {
-        try {
-            this.resize(Integer.parseInt(width), height());
-        } catch (NumberFormatException nfe) {
-        }
-    }
-
-    public void setSize(String width, String height) {
-        if (width.isEmpty()) setHeight(height);
-        else if (height.isEmpty()) setWidth(width);
-        else {
-            try {
-                this.resize(Integer.parseInt(width), Integer.parseInt(height));
-            } catch (NumberFormatException nfe) {
-            }
-        }
-    }
-
-    public void setMargins(String margins) {
-        String[] Margins = new String[0];
-        if (!margins.isEmpty()) Margins = margins.split(" ");
-        int l = Margins.length;
-        int[] m = new int[l];
-        for (int i = 0; i < l; i++) m[i] = Integer.parseInt(Margins[i]);
-        switch (l) {
-            case 4:
-                this.setGeometry(m[0], m[1], m[2], m[3]);
-                break;
-            case 3:
-                this.setGeometry(m[0], m[1], m[2], m[1]);
-                break;
-            case 2:
-                this.setGeometry(m[0], m[1], m[0], m[1]);
-                break;
-            case 1:
-                this.setGeometry(m[0], m[0], m[0], m[0]);
-                break;
-        }
-    }
-
-    public void setDigitCount(String count) {
-        this.setDigitCount(Integer.parseInt(count));
-    }
-
-    public void setStyle(String style) {
-        switch (style) {
+    private void setProps(){
+        switch (check("segment-style")) {
             case "outline":
                 this.setSegmentStyle(SegmentStyle.Outline);
                 break;
@@ -104,6 +64,164 @@ public class Number extends QLCDNumber implements Component {
                 this.setSegmentStyle(SegmentStyle.Flat);
                 break;
         }
+
+        switch (check("mode")){
+            case "hex":
+                this.setMode(Mode.Hex);
+                break;
+            case "dec":
+                this.setMode(Mode.Dec);
+                break;
+            case "oct":
+                this.setMode(Mode.Oct);
+                break;
+            case "bin":
+                this.setMode(Mode.Bin);
+                break;
+        }
+
+        if(check("small-decimal-point").equals("true")) this.setSmallDecimalPoint(true);
+        else if(check("small-decimal-point").equals("false")) this.setSmallDecimalPoint(false);
+
+        String count;
+        if(tryValue((count = check("digit-count")))) this.setDigitCount(Integer.parseInt(count));
+        if(tryValue((count = check("value")))) this.display(Integer.parseInt(count));
+        setFrameProps();
+    }
+
+    private void setFrameProps(){
+        String count;
+        if(tryValue((count = check("shadow")))) this.setFrameShadow(Shadow.resolve(Integer.parseInt(count)));
+        switch(check("shadow")){
+            case "plain":
+                this.setFrameShadow(Shadow.Plain);
+                break;
+            case "raised":
+                this.setFrameShadow(Shadow.Plain);
+                break;
+            case "sunken":
+                this.setFrameShadow(Shadow.Plain);
+                break;
+        }
+
+        if(tryValue((count = check("shape")))) this.setFrameShape(Shape.resolve(Integer.parseInt(count)));
+        switch(check("shape")){
+            case "no-frame":
+                this.setFrameShape(Shape.NoFrame);
+                break;
+            case "box":
+                this.setFrameShape(Shape.Box);
+                break;
+            case "panel":
+                this.setFrameShape(Shape.Panel);
+                break;
+            case "styled-panel":
+                this.setFrameShape(Shape.StyledPanel);
+                break;
+            case "horizontal-line":
+                this.setFrameShape(Shape.HLine);
+                break;
+            case "vertical-line":
+                this.setFrameShape(Shape.VLine);
+                break;
+            case "window-panel":
+                this.setFrameShape(Shape.WinPanel);
+                break;
+        }
+    }
+
+    private void onFunction(){
+        String call;
+        if (!(call = check("on-overflow")).isEmpty()) {
+            String[] callParts = call.split(":");
+            if (callParts.length == 1) this.overflow.connect(QApplication.instance(), callParts[0]);
+            else this.overflow.connect(QT.findComponent(callParts[0]), callParts[1]);
+        }
+    }
+
+    @Override
+    public void setStyle() {
+        String prop;
+        if (!(prop = check("alt-background-color")).isEmpty()) style.addAttrabute("alternate-background-color", prop);
+        if (!(prop = check("background")).isEmpty()) style.addAttrabute("background", prop);
+        if (!(prop = check("background-color")).isEmpty()) style.addAttrabute("background-color", prop);
+        if (!(prop = check("background-image")).isEmpty()) style.addAttrabute("background-image", prop);
+        if (!(prop = check("background-repeat")).isEmpty()) style.addAttrabute("background-repeat", prop);
+        if (!(prop = check("background-position")).isEmpty()) style.addAttrabute("background-position", prop);
+        if (!(prop = check("background-attachment")).isEmpty()) style.addAttrabute("background-attachment", prop);
+        if (!(prop = check("background-clip")).isEmpty()) style.addAttrabute("background-clip", prop);
+        if (!(prop = check("background-origin")).isEmpty()) style.addAttrabute("background-origin", prop);
+        if (!(prop = check("border")).isEmpty()) style.addAttrabute("border", prop);
+        if (!(prop = check("border-top")).isEmpty()) style.addAttrabute("border-color", prop);
+        if (!(prop = check("border-right")).isEmpty()) style.addAttrabute("border-style", prop);
+        if (!(prop = check("border-bottom")).isEmpty()) style.addAttrabute("border-width", prop);
+        if (!(prop = check("border-left")).isEmpty()) style.addAttrabute("border-top", prop);
+        if (!(prop = check("border-image")).isEmpty()) style.addAttrabute("border-top-color", prop);
+        if (!(prop = check("border-color")).isEmpty()) style.addAttrabute("border-top-style", prop);
+        if (!(prop = check("border-top-color")).isEmpty()) style.addAttrabute("border-top-width", prop);
+        if (!(prop = check("border-right-color")).isEmpty()) style.addAttrabute("border-right", prop);
+        if (!(prop = check("border-bottom-color")).isEmpty()) style.addAttrabute("border-right-color", prop);
+        if (!(prop = check("border-left-color")).isEmpty()) style.addAttrabute("border-right-style", prop);
+        if (!(prop = check("border-style")).isEmpty()) style.addAttrabute("border-right-width", prop);
+        if (!(prop = check("border-top-style")).isEmpty()) style.addAttrabute("border-bottom", prop);
+        if (!(prop = check("border-right-style")).isEmpty()) style.addAttrabute("border-bottom-color", prop);
+        if (!(prop = check("border-bottom-style")).isEmpty()) style.addAttrabute("border-bottom-style", prop);
+        if (!(prop = check("border-left-style")).isEmpty()) style.addAttrabute("border-bottom-width", prop);
+        if (!(prop = check("border-width")).isEmpty()) style.addAttrabute("border-left", prop);
+        if (!(prop = check("border-top-width")).isEmpty()) style.addAttrabute("border-left-color", prop);
+        if (!(prop = check("border-right-width")).isEmpty()) style.addAttrabute("border-left-style", prop);
+        if (!(prop = check("border-bottom-width")).isEmpty()) style.addAttrabute("border-left-width", prop);
+        if (!(prop = check("border-left-width")).isEmpty()) style.addAttrabute("border-image", prop);
+        if (!(prop = check("border-radius")).isEmpty()) style.addAttrabute("border-radius", prop);
+        if (!(prop = check("border-top-left-radius")).isEmpty()) style.addAttrabute("border-top-left-radius", prop);
+        if (!(prop = check("border-top-right-radius")).isEmpty()) style.addAttrabute("border-top-right-radius", prop);
+        if (!(prop = check("border-bottom-right-radius")).isEmpty()) style.addAttrabute("border-bottom-right-radius", prop);
+        if (!(prop = check("border-bottom-left-radius")).isEmpty()) style.addAttrabute("border-bottom-left-radius", prop);
+        if (!(prop = check("top")).isEmpty()) style.addAttrabute("top", prop);
+        if (!(prop = check("right")).isEmpty()) style.addAttrabute("right", prop);
+        if (!(prop = check("bottom")).isEmpty()) style.addAttrabute("bottom", prop);
+        if (!(prop = check("left")).isEmpty()) style.addAttrabute("left", prop);
+        if (!(prop = check("height")).isEmpty()) style.addAttrabute("height", prop);
+        if (!(prop = check("width")).isEmpty()) style.addAttrabute("width", prop);
+        if (!(prop = check("gridline-color")).isEmpty()) style.addAttrabute("gridline-color", prop);
+        if (!(prop = check("button-layout")).isEmpty()) style.addAttrabute("button-layout", prop);
+        if (!(prop = check("button-icon")).isEmpty()) style.addAttrabute("color", prop);
+        if (!(prop = check("color")).isEmpty()) style.addAttrabute("dialogbuttonbox-buttons-have-icons", prop);
+        if (!(prop = check("font")).isEmpty()) style.addAttrabute("font", prop);
+        if (!(prop = check("font-family")).isEmpty()) style.addAttrabute("font-family", prop);
+        if (!(prop = check("font-size")).isEmpty()) style.addAttrabute("font-size", prop);
+        if (!(prop = check("font-style")).isEmpty()) style.addAttrabute("font-style", prop);
+        if (!(prop = check("font-weight")).isEmpty()) style.addAttrabute("font-weight", prop);
+        //if (!(prop = check("icon-size")).isEmpty()) style.addAttrabute("icon-size", prop);
+        if (!(prop = check("image")).isEmpty()) style.addAttrabute("image", prop);
+        if (!(prop = check("image-position")).isEmpty()) style.addAttrabute("image-position", prop);
+        if (!(prop = check("margin")).isEmpty()) style.addAttrabute("margin", prop);
+        if (!(prop = check("margin-top")).isEmpty()) style.addAttrabute("margin-top", prop);
+        if (!(prop = check("margin-right")).isEmpty()) style.addAttrabute("margin-right", prop);
+        if (!(prop = check("margin-bottom")).isEmpty()) style.addAttrabute("margin-bottom", prop);
+        if (!(prop = check("margin-left")).isEmpty()) style.addAttrabute("margin-left", prop);
+        if (!(prop = check("max-height")).isEmpty()) style.addAttrabute("max-height", prop);
+        if (!(prop = check("max-width")).isEmpty()) style.addAttrabute("max-width", prop);
+        if (!(prop = check("textbox-interaction")).isEmpty()) style.addAttrabute("messagebox-text-interaction-flags", prop);
+        if (!(prop = check("min-height")).isEmpty()) style.addAttrabute("min-height", prop);
+        if (!(prop = check("min-width")).isEmpty()) style.addAttrabute("min-width", prop);
+        if (!(prop = check("opacity")).isEmpty()) style.addAttrabute("opacity", prop);
+        if (!(prop = check("padding")).isEmpty()) style.addAttrabute("padding", prop);
+        if (!(prop = check("padding-top")).isEmpty()) style.addAttrabute("padding-top", prop);
+        if (!(prop = check("padding-right")).isEmpty()) style.addAttrabute("padding-right", prop);
+        if (!(prop = check("padding-bottom")).isEmpty()) style.addAttrabute("padding-bottom", prop);
+        if (!(prop = check("padding-left")).isEmpty()) style.addAttrabute("padding-left", prop);
+        if (!(prop = check("alt-empty-row-color")).isEmpty()) style.addAttrabute("paint-alternating-row-colors-for-empty-area", prop);
+        if (!(prop = check("position")).isEmpty()) style.addAttrabute("position", prop);
+        if (!(prop = check("select-background-color")).isEmpty()) style.addAttrabute("selection-background-color", prop);
+        if (!(prop = check("select-color")).isEmpty()) style.addAttrabute("selection-color", prop);
+        if (!(prop = check("select-decoration")).isEmpty()) style.addAttrabute("show-decoration-selected", prop);
+        if (!(prop = check("spacing")).isEmpty()) style.addAttrabute("spacing", prop);
+        if (!(prop = check("subcontrol-origin")).isEmpty()) style.addAttrabute("subcontrol-origin", prop);
+        if (!(prop = check("subcontrol-position")).isEmpty()) style.addAttrabute("subcontrol-position", prop);
+        if (!(prop = check("text-align")).isEmpty()) style.addAttrabute("text-align", prop);
+        if (!(prop = check("text-decoration")).isEmpty()) style.addAttrabute("text-decoration", prop);
+        setProps();
     }
 
     @Override
@@ -124,15 +242,6 @@ public class Number extends QLCDNumber implements Component {
     @Override
     public QLCDNumber Widgit() {
         return this;
-    }
-
-    @Override
-    public void setStyle() {
-        this.setSmallDecimalPoint(true);
-        setSize(check(nodeMap, "width"), check(nodeMap, "height"));
-        setDigitCount(check(nodeMap, "digit-count"));
-        setStyle(check(nodeMap, "style"));
-        //setMargins(check(nodeMap, "margin"));
     }
 
     @Override
