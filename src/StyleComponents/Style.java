@@ -1,5 +1,7 @@
 package StyleComponents;
 
+import QtComponents.Component;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,26 +9,31 @@ import java.util.Map;
 
 public class Style {
     private final String name;
-    private final String nameAttrabute;
-    private List<String> PseudoStates = new ArrayList<>();
-    private Map<String, String> attrabutes = new HashMap<>();
+    private List<String> nameAttributes;
+    private String subControl;
+    private String component;
+    private boolean special;
+    private Map<String, String> attributes = new HashMap<>();
 
-    public Style(String name) {
+    public Style(String name, boolean special) {
         this.name = name;
-        this.nameAttrabute = "";
+        this.nameAttributes = new ArrayList<>();
+        this.special = special;
     }
 
-    public Style(String name, String nameAttrabute) {
+    public Style(String name, String component, boolean special) {
         this.name = name;
-        this.nameAttrabute = nameAttrabute;
+        this.nameAttributes = new ArrayList<>();
+        this.component = component;
+        this.special = special;
     }
 
-    public void addPseudoState(String state){
-        PseudoStates.add(state);
+    public void addAll(Style style){
+        this.attributes.putAll(style.getAttrabutes());
     }
 
-    public void addAttrabute(String key, String value) {
-        attrabutes.put(key, value);
+    public void addAttribute(String key, String value) {
+        attributes.put(key, value);
     }
 
     public String getName() {
@@ -34,6 +41,30 @@ public class Style {
     }
 
     public Map<String, String> getAttrabutes() {
-        return attrabutes;
+        return attributes;
+    }
+
+    public String getSubControl() {
+        return subControl;
+    }
+
+    public void setSubControl(String subControl) {
+        this.subControl = subControl;
+    }
+
+    public String getComponent() {
+        return component;
+    }
+
+    public List<String> getNameAttributes() {
+        return nameAttributes;
+    }
+
+    public void setNameAttributes(List<String> nameAttributes) {
+        this.nameAttributes = nameAttributes;
+    }
+
+    public boolean isSpecial() {
+        return special;
     }
 }

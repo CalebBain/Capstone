@@ -10,20 +10,17 @@
             digit-count: 2;
         }
 
-        #slide::groove {
+        s, slide {
             orientation: horizontal;
         }
     </style>
     <window title="Hello World" flavor="qt">
         <number name="lcd" mode="dec" margin="0 40 70 30"/>
-        <slider class="slide"  range="0 99" value="0" tick-position="above" />
+        <slider class="slide"  range="0 99" value="0" tick-position="above" on-value-change="lcd:display(int)" />
+        <slider class="s"  range="0 99" value="0" tick-position="above" on-value-change="lcd:display(int)" />
         <button font-family="Times" font-size="18" font-weight="bold" margin="0 70 70 30" on-click="quit()">Quit!</button>
 
-        <!--layout type="Box" orientation="vertical">
-        onvalue-change="lcd:display(int)"
-
-
-        </layout-->
+        <!--layout type="Box" orientation="vertical"></layout-->
     </window>
 </jaml>
 

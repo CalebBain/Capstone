@@ -6,7 +6,9 @@ import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Assembler {
     public static void  main(String[] args)
@@ -34,17 +36,18 @@ public class Assembler {
         if(node instanceof Element && node.getNodeName().equals("jaml")){
             Element docElement = (Element)node;
             Node style = docElement.getElementsByTagName("style").item(0);
-            if(style != null) new StyleParser(style);
+            Map<String, Style> styles = new HashMap<>();
+            if(style != null) styles = new StyleParser().Parse(style);
             Node window = docElement.getElementsByTagName("window").item(0);
-            if(window != null) ParseFlavor(window);
-        }else throw new SyntaxException("the file must begin with a jaml tag");
+            if(window != null) ParseFlavor(window, styles);
+        }
     }
 
-    private void ParseFlavor(Node window){
+    private void ParseFlavor(Node window, Map<String, Style> styles){
         NamedNodeMap nodeMap = window.getAttributes();
         String s = nodeMap.getNamedItem("flavor").getNodeValue();
         switch (s.toLowerCase()){
-            case "qt": QT app = new QT(window, new String[0]); break;
+            case "qt": new QT(window, styles, new String[0]); break;
         }
     }
 

@@ -2,6 +2,7 @@ package Assemble;
 
 import QtComponents.*;
 import QtComponents.Number;
+import StyleComponents.Style;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.NamedNodeMap;
@@ -9,7 +10,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // (least to most important)
 //  1. External style sheet
@@ -21,9 +24,12 @@ import java.util.List;
  */
 public class QT extends QApplication {
     public static List<Component> components = new ArrayList<>();
+    public static Map<String, Style> styles = new HashMap<>();
 
-    public QT(Node window, String[] args) {
+
+    public QT(Node window, Map<String, Style> styles, String[] args) {
         super(args);
+        this.styles = styles;
         CompileElements(window);
     }
 
