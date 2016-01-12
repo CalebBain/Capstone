@@ -45,12 +45,45 @@ public class Slider extends QSlider implements Component {
         }
     }
 
+    private boolean tryValue(String value){
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
+
+    private int Value(String value){
+        return Integer.parseInt(value);
+    }
+
     private void setProps(){
         onFunction();
         setTick();
+        setValue();
+        setInvert();
     }
 
-    public void onFunction(){
+    private void setSteps(){
+        String steps;
+        if(tryValue((steps = check("page-steps")))) this.setPageStep(Value(steps));
+        if(tryValue((steps = check("arrow-steps")))) this.setSingleStep(Value(steps));
+    }
+
+    private void setInvert(){
+        switch(check("invert-numbers")){
+            case "true": this.setInvertedAppearance(true);
+            case "false": this.setInvertedAppearance(false);
+        }
+
+        switch(check("invert-controls")){
+            case "true": this.setInvertedControls(true);
+            case "false": this.setInvertedControls(false);
+        }
+    }
+
+    private void onFunction(){
         String call;
         if (!(call = check("on-value-change")).isEmpty()) {
             String[] callParts = call.split(":");
@@ -71,7 +104,7 @@ public class Slider extends QSlider implements Component {
         }
     }
 
-    public void setTick() {
+    private void setTick() {
         switch (check("position")) {
             case "both":
                 this.setTickPosition(TickPosition.TicksBothSides);
@@ -88,10 +121,15 @@ public class Slider extends QSlider implements Component {
                 this.setTickPosition(TickPosition.NoTicks);
         }
 
-        try {
-            this.setTickInterval(Integer.parseInt(check("interval")));
-        } catch (NumberFormatException nfe) {
-        }
+        String interval;
+        if(tryValue((interval = check("interval")))) this.setMinimum(Value(interval));
+    }
+
+    private void setValue(){
+        String minValue, maxValue, value;
+        if(tryValue((minValue = check("min-value")))) this.setMinimum(Value(minValue));
+        if(tryValue((maxValue = check("max-value")))) this.setMaximum(Value(maxValue));
+        if(tryValue((value = check("value"))))        this.setValue(Value(value));
     }
 
     @Override
@@ -176,7 +214,7 @@ public class Slider extends QSlider implements Component {
         if (!(prop = check("subcontrol-position")).isEmpty()) style.addAttrabute("subcontrol-position", prop);
         if (!(prop = check("text-align")).isEmpty()) style.addAttrabute("text-align", prop);
         if (!(prop = check("text-decoration")).isEmpty()) style.addAttrabute("text-decoration", prop);
-        if (!(prop = check("alt-background-color")).isEmpty()) style.addPseudoState(prop);
+        if (!(prop = check("orientation")).isEmpty()) style.addPseudoState(prop);
         setProps();
     }
 
