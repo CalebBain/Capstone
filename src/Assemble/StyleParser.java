@@ -51,26 +51,7 @@ public class StyleParser {
                 String[] parts = command.split(" \\{ ");
                 String[] names = parts[0].split(", ");
                 for (String name : names) {
-                    Style style = null;
-                    boolean spec = (name.startsWith("."));
-                    name = name.replaceAll(".", "");
-                    if (name.contains("::")) {
-                        String[] temp = name.split("::");
-                        if (temp[1].contains(":")) {
-                            String[] q = name.split(":");
-                            List<String> t = new ArrayList<>();
-                            for (int i = 1; i < q.length; i++) t.add(q[i]);
-                            style = new Style(temp[0], spec);
-                            style.setNameAttributes(t);
-                            style.setSubControl(temp[0]);
-                        }
-                    } else if (name.contains(":")) {
-                        String[] temp = name.split(":");
-                        List<String> t = new ArrayList<>();
-                        for (int i = 1; i < temp.length; i++) t.add(temp[i]);
-                        style = new Style(temp[0], spec);
-                        style.setNameAttributes(t);
-                    } else style = new Style(name, spec);
+                    Style style = new Style(name, name.startsWith("."));
                     parts = parts[1].split(" ");
                     for (String part : parts) {
                         part.replaceAll(";", "");

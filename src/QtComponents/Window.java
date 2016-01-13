@@ -53,7 +53,7 @@ public class Window extends QMainWindow implements Component {
 
     @Override
     public String Component() {
-        return this.getClass().getName();
+        return "window";
     }
 
     @Override

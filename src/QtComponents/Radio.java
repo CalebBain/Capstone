@@ -89,7 +89,7 @@ public class Radio extends QRadioButton implements Component {
 
     @Override
     public String Component() {
-        return this.getClass().getName();
+        return "radio";
     }
 
     @Override

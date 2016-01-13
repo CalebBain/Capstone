@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Style {
-    private final String name;
+    private String name;
     private List<String> nameAttributes;
     private String subControl;
     private String component;
@@ -14,20 +14,38 @@ public class Style {
     private Map<String, String> attributes = new HashMap<>();
 
     public Style(String name, boolean special) {
-        this.name = name;
+        parseName(name);
         this.nameAttributes = new ArrayList<>();
         this.special = special;
     }
 
     public Style(String name, String component, boolean special) {
-        this.name = name;
+        parseName(name);
         this.nameAttributes = new ArrayList<>();
         this.component = component;
         this.special = special;
     }
 
+    private void parseName(String name){
+        name = name.replaceAll(".", "");
+        String[] temp;
+        if (name.contains("::")) {
+            temp = name.split("::");
+            this.name = temp[0];
+            if (temp[1].contains(":")) {
+                temp = name.split(":");
+                setSubControl(temp[0]);
+                for (int i = 1; i < temp.length; i++) this.addNameAttributes(temp[i]);
+            }
+        }else if (name.contains(":")) {
+            temp = name.split(":");
+            this.name = temp[0];
+            for (int i = 1; i < temp.length; i++) this.addNameAttributes(temp[i]);
+        }else this.name = name;
+    }
+
     public void addAll(Style style) {
-        this.attributes.putAll(style.getAttrabutes());
+        this.attributes.putAll(style.getAttributes());
     }
 
     public void addAttribute(String key, String value) {
@@ -38,7 +56,7 @@ public class Style {
         return name;
     }
 
-    public Map<String, String> getAttrabutes() {
+    public Map<String, String> getAttributes() {
         return attributes;
     }
 
@@ -56,10 +74,6 @@ public class Style {
 
     public List<String> getNameAttributes() {
         return nameAttributes;
-    }
-
-    public void setNameAttributes(List<String> nameAttributes) {
-        this.nameAttributes = nameAttributes;
     }
 
     public void addNameAttributes(String prop){

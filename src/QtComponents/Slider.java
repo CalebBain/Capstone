@@ -63,36 +63,24 @@ public class Slider extends QSlider implements Component {
     }
 
     private void onFunction() {
-        String[] callParts = Func("on-value-change");
-        if (callParts.length == 1) this.valueChanged.connect(QApplication.instance(), callParts[0]);
+        String[] callParts;
+        if ((callParts = Func("on-value-change")).length == 1) this.valueChanged.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.valueChanged.connect(QT.findComponent(callParts[0]), callParts[1]);
-        callParts = Func("on-release");
-        if (callParts.length == 1) this.sliderReleased.connect(QApplication.instance(), callParts[0]);
+        if ((callParts = Func("on-release")).length == 1) this.sliderReleased.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.sliderReleased.connect(QT.findComponent(callParts[0]), callParts[1]);
-        callParts = Func("on-press");
-        if (callParts.length == 1) this.sliderPressed.connect(QApplication.instance(), callParts[0]);
+        if ((callParts = Func("on-press")).length == 1) this.sliderPressed.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.sliderPressed.connect(QT.findComponent(callParts[0]), callParts[1]);
     }
 
     private void setTick() {
         switch (Utils.check("position", nodeMap)) {
-            case "both":
-                this.setTickPosition(TickPosition.TicksBothSides);
-                break;
-            case "left":
-            case "above":
-                this.setTickPosition(TickPosition.TicksAbove);
-                break;
-            case "right":
-            case "below":
-                this.setTickPosition(TickPosition.TicksBelow);
-                break;
-            default:
-                this.setTickPosition(TickPosition.NoTicks);
+            case "both": this.setTickPosition(TickPosition.TicksBothSides); break;
+            case "left": case "above": this.setTickPosition(TickPosition.TicksAbove); break;
+            case "right": case "below": this.setTickPosition(TickPosition.TicksBelow); break;
+            case "no-ticks": this.setTickPosition(TickPosition.NoTicks);
         }
-
-        String interval;
-        if (Utils.tryValue((interval = Utils.check("interval", nodeMap)))) this.setMinimum(Integer.parseInt(interval));
+        String interval = Utils.check("interval", nodeMap);
+        if (Utils.tryValue(interval)) this.setMinimum(Integer.parseInt(interval));
     }
 
     private void setValue() {
@@ -123,7 +111,7 @@ public class Slider extends QSlider implements Component {
 
     @Override
     public String Component() {
-        return this.getClass().getName();
+        return "slider";
     }
 
     @Override

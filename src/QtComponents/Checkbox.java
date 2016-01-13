@@ -89,7 +89,7 @@ public class Checkbox extends QCheckBox implements Component {
 
     @Override
     public String Component() {
-        return this.getClass().getName();
+        return "Checkbox";
     }
 
     @Override

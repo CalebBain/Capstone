@@ -94,7 +94,7 @@ public class Button extends QPushButton implements Component {
 
     @Override
     public String Component() {
-        return this.getClass().getName();
+        return "button";
     }
 
     @Override

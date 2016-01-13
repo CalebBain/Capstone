@@ -112,7 +112,7 @@ public class Number extends QLCDNumber implements Component {
 
     @Override
     public String Component() {
-        return this.getClass().getName();
+        return "number";
     }
 
     @Override
