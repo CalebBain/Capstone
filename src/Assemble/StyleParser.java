@@ -54,7 +54,7 @@ public class StyleParser {
                     Style style = null;
                     boolean spec = (name.startsWith("."));
                     name = name.replaceAll(".", "");
-                    if(name.contains("::")){
+                    if (name.contains("::")) {
                         String[] temp = name.split("::");
                         if (temp[1].contains(":")) {
                             String[] q = name.split(":");
@@ -66,12 +66,11 @@ public class StyleParser {
                         }
                     } else if (name.contains(":")) {
                         String[] temp = name.split(":");
-                        List<String> t = new ArrayList<String>();
-                        for(int i = 1; i < temp.length; i++) t.add(temp[i]);
+                        List<String> t = new ArrayList<>();
+                        for (int i = 1; i < temp.length; i++) t.add(temp[i]);
                         style = new Style(temp[0], spec);
                         style.setNameAttributes(t);
-                    }else style = new Style(name, spec);
-
+                    } else style = new Style(name, spec);
                     parts = parts[1].split(" ");
                     for (String part : parts) {
                         part.replaceAll(";", "");

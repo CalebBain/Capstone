@@ -28,10 +28,10 @@ public class Slider extends QSlider implements Component {
     private void setIdentity(NamedNodeMap nodeMap) {
         this.Name = check("name");
         this.Class = check("class");
-        if(!Name.isEmpty()){
+        if (!Name.isEmpty()) {
             this.style = new Style(Name, Component(), true);
             this.setAccessibleName(Name);
-        }else
+        } else
             this.style = new Style("number", Component(), false);
     }
 
@@ -44,7 +44,7 @@ public class Slider extends QSlider implements Component {
         }
     }
 
-    private boolean tryValue(String value){
+    private boolean tryValue(String value) {
         try {
             Integer.parseInt(value);
             return true;
@@ -53,7 +53,7 @@ public class Slider extends QSlider implements Component {
         }
     }
 
-    private void setProps(){
+    private void setProps() {
         onFunction();
         setTick();
         setValue();
@@ -61,25 +61,29 @@ public class Slider extends QSlider implements Component {
         setSteps();
     }
 
-    private void setSteps(){
+    private void setSteps() {
         String steps;
-        if(tryValue((steps = check("page-steps")))) this.setPageStep(Integer.parseInt(steps));
-        if(tryValue((steps = check("arrow-steps")))) this.setSingleStep(Integer.parseInt(steps));
+        if (tryValue((steps = check("page-steps")))) this.setPageStep(Integer.parseInt(steps));
+        if (tryValue((steps = check("arrow-steps")))) this.setSingleStep(Integer.parseInt(steps));
     }
 
-    private void setInvert(){
-        switch(check("invert-numbers")){
-            case "true": this.setInvertedAppearance(true);
-            case "false": this.setInvertedAppearance(false);
+    private void setInvert() {
+        switch (check("invert-numbers")) {
+            case "true":
+                this.setInvertedAppearance(true);
+            case "false":
+                this.setInvertedAppearance(false);
         }
 
-        switch(check("invert-controls")){
-            case "true": this.setInvertedControls(true);
-            case "false": this.setInvertedControls(false);
+        switch (check("invert-controls")) {
+            case "true":
+                this.setInvertedControls(true);
+            case "false":
+                this.setInvertedControls(false);
         }
     }
 
-    private void onFunction(){
+    private void onFunction() {
         String call;
         if (!(call = check("on-value-change")).isEmpty()) {
             String[] callParts = call.split(":");
@@ -118,14 +122,14 @@ public class Slider extends QSlider implements Component {
         }
 
         String interval;
-        if(tryValue((interval = check("interval")))) this.setMinimum(Integer.parseInt(interval));
+        if (tryValue((interval = check("interval")))) this.setMinimum(Integer.parseInt(interval));
     }
 
-    private void setValue(){
+    private void setValue() {
         String minValue, maxValue, value;
-        if(tryValue((minValue = check("min-value")))) this.setMinimum(Integer.parseInt(minValue));
-        if(tryValue((maxValue = check("max-value")))) this.setMaximum(Integer.parseInt(maxValue));
-        if(tryValue((value = check("value"))))        this.setValue(Integer.parseInt(value));
+        if (tryValue((minValue = check("min-value")))) this.setMinimum(Integer.parseInt(minValue));
+        if (tryValue((maxValue = check("max-value")))) this.setMaximum(Integer.parseInt(maxValue));
+        if (tryValue((value = check("value")))) this.setValue(Integer.parseInt(value));
     }
 
     @Override
@@ -164,8 +168,10 @@ public class Slider extends QSlider implements Component {
         if (!(prop = check("border-radius")).isEmpty()) style.addAttribute("border-radius", prop);
         if (!(prop = check("border-top-left-radius")).isEmpty()) style.addAttribute("border-top-left-radius", prop);
         if (!(prop = check("border-top-right-radius")).isEmpty()) style.addAttribute("border-top-right-radius", prop);
-        if (!(prop = check("border-bottom-right-radius")).isEmpty()) style.addAttribute("border-bottom-right-radius", prop);
-        if (!(prop = check("border-bottom-left-radius")).isEmpty()) style.addAttribute("border-bottom-left-radius", prop);
+        if (!(prop = check("border-bottom-right-radius")).isEmpty())
+            style.addAttribute("border-bottom-right-radius", prop);
+        if (!(prop = check("border-bottom-left-radius")).isEmpty())
+            style.addAttribute("border-bottom-left-radius", prop);
         if (!(prop = check("top")).isEmpty()) style.addAttribute("top", prop);
         if (!(prop = check("right")).isEmpty()) style.addAttribute("right", prop);
         if (!(prop = check("bottom")).isEmpty()) style.addAttribute("bottom", prop);
@@ -191,7 +197,8 @@ public class Slider extends QSlider implements Component {
         if (!(prop = check("margin-left")).isEmpty()) style.addAttribute("margin-left", prop);
         if (!(prop = check("max-height")).isEmpty()) style.addAttribute("max-height", prop);
         if (!(prop = check("max-width")).isEmpty()) style.addAttribute("max-width", prop);
-        if (!(prop = check("textbox-interaction")).isEmpty()) style.addAttribute("messagebox-text-interaction-flags", prop);
+        if (!(prop = check("textbox-interaction")).isEmpty())
+            style.addAttribute("messagebox-text-interaction-flags", prop);
         if (!(prop = check("min-height")).isEmpty()) style.addAttribute("min-height", prop);
         if (!(prop = check("min-width")).isEmpty()) style.addAttribute("min-width", prop);
         if (!(prop = check("opacity")).isEmpty()) style.addAttribute("opacity", prop);
@@ -200,9 +207,11 @@ public class Slider extends QSlider implements Component {
         if (!(prop = check("padding-right")).isEmpty()) style.addAttribute("padding-right", prop);
         if (!(prop = check("padding-bottom")).isEmpty()) style.addAttribute("padding-bottom", prop);
         if (!(prop = check("padding-left")).isEmpty()) style.addAttribute("padding-left", prop);
-        if (!(prop = check("alt-empty-row-color")).isEmpty()) style.addAttribute("paint-alternating-row-colors-for-empty-area", prop);
+        if (!(prop = check("alt-empty-row-color")).isEmpty())
+            style.addAttribute("paint-alternating-row-colors-for-empty-area", prop);
         if (!(prop = check("position")).isEmpty()) style.addAttribute("position", prop);
-        if (!(prop = check("select-background-color")).isEmpty()) style.addAttribute("selection-background-color", prop);
+        if (!(prop = check("select-background-color")).isEmpty())
+            style.addAttribute("selection-background-color", prop);
         if (!(prop = check("select-color")).isEmpty()) style.addAttribute("selection-color", prop);
         if (!(prop = check("select-decoration")).isEmpty()) style.addAttribute("show-decoration-selected", prop);
         if (!(prop = check("spacing")).isEmpty()) style.addAttribute("spacing", prop);

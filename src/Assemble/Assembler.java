@@ -1,18 +1,16 @@
 package Assemble;
 
 import StyleComponents.Style;
-import jdk.nashorn.internal.runtime.regexp.joni.exception.SyntaxException;
 import org.w3c.dom.*;
-import javax.xml.parsers.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Assembler {
-    public static void  main(String[] args)
-    {
+    public static void main(String[] args) {
         Assembler a = new Assembler();
         a.input();
     }
@@ -30,24 +28,26 @@ public class Assembler {
         }
     }
 
-    public void parse(NodeList nodeList){
+    public void parse(NodeList nodeList) {
         printNote(nodeList);
         Node node = nodeList.item(0);
-        if(node instanceof Element && node.getNodeName().equals("jaml")){
-            Element docElement = (Element)node;
+        if (node instanceof Element && node.getNodeName().equals("jaml")) {
+            Element docElement = (Element) node;
             Node style = docElement.getElementsByTagName("style").item(0);
             Map<String, Style> styles = new HashMap<>();
-            if(style != null) styles = new StyleParser().Parse(style);
+            if (style != null) styles = new StyleParser().Parse(style);
             Node window = docElement.getElementsByTagName("window").item(0);
-            if(window != null) ParseFlavor(window, styles);
+            if (window != null) ParseFlavor(window, styles);
         }
     }
 
-    private void ParseFlavor(Node window, Map<String, Style> styles){
+    private void ParseFlavor(Node window, Map<String, Style> styles) {
         NamedNodeMap nodeMap = window.getAttributes();
         String s = nodeMap.getNamedItem("flavor").getNodeValue();
-        switch (s.toLowerCase()){
-            case "qt": new QT(window, styles, new String[0]); break;
+        switch (s.toLowerCase()) {
+            case "qt":
+                new QT(window, styles, new String[0]);
+                break;
         }
     }
 

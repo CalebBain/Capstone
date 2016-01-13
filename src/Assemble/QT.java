@@ -60,8 +60,10 @@ public class QT extends QApplication {
                 case "button":
                     String type = check(node.getAttributes(), "type");
                     if (type.equals("radio")) component = new Radio(findParent(node.getParentNode()), node);
-                    else if (type.equals("checkbox")) component = new Checkbox(findParent(node.getParentNode()), node, false);
-                    else if (type.equals("tri-state")) component = new Checkbox(findParent(node.getParentNode()), node, true);
+                    else if (type.equals("checkbox"))
+                        component = new Checkbox(findParent(node.getParentNode()), node, false);
+                    else if (type.equals("tri-state"))
+                        component = new Checkbox(findParent(node.getParentNode()), node, true);
                     else component = new Button(findParent(node.getParentNode()), node);
                     break;
                 case "number":

@@ -76,8 +76,10 @@ public class Window extends QMainWindow implements Component {
         if (!(prop = check("border-radius")).isEmpty()) style.addAttribute("border-radius", prop);
         if (!(prop = check("border-top-left-radius")).isEmpty()) style.addAttribute("border-top-left-radius", prop);
         if (!(prop = check("border-top-right-radius")).isEmpty()) style.addAttribute("border-top-right-radius", prop);
-        if (!(prop = check("border-bottom-right-radius")).isEmpty()) style.addAttribute("border-bottom-right-radius", prop);
-        if (!(prop = check("border-bottom-left-radius")).isEmpty()) style.addAttribute("border-bottom-left-radius", prop);
+        if (!(prop = check("border-bottom-right-radius")).isEmpty())
+            style.addAttribute("border-bottom-right-radius", prop);
+        if (!(prop = check("border-bottom-left-radius")).isEmpty())
+            style.addAttribute("border-bottom-left-radius", prop);
         if (!(prop = check("top")).isEmpty()) style.addAttribute("top", prop);
         if (!(prop = check("right")).isEmpty()) style.addAttribute("right", prop);
         if (!(prop = check("bottom")).isEmpty()) style.addAttribute("bottom", prop);
@@ -103,7 +105,8 @@ public class Window extends QMainWindow implements Component {
         if (!(prop = check("margin-left")).isEmpty()) style.addAttribute("margin-left", prop);
         if (!(prop = check("max-height")).isEmpty()) style.addAttribute("max-height", prop);
         if (!(prop = check("max-width")).isEmpty()) style.addAttribute("max-width", prop);
-        if (!(prop = check("textbox-interaction")).isEmpty()) style.addAttribute("messagebox-text-interaction-flags", prop);
+        if (!(prop = check("textbox-interaction")).isEmpty())
+            style.addAttribute("messagebox-text-interaction-flags", prop);
         if (!(prop = check("min-height")).isEmpty()) style.addAttribute("min-height", prop);
         if (!(prop = check("min-width")).isEmpty()) style.addAttribute("min-width", prop);
         if (!(prop = check("opacity")).isEmpty()) style.addAttribute("opacity", prop);
@@ -112,9 +115,11 @@ public class Window extends QMainWindow implements Component {
         if (!(prop = check("padding-right")).isEmpty()) style.addAttribute("padding-right", prop);
         if (!(prop = check("padding-bottom")).isEmpty()) style.addAttribute("padding-bottom", prop);
         if (!(prop = check("padding-left")).isEmpty()) style.addAttribute("padding-left", prop);
-        if (!(prop = check("alt-empty-row-color")).isEmpty()) style.addAttribute("paint-alternating-row-colors-for-empty-area", prop);
+        if (!(prop = check("alt-empty-row-color")).isEmpty())
+            style.addAttribute("paint-alternating-row-colors-for-empty-area", prop);
         if (!(prop = check("position")).isEmpty()) style.addAttribute("position", prop);
-        if (!(prop = check("select-background-color")).isEmpty()) style.addAttribute("selection-background-color", prop);
+        if (!(prop = check("select-background-color")).isEmpty())
+            style.addAttribute("selection-background-color", prop);
         if (!(prop = check("select-color")).isEmpty()) style.addAttribute("selection-color", prop);
         if (!(prop = check("select-decoration")).isEmpty()) style.addAttribute("show-decoration-selected", prop);
         if (!(prop = check("spacing")).isEmpty()) style.addAttribute("spacing", prop);

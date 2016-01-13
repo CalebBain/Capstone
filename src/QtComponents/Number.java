@@ -27,10 +27,10 @@ public class Number extends QLCDNumber implements Component {
     private void setIdentity() {
         this.Name = check("name");
         this.Class = check("class");
-        if(!Name.isEmpty()){
+        if (!Name.isEmpty()) {
             this.style = new Style(Name, Component(), true);
             this.setAccessibleName(Name);
-        }else
+        } else
             this.style = new Style("number", Component(), false);
     }
 
@@ -43,7 +43,7 @@ public class Number extends QLCDNumber implements Component {
         }
     }
 
-    private boolean tryValue(String value){
+    private boolean tryValue(String value) {
         try {
             Integer.parseInt(value);
             return true;
@@ -52,7 +52,7 @@ public class Number extends QLCDNumber implements Component {
         }
     }
 
-    private void setProps(){
+    private void setProps() {
         switch (check("segment-style")) {
             case "outline":
                 this.setSegmentStyle(SegmentStyle.Outline);
@@ -65,7 +65,7 @@ public class Number extends QLCDNumber implements Component {
                 break;
         }
 
-        switch (check("mode")){
+        switch (check("mode")) {
             case "hex":
                 this.setMode(Mode.Hex);
                 break;
@@ -80,19 +80,19 @@ public class Number extends QLCDNumber implements Component {
                 break;
         }
 
-        if(check("small-decimal-point").equals("true")) this.setSmallDecimalPoint(true);
-        else if(check("small-decimal-point").equals("false")) this.setSmallDecimalPoint(false);
+        if (check("small-decimal-point").equals("true")) this.setSmallDecimalPoint(true);
+        else if (check("small-decimal-point").equals("false")) this.setSmallDecimalPoint(false);
 
         String count;
-        if(tryValue((count = check("digit-count")))) this.setDigitCount(Integer.parseInt(count));
-        if(tryValue((count = check("value")))) this.display(Integer.parseInt(count));
+        if (tryValue((count = check("digit-count")))) this.setDigitCount(Integer.parseInt(count));
+        if (tryValue((count = check("value")))) this.display(Integer.parseInt(count));
         setFrameProps();
     }
 
-    private void setFrameProps(){
+    private void setFrameProps() {
         String count;
-        if(tryValue((count = check("shadow")))) this.setFrameShadow(Shadow.resolve(Integer.parseInt(count)));
-        switch(check("shadow")){
+        if (tryValue((count = check("shadow")))) this.setFrameShadow(Shadow.resolve(Integer.parseInt(count)));
+        switch (check("shadow")) {
             case "plain":
                 this.setFrameShadow(Shadow.Plain);
                 break;
@@ -104,8 +104,8 @@ public class Number extends QLCDNumber implements Component {
                 break;
         }
 
-        if(tryValue((count = check("shape")))) this.setFrameShape(Shape.resolve(Integer.parseInt(count)));
-        switch(check("shape")){
+        if (tryValue((count = check("shape")))) this.setFrameShape(Shape.resolve(Integer.parseInt(count)));
+        switch (check("shape")) {
             case "no-frame":
                 this.setFrameShape(Shape.NoFrame);
                 break;
@@ -130,7 +130,7 @@ public class Number extends QLCDNumber implements Component {
         }
     }
 
-    private void onFunction(){
+    private void onFunction() {
         String call;
         if (!(call = check("on-overflow")).isEmpty()) {
             String[] callParts = call.split(":");
@@ -175,8 +175,10 @@ public class Number extends QLCDNumber implements Component {
         if (!(prop = check("border-radius")).isEmpty()) style.addAttribute("border-radius", prop);
         if (!(prop = check("border-top-left-radius")).isEmpty()) style.addAttribute("border-top-left-radius", prop);
         if (!(prop = check("border-top-right-radius")).isEmpty()) style.addAttribute("border-top-right-radius", prop);
-        if (!(prop = check("border-bottom-right-radius")).isEmpty()) style.addAttribute("border-bottom-right-radius", prop);
-        if (!(prop = check("border-bottom-left-radius")).isEmpty()) style.addAttribute("border-bottom-left-radius", prop);
+        if (!(prop = check("border-bottom-right-radius")).isEmpty())
+            style.addAttribute("border-bottom-right-radius", prop);
+        if (!(prop = check("border-bottom-left-radius")).isEmpty())
+            style.addAttribute("border-bottom-left-radius", prop);
         if (!(prop = check("top")).isEmpty()) style.addAttribute("top", prop);
         if (!(prop = check("right")).isEmpty()) style.addAttribute("right", prop);
         if (!(prop = check("bottom")).isEmpty()) style.addAttribute("bottom", prop);
@@ -202,7 +204,8 @@ public class Number extends QLCDNumber implements Component {
         if (!(prop = check("margin-left")).isEmpty()) style.addAttribute("margin-left", prop);
         if (!(prop = check("max-height")).isEmpty()) style.addAttribute("max-height", prop);
         if (!(prop = check("max-width")).isEmpty()) style.addAttribute("max-width", prop);
-        if (!(prop = check("textbox-interaction")).isEmpty()) style.addAttribute("messagebox-text-interaction-flags", prop);
+        if (!(prop = check("textbox-interaction")).isEmpty())
+            style.addAttribute("messagebox-text-interaction-flags", prop);
         if (!(prop = check("min-height")).isEmpty()) style.addAttribute("min-height", prop);
         if (!(prop = check("min-width")).isEmpty()) style.addAttribute("min-width", prop);
         if (!(prop = check("opacity")).isEmpty()) style.addAttribute("opacity", prop);
@@ -211,9 +214,11 @@ public class Number extends QLCDNumber implements Component {
         if (!(prop = check("padding-right")).isEmpty()) style.addAttribute("padding-right", prop);
         if (!(prop = check("padding-bottom")).isEmpty()) style.addAttribute("padding-bottom", prop);
         if (!(prop = check("padding-left")).isEmpty()) style.addAttribute("padding-left", prop);
-        if (!(prop = check("alt-empty-row-color")).isEmpty()) style.addAttribute("paint-alternating-row-colors-for-empty-area", prop);
+        if (!(prop = check("alt-empty-row-color")).isEmpty())
+            style.addAttribute("paint-alternating-row-colors-for-empty-area", prop);
         if (!(prop = check("position")).isEmpty()) style.addAttribute("position", prop);
-        if (!(prop = check("select-background-color")).isEmpty()) style.addAttribute("selection-background-color", prop);
+        if (!(prop = check("select-background-color")).isEmpty())
+            style.addAttribute("selection-background-color", prop);
         if (!(prop = check("select-color")).isEmpty()) style.addAttribute("selection-color", prop);
         if (!(prop = check("select-decoration")).isEmpty()) style.addAttribute("show-decoration-selected", prop);
         if (!(prop = check("spacing")).isEmpty()) style.addAttribute("spacing", prop);
