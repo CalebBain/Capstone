@@ -91,7 +91,8 @@ public class Radio extends QRadioButton implements Component {
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.toString());
+        if(styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
+        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
     }
 
@@ -117,9 +118,7 @@ public class Radio extends QRadioButton implements Component {
 
 
     @Override
-    public void SetStylesheet() {
-        StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.toString());
-        this.setStyleSheet(sb.toString());
+    public void SetStylesheet(String sheet) {
+        this.setStyleSheet(sheet);
     }
 }

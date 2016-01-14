@@ -55,7 +55,7 @@ public class Style {
     private String setName(String name){
         Map<String, String> components = new HashMap<String, String>(){{
             put("button", "QPushButton");
-            put("window","QPushButton");
+            put("window","QMainWindow");
             put("number", "QLCDNumber");
             put("radio", "QRadioButton");
             put("slider", "QSlider");
@@ -102,6 +102,15 @@ public class Style {
 
     public void addNameAttributes(String prop) {
         if (!nameAttributes.contains(prop)) nameAttributes.add(prop);
+    }
+
+    public String ToString(){
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String, String> attribute : attributes.entrySet()){
+            sb.append(attribute.getKey() + ": ");
+            sb.append(attribute.getValue() + ";\n");
+        }
+        return sb.toString();
     }
 
     @Override

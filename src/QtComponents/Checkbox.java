@@ -90,8 +90,9 @@ public class Checkbox extends QCheckBox implements Component {
         }
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
+        if(styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.toString());
+        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
     }
 
@@ -117,9 +118,7 @@ public class Checkbox extends QCheckBox implements Component {
 
 
     @Override
-    public void SetStylesheet() {
-        StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.toString());
-        this.setStyleSheet(sb.toString());
+    public void SetStylesheet(String sheet) {
+        this.setStyleSheet(sheet);
     }
 }

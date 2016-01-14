@@ -16,6 +16,6 @@ public interface Component {
 
     public String setStyle();
 
-    public void SetStylesheet();
+    public void SetStylesheet(String sheet);
 
 }
