@@ -30,7 +30,7 @@ public class Style {
     }
 
     private void parseName(String name) {
-        name = name.replaceAll(".", "");
+        name = name.replaceAll("\\.", "");
         fullName = name;
         String[] temp;
         if (name.contains("::")) {
@@ -61,7 +61,9 @@ public class Style {
             put("slider", "QSlider");
             put("check-box", "QCheckBox");
         }};
-        for(Map.Entry<String, String> entry : components.entrySet()) if(name.startsWith(entry.getKey())) name = name.replaceFirst(entry.getKey(),entry.getValue());
+        for(Map.Entry<String, String> entry : components.entrySet())
+            if(name.startsWith(entry.getKey()))
+                name = name.replaceFirst(entry.getKey(),entry.getValue());
         return name;
     }
 

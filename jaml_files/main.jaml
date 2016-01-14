@@ -5,7 +5,7 @@
             height: 500;
         }
 
-        .ldc {
+        .lcd {
             style: filled;
             digit-count: 2;
         }

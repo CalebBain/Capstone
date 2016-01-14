@@ -31,22 +31,22 @@ public class Window extends QMainWindow implements Component {
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, "QMainWindow", true));
             this.setAccessibleName(Name);
-        } else this.styles.put("QMainWindow", new Style("QMainWindow", "QMainWindow", true));
+        } else this.styles.put("QMainWindow", new Style("QMainWindow", "QMainWindow", false));
     }
 
     @Override
-    public void setStyle() {
+    public String setStyle() {
         String name = (!this.Name.equals("")) ? this.Name : "QMainWindow";
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
             if (style.getKey().startsWith("QMainWindow")){
                 if(style.getKey().equals("QMainWindow")) styles.get(name).addAll(style.getValue());
                 else styles.put(style.getKey(), style.getValue());
             }
-            if(style.getKey().startsWith(this.Name)){
+            if(style.getKey().startsWith(this.Name)&&!this.Name.isEmpty()){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
                 else styles.put(style.getKey(), style.getValue());
             }
-            if(style.getKey().startsWith(this.Class)){
+            if(style.getKey().startsWith(this.Class)&&!this.Class.isEmpty()){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
                 else styles.put(style.getKey(), style.getValue());
             }
@@ -54,7 +54,9 @@ public class Window extends QMainWindow implements Component {
         Utils.setStyle(styles.get(name), nodeMap);
         String prop = Utils.check("title", nodeMap);
         this.setWindowTitle(tr((!prop.isEmpty()) ? prop : "JAML Applicaiton"));
-        SetStylesheet();
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.toString());
+        return sb.toString();
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface Component {
 
     public QWidget Widgit();
 
-    public void setStyle();
+    public String setStyle();
 
     public void SetStylesheet();
 

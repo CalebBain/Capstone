@@ -50,9 +50,10 @@ public class QT extends QApplication {
     }
 
     public void CompileElements(Node Window) {
+        NodeList nodeList = Window.getChildNodes();
         QWidget window = new Window(Window);
         components.add((Component) window);
-        NodeList nodeList = Window.getChildNodes();
+        ((Component) window).setStyle();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             QWidget component;
