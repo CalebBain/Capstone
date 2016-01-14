@@ -54,6 +54,7 @@ public class Window extends QMainWindow implements Component {
         Utils.setStyle(styles.get(name), nodeMap);
         String prop = Utils.check("title", nodeMap);
         this.setWindowTitle(tr((!prop.isEmpty()) ? prop : "JAML Applicaiton"));
+        SetStylesheet();
     }
 
     @Override
@@ -78,6 +79,8 @@ public class Window extends QMainWindow implements Component {
 
     @Override
     public void SetStylesheet() {
-        this.setStyleSheet("");
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.toString());
+        this.setStyleSheet(sb.toString());
     }
 }

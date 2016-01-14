@@ -38,24 +38,24 @@ public class Slider extends QSlider implements Component {
     }
 
     private void setProps() {
-        onFunction();
-        setTick();
-        setValue();
-        setInvert();
-        setSteps();
-    }
-
-    private void setSteps() {
+        switch (Utils.check("position", nodeMap)) {
+            case "both": this.setTickPosition(TickPosition.TicksBothSides); break;
+            case "left": case "above": this.setTickPosition(TickPosition.TicksAbove); break;
+            case "right": case "below": this.setTickPosition(TickPosition.TicksBelow); break;
+            case "no-ticks": this.setTickPosition(TickPosition.NoTicks);
+        }
         String steps;
-        if (Utils.tryValue((steps = Utils.check("page-steps", nodeMap)))) this.setPageStep(Integer.parseInt(steps));
-        if (Utils.tryValue((steps = Utils.check("arrow-steps", nodeMap)))) this.setSingleStep(Integer.parseInt(steps));
-    }
-
-    private void setInvert() {
+        if (Utils.tryValue(steps = Utils.check("interval", nodeMap))) this.setMinimum(Integer.parseInt(steps));
+        if (Utils.tryValue(steps = Utils.check("min-value", nodeMap))) this.setMinimum(Integer.parseInt(steps));
+        if (Utils.tryValue(steps = Utils.check("max-value", nodeMap))) this.setMaximum(Integer.parseInt(steps));
+        if (Utils.tryValue(steps = Utils.check("value", nodeMap))) this.setValue(Integer.parseInt(steps));
+        if (Utils.tryValue(steps = Utils.check("page-steps", nodeMap))) this.setPageStep(Integer.parseInt(steps));
+        if (Utils.tryValue(steps = Utils.check("arrow-steps", nodeMap))) this.setSingleStep(Integer.parseInt(steps));
         if (Utils.check("invert-numbers", nodeMap).equals("true")) this.setInvertedAppearance(true);
         else if (Utils.check("invert-numbers", nodeMap).equals("false")) this.setInvertedAppearance(false);
         if (Utils.check("invert-controls", nodeMap).equals("true")) this.setInvertedControls(true);
         else if (Utils.check("invert-controls", nodeMap).equals("false")) this.setInvertedControls(false);
+        onFunction();
     }
 
     private String[] Func(String prop){
@@ -73,24 +73,6 @@ public class Slider extends QSlider implements Component {
         else if (callParts.length == 2) this.sliderReleased.connect(QT.findComponent(callParts[0]), callParts[1]);
         if ((callParts = Func("on-press")).length == 1) this.sliderPressed.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.sliderPressed.connect(QT.findComponent(callParts[0]), callParts[1]);
-    }
-
-    private void setTick() {
-        switch (Utils.check("position", nodeMap)) {
-            case "both": this.setTickPosition(TickPosition.TicksBothSides); break;
-            case "left": case "above": this.setTickPosition(TickPosition.TicksAbove); break;
-            case "right": case "below": this.setTickPosition(TickPosition.TicksBelow); break;
-            case "no-ticks": this.setTickPosition(TickPosition.NoTicks);
-        }
-        String interval = Utils.check("interval", nodeMap);
-        if (Utils.tryValue(interval)) this.setMinimum(Integer.parseInt(interval));
-    }
-
-    private void setValue() {
-        String minValue, maxValue, value;
-        if (Utils.tryValue((minValue = Utils.check("min-value", nodeMap)))) this.setMinimum(Integer.parseInt(minValue));
-        if (Utils.tryValue((maxValue = Utils.check("max-value", nodeMap)))) this.setMaximum(Integer.parseInt(maxValue));
-        if (Utils.tryValue((value = Utils.check("value", nodeMap)))) this.setValue(Integer.parseInt(value));
     }
 
     @Override
@@ -112,6 +94,7 @@ public class Slider extends QSlider implements Component {
         }
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
+        SetStylesheet();
     }
 
     @Override
@@ -136,6 +119,8 @@ public class Slider extends QSlider implements Component {
 
     @Override
     public void SetStylesheet() {
-        this.setStyleSheet("");
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.toString());
+        this.setStyleSheet(sb.toString());
     }
 }

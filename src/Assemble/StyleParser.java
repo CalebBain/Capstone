@@ -49,6 +49,7 @@ public class StyleParser {
                 String[] names = parts[0].split(", ");
                 for (String name : names) {
                     Style style = new Style(name, name.startsWith("."));
+                    style.setAttributes(parts[1]);
                     tokens.put(style.getFullName(), style);
                 }
             }

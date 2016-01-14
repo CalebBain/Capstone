@@ -17,6 +17,7 @@ public class Style {
     public Style(String name, boolean special) {
         parseName(setName(name));
         this.nameAttributes = new ArrayList<>();
+        this.subControl = "";
         this.special = special;
     }
 
@@ -24,6 +25,7 @@ public class Style {
         parseName(setName(name));
         this.nameAttributes = new ArrayList<>();
         this.component = component;
+        this.subControl = "";
         this.special = special;
     }
 
@@ -92,27 +94,27 @@ public class Style {
         }
     }
 
-    public String getSubControl() {
-        return subControl;
-    }
-
     public void setSubControl(String subControl) {
         this.subControl = subControl;
-    }
-
-    public String getComponent() {
-        return component;
     }
 
     public void addNameAttributes(String prop) {
         if (!nameAttributes.contains(prop)) nameAttributes.add(prop);
     }
 
-    public List<String> getNameAttributes() {
-        return nameAttributes;
-    }
-
-    public boolean isSpecial() {
-        return special;
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(component);
+        if(special) sb.append("#" + name);
+        if(!subControl.isEmpty()) sb.append("::" + subControl);
+        for(String nameAttribute : nameAttributes) sb.append(":" + nameAttribute);
+        sb.append("\n{\n");
+        for(Map.Entry<String, String> attribute : attributes.entrySet()){
+            sb.append(attribute.getKey() + ":");
+            sb.append(attribute.getValue() + ";\n");
+        }
+        sb.append("}\n\n");
+        return sb.toString();
     }
 }
