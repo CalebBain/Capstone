@@ -7,9 +7,7 @@ import org.w3c.dom.Node;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,10 +28,9 @@ public class StyleParser {
             for (String link : links) {
                 String sheet = "";
                 try (BufferedReader br = new BufferedReader(new FileReader(link))) {
-                    String sCurrentLine;
-                    while ((sCurrentLine = br.readLine()) != null) sheet += sCurrentLine;
-                } catch (IOException e) {
-                }
+                    String CurrentLine;
+                    while ((CurrentLine = br.readLine()) != null) sheet += CurrentLine;
+                } catch (IOException e) { }
                 styles.putAll(GetContent(sheet));
             }
         }
@@ -44,23 +41,28 @@ public class StyleParser {
     private Map<String, Style> GetContent(String s) {
         Map<String, Style> tokens = new HashMap<>();
         if (!s.isEmpty()) {
-            s = s.replaceAll("\\s+", " ").replaceAll(" } ", "}").replaceAll(": ", ":");
-            s = s.substring(1, s.length() - 2);
+            s = s.replaceAll("\\s+", " ").replaceAll(" } ", "}").replaceAll(": ", ":").substring(1, s.length() - 2);
             String[] commands = s.split("}");
             for (String command : commands) {
                 String[] parts = command.split(" \\{ ");
                 String[] names = parts[0].split(", ");
                 for (String name : names) {
                     Style style = new Style(name, name.startsWith("."));
-                    parts = parts[1].split(" ");
-                    for (String part : parts) {
-                        part.replaceAll(";", "");
-                        String[] params = part.split(":");
-                        style.addAttribute(params[0], params[1]);
-                    }
-                    tokens.put(name, style);
+
+
+
+
+
+                    tokens.put(style.getFullName(), style);
                 }
             }
+            /*
+
+
+
+
+                }
+            */
         }
         return tokens;
     }

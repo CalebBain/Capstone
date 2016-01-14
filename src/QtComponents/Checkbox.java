@@ -30,9 +30,9 @@ public class Checkbox extends QCheckBox implements Component {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
         if (!Name.isEmpty()) {
-            this.style = new Style(Name, Component(), true);
+            this.style = new Style(Name, "QCheckBox", true);
             this.setAccessibleName(Name);
-        } else this.style = new Style("button", Component(), false);
+        } else this.style = new Style("QCheckBox", "QCheckBox", false);
     }
 
     private void setProps() {
@@ -70,7 +70,7 @@ public class Checkbox extends QCheckBox implements Component {
 
     @Override
     public void setStyle() {
-        if (QT.styles.containsKey(Component())) style.addAll(QT.styles.get(Component()));
+        if (QT.styles.containsKey(Component())) style.addAll(QT.styles.get("QCheckBox"));
         if (QT.styles.containsKey(Class)) style.addAll(QT.styles.get(Class));
         if (QT.styles.containsKey(Name)) style.addAll(QT.styles.remove(Name));
         Utils.setStyle(style, nodeMap);

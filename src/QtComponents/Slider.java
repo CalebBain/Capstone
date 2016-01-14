@@ -29,9 +29,9 @@ public class Slider extends QSlider implements Component {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
         if (!Name.isEmpty()) {
-            this.style = new Style(Name, Component(), true);
+            this.style = new Style(Name, "QSlider", true);
             this.setAccessibleName(Name);
-        } else this.style = new Style("number", Component(), false);
+        } else this.style = new Style("QSlider", "QSlider", false);
     }
 
     private void setProps() {
@@ -92,7 +92,7 @@ public class Slider extends QSlider implements Component {
 
     @Override
     public void setStyle() {
-        if (QT.styles.containsKey(Component())) style.addAll(QT.styles.get(Component()));
+        if (QT.styles.containsKey(Component())) style.addAll(QT.styles.get("QSlider"));
         if (QT.styles.containsKey(Class)) style.addAll(QT.styles.get(Class));
         if (QT.styles.containsKey(Name)) style.addAll(QT.styles.remove(Name));
         Utils.setStyle(style, nodeMap);
