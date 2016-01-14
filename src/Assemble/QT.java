@@ -55,7 +55,7 @@ public class QT extends QApplication {
         NodeList nodeList = Window.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            QWidget component = null;
+            QWidget component;
             switch (node.getNodeName()) {
                 case "button":
                     String type = check(node.getAttributes(), "type");
@@ -65,16 +65,20 @@ public class QT extends QApplication {
                     else if (type.equals("tri-state"))
                         component = new Checkbox(findParent(node.getParentNode()), node, true);
                     else component = new Button(findParent(node.getParentNode()), node);
+                    components.add((Component) component);
+                    ((Component) component).setStyle();
                     break;
                 case "number":
                     component = new Number(findParent(node.getParentNode()), node);
+                    components.add((Component) component);
+                    ((Component) component).setStyle();
                     break;
                 case "slider":
                     component = new Slider(findParent(node.getParentNode()), node);
+                    components.add((Component) component);
+                    ((Component) component).setStyle();
                     break;
             }
-            components.add((Component) component);
-            ((Component) component).setStyle();
         }
         window.show();
         this.exec();

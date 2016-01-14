@@ -41,28 +41,17 @@ public class StyleParser {
     private Map<String, Style> GetContent(String s) {
         Map<String, Style> tokens = new HashMap<>();
         if (!s.isEmpty()) {
-            s = s.replaceAll("\\s+", " ").replaceAll(" } ", "}").replaceAll(": ", ":").substring(1, s.length() - 2);
+            s = s.replaceAll("\\s+", " ").replaceAll(" } ", "}").replaceAll(": ", ":");
+            s = s.substring(1, s.length() - 2);
             String[] commands = s.split("}");
             for (String command : commands) {
                 String[] parts = command.split(" \\{ ");
                 String[] names = parts[0].split(", ");
                 for (String name : names) {
                     Style style = new Style(name, name.startsWith("."));
-
-
-
-
-
                     tokens.put(style.getFullName(), style);
                 }
             }
-            /*
-
-
-
-
-                }
-            */
         }
         return tokens;
     }

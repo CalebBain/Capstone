@@ -28,8 +28,8 @@ public class Style {
     }
 
     private void parseName(String name) {
-        fullName = name;
         name = name.replaceAll(".", "");
+        fullName = name;
         String[] temp;
         if (name.contains("::")) {
             temp = name.split("::");

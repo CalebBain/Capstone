@@ -29,7 +29,9 @@ public class Utils {
 
     private static void addAttribute(Style style, NamedNodeMap nodeMap, String attribute) {
         String prop = check(attribute, nodeMap);
-        if (!prop.isEmpty()) style.addAttribute(attribute, prop);
+        try{
+            if (!prop.isEmpty()) style.addAttribute(attribute, prop);
+        }catch (NullPointerException e){}
     }
 
     private static void addAttribute(Style style, NamedNodeMap nodeMap, String attribute, String attributeName) {

@@ -78,19 +78,19 @@ public class Button extends QPushButton implements Component {
 
     @Override
     public void setStyle() {
-        String name = (this.Name.equals("")) ? this.Name : "QPushButton";
+        String name = (!this.Name.equals("")) ? this.Name : "QPushButton";
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
             if (style.getKey().startsWith("QPushButton")){
                 if(style.getKey().equals("QPushButton")) styles.get(name).addAll(style.getValue());
-                styles.put(style.getKey(), style.getValue());
+                else styles.put(style.getKey(), style.getValue());
             }
             if(style.getKey().startsWith(this.Name)){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                styles.put(style.getKey(), style.getValue());
+                else styles.put(style.getKey(), style.getValue());
             }
             if(style.getKey().startsWith(this.Class)){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                styles.put(style.getKey(), style.getValue());
+                else styles.put(style.getKey(), style.getValue());
             }
         }
         Utils.setStyle(styles.get(name), nodeMap);

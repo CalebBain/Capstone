@@ -9,12 +9,15 @@ import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Caleb Bain on 1/12/2016.
  */
 public class Radio extends QRadioButton implements Component {
 
-    private Style style;
+    private Map<String, Style> styles = new HashMap<>();
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
@@ -29,9 +32,9 @@ public class Radio extends QRadioButton implements Component {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
         if (!Name.isEmpty()) {
-            this.style = new Style(Name, "QRadioButton", true);
+            this.styles.put(Name, new Style(Name, "QRadioButton", true));
             this.setAccessibleName(Name);
-        } else this.style = new Style("QRadioButton", "QRadioButton", false);
+        } else this.styles.put("QRadioButton", new Style("QRadioButton", "QRadioButton", true));
     }
 
     private void setProps() {
@@ -70,10 +73,22 @@ public class Radio extends QRadioButton implements Component {
 
     @Override
     public void setStyle() {
-        if (QT.styles.containsKey(Component())) style.addAll(QT.styles.get("QRadioButton"));
-        if (QT.styles.containsKey(Class)) style.addAll(QT.styles.get(Class));
-        if (QT.styles.containsKey(Name)) style.addAll(QT.styles.remove(Name));
-        Utils.setStyle(style, nodeMap);
+        String name = (!this.Name.equals("")) ? this.Name : "QRadioButton";
+        for(Map.Entry<String, Style> style : QT.styles.entrySet()){
+            if (style.getKey().startsWith("QRadioButton")){
+                if(style.getKey().equals("QRadioButton")) styles.get(name).addAll(style.getValue());
+                else styles.put(style.getKey(), style.getValue());
+            }
+            if(style.getKey().startsWith(this.Name)){
+                if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
+                else styles.put(style.getKey(), style.getValue());
+            }
+            if(style.getKey().startsWith(this.Class)){
+                if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
+                else styles.put(style.getKey(), style.getValue());
+            }
+        }
+        Utils.setStyle(styles.get(name), nodeMap);
         setProps();
     }
 
