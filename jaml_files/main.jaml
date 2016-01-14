@@ -1,9 +1,7 @@
 <jaml>
     <style link="">
         window {
-            min-height: 200px;
             height: 300px;
-            max-height: 400px;
             background-color: #1d1d1d;
         }
 

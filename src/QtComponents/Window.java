@@ -3,6 +3,7 @@ package QtComponents;
 import Assemble.QT;
 import Assemble.Utils;
 import StyleComponents.Style;
+import com.trolltech.qt.gui.QDesktopWidget;
 import com.trolltech.qt.gui.QMainWindow;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -26,12 +27,23 @@ public class Window extends QMainWindow implements Component {
     }
 
     private void setIdentity(NamedNodeMap nodeMap) {
+        QDesktopWidget desktop = new QDesktopWidget();
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, "QMainWindow", true));
+            this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
+            this.styles.get(Name).addAttribute("min-height", "1");
+            this.styles.get(Name).addAttribute("max-width", desktop.screenGeometry().width() + "");
+            this.styles.get(Name).addAttribute("min-width", "1");
             this.setAccessibleName(Name);
-        } else this.styles.put("QMainWindow", new Style("QMainWindow", "QMainWindow", false));
+        } else{
+            this.styles.put("QMainWindow", new Style("QMainWindow", "QMainWindow", false));
+            this.styles.get("QMainWindow").addAttribute("max-height", desktop.screenGeometry().height() + "");
+            this.styles.get("QMainWindow").addAttribute("min-height", "1");
+            this.styles.get("QMainWindow").addAttribute("max-width", desktop.screenGeometry().width() + "");
+            this.styles.get("QMainWindow").addAttribute("min-width", "1");
+        }
     }
 
     @Override
