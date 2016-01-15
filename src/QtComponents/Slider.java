@@ -78,30 +78,37 @@ public final class Slider extends QSlider implements Component {
         else if (callParts.length == 2) this.sliderReleased.connect(QT.findComponent(callParts[0]), callParts[1]);
         if ((callParts = Func("on-press")).length == 1) this.sliderPressed.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.sliderPressed.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-action-trigger")).length == 1) this.actionTriggered.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.actionTriggered.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-range-change")).length == 1) this.rangeChanged.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.rangeChanged.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-custom-context-menu-request")).length == 1) this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
     }
 
     @Override
     public String setStyle() {
-        String name = (!this.Name.equals("")) ? this.Name : "QSlider";
+        String component = "QSlider";
+        String name = (!this.Name.equals("")) ? this.Name : component;
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
-            if (style.getKey().startsWith("QSlider")){
-                if(style.getKey().equals("QSlider")) styles.get(name).addAll(style.getValue());
+            if (style.getKey().startsWith(component)){
+                if(style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QSlider");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
             if(style.getKey().startsWith(this.Name)&&!this.Name.isEmpty()){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QSlider");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
             if(style.getKey().startsWith(this.Class)&&!this.Class.isEmpty()){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QSlider");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }

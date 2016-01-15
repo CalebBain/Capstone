@@ -39,8 +39,6 @@ public final class Button extends QPushButton implements Component {
         } else this.styles.put("QPushButton", new Style("QPushButton", "QPushButton", false));
     }
 
-
-
     private void setProps() {
         if (Utils.check("exclusive", nodeMap).equals("true")) this.setAutoExclusive(true);
         else if (Utils.check("exclusive", nodeMap).equals("false")) this.setAutoExclusive(false);
@@ -67,39 +65,42 @@ public final class Button extends QPushButton implements Component {
     }
 
     private void onFunction() {
-        String[] callParts = Func("on-click");
-        if (callParts.length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
+        String[] callParts;
+        if ((callParts = Func("on-click")).length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.clicked.connect(QT.findComponent(callParts[0]), callParts[1]);
-        callParts = Func("on-release");
-        if (callParts.length == 1) this.released.connect(QApplication.instance(), callParts[0]);
+        if ((callParts = Func("on-release")).length == 1) this.released.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.released.connect(QT.findComponent(callParts[0]), callParts[1]);
-        callParts = Func("on-press");
-        if (callParts.length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
+        if ((callParts = Func("on-press")).length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.pressed.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-toggle")).length == 1) this.toggled.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.toggled.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-custom-context-menu-request")).length == 1) this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
     }
 
     @Override
     public String setStyle() {
-        String name = (!this.Name.equals("")) ? this.Name : "QPushButton";
+        String component = "QPushButton";
+        String name = (!this.Name.equals("")) ? this.Name : component;
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
-            if (style.getKey().startsWith("QPushButton")){
-                if(style.getKey().equals("QPushButton")) styles.get(name).addAll(style.getValue());
-                else{
-                    style.getValue().setComponent("QPushButton");
+            if (style.getKey().startsWith(component)){
+                if(style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
+                else {
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
             if(style.getKey().startsWith(this.Name)&&!this.Name.isEmpty()){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else{
-                    style.getValue().setComponent("QPushButton");
+                else {
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
             if(style.getKey().startsWith(this.Class)&&!this.Class.isEmpty()){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else{
-                    style.getValue().setComponent("QPushButton");
+                else {
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }

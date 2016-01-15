@@ -7,6 +7,7 @@ import StyleComponents.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QTimerEvent;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -49,33 +50,79 @@ public final class Window extends QMainWindow implements Component {
         }
     }
 
+    private void setProps() {
+        String prop;
+        if (Utils.check("dock-animation", nodeMap).equals("true")) this.setAnimated(true);
+        else if (Utils.check("dock-animation", nodeMap).equals("false")) this.setAnimated(false);
+        if (Utils.check("dock-nesting", nodeMap).equals("true")) this.setDockNestingEnabled(true);
+        else if (Utils.check("dock-nesting", nodeMap).equals("false")) this.setDockNestingEnabled(false);
+        switch(Utils.check("dock-option", nodeMap)){
+            case "animated-docks": this.setDockOptions(DockOption.AnimatedDocks); break;
+            case "allow-nested-docks": this.setDockOptions(DockOption.AllowNestedDocks); break;
+            case "allow-tabbed-docks": this.setDockOptions(DockOption.AllowTabbedDocks); break;
+            case "force-tabbed-docks": this.setDockOptions(DockOption.ForceTabbedDocks); break;
+            case "vertical-tabs": this.setDockOptions(DockOption.VerticalTabs); break;
+        }
+        if (Utils.check("document-mode", nodeMap).equals("true")) this.setDocumentMode(true);
+        else if (Utils.check("document-mode", nodeMap).equals("false")) this.setDocumentMode(false);
+        if (Utils.check("tab-shape", nodeMap).equals("rounded")) this.setTabShape(QTabWidget.TabShape.Rounded);
+        if (Utils.check("tab-shape", nodeMap).equals("triangular")) this.setTabShape(QTabWidget.TabShape.Triangular);
+        if (Utils.tryValue(prop = Utils.check("tab-shape", nodeMap))) this.setTabShape(QTabWidget.TabShape.resolve(Integer.parseInt(prop)));
+        switch(Utils.check("tool-button-style", nodeMap)){
+            case "icon-only": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly); break;
+            case "text-only": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly); break;
+            case "text-beside-icon": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon); break;
+            case "text-under-icon": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon); break;
+            case "follow-style": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonFollowStyle); break;
+        }
+        if (Utils.check("unified-mac-title-toolbar", nodeMap).equals("true")) this.setUnifiedTitleAndToolBarOnMac(true);
+        else if (Utils.check("unified-mac-title-toolbar", nodeMap).equals("false")) this.setUnifiedTitleAndToolBarOnMac(false);
+
+        onFunction();
+    }
+
+    private String[] Func(String prop){
+        String call;
+        String[] calls = new String[0];
+        if (!(call = Utils.check(prop, nodeMap)).isEmpty()) calls = call.split(":");
+        return calls;
+    }
+
+    private void onFunction() {
+        String[] callParts;
+        if ((callParts = Func("on-custom-context-menu-request")).length == 1) this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
+    }
+
     @Override
     public String setStyle() {
-        String name = (!this.Name.equals("")) ? this.Name : "QMainWindow";
+        String component = "QMainWindow";
+        String name = (!this.Name.equals("")) ? this.Name : component;
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
-            if (style.getKey().startsWith("QMainWindow")){
-                if(style.getKey().equals("QMainWindow")) styles.get(name).addAll(style.getValue());
+            if (style.getKey().startsWith(component)){
+                if(style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QMainWindow");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
             if(style.getKey().startsWith(this.Name)&&!this.Name.isEmpty()){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QMainWindow");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
             if(style.getKey().startsWith(this.Class)&&!this.Class.isEmpty()){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QMainWindow");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
         }
         Utils.setStyle(styles.get(name), nodeMap);
+        setProps();
         String prop = Utils.check("title", nodeMap);
         this.setWindowTitle(tr((!prop.isEmpty()) ? prop : "JAML Applicaiton"));
         if(styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";

@@ -75,26 +75,27 @@ public final class Radio extends QRadioButton implements Component {
 
     @Override
     public String setStyle() {
-        String name = (!this.Name.equals("")) ? this.Name : "QRadioButton";
+        String component = "QRadioButton";
+        String name = (!this.Name.equals("")) ? this.Name : component;
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
-            if (style.getKey().startsWith("QRadioButton")){
-                if(style.getKey().equals("QRadioButton")) styles.get(name).addAll(style.getValue());
+            if (style.getKey().startsWith(component)){
+                if(style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QRadioButton");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
             if(style.getKey().startsWith(this.Name)&&!this.Name.isEmpty()){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QRadioButton");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }
             if(style.getKey().startsWith(this.Class)&&!this.Class.isEmpty()){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
                 else {
-                    style.getValue().setComponent("QRadioButton");
+                    style.getValue().setComponent(component);
                     styles.put(style.getKey(), style.getValue());
                 }
             }

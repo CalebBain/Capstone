@@ -15,18 +15,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Caleb Bain on 1/12/2016.
+ * Created by Caleb Bain on 1/15/2016.
  */
-public final class Checkbox extends QCheckBox implements Component {
+public class ColumnView extends QColumnView implements Component {
     private Events events = new Events() {};
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
 
-    public Checkbox(QWidget parent, Node node, boolean TriState) {
+    public ColumnView(QWidget parent, Node node) {
         super(parent);
-        this.setTristate(TriState);
         this.nodeMap = node.getAttributes();
         setIdentity(nodeMap);
     }
@@ -35,23 +34,50 @@ public final class Checkbox extends QCheckBox implements Component {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
         if (!Name.isEmpty()) {
-            this.styles.put(Name, new Style(Name, "QCheckBox", true));
+            this.styles.put(Name, new Style(Name, "QPushButton", true));
             this.setAccessibleName(Name);
-        } else this.styles.put("QCheckBox", new Style("QCheckBox", "QCheckBox", false));
+        } else this.styles.put("QPushButton", new Style("QPushButton", "QPushButton", false));
     }
 
     private void setProps() {
-        if (Utils.check("exclusive", nodeMap).equals("true")) this.setAutoExclusive(true);
-        else if (Utils.check("exclusive", nodeMap).equals("false")) this.setAutoExclusive(false);
-        if (Utils.check("repeatable", nodeMap).equals("true")) this.setAutoRepeat(true);
-        else if (Utils.check("repeatable", nodeMap).equals("false")) this.setAutoRepeat(false);
-        if (Utils.check("checkable", nodeMap).equals("true")) this.setCheckable(true);
-        else if (Utils.check("checkable", nodeMap).equals("false")) this.setCheckable(false);
-        if (Utils.check("checked", nodeMap).equals("true")) this.setChecked(true);
-        else if (Utils.check("checked", nodeMap).equals("false")) this.setChecked(false);
-        String count;
-        if (Utils.tryValue((count = Utils.check("repeatable-delay", nodeMap)))) this.setAutoRepeatDelay(Integer.parseInt(count));
-        if (Utils.tryValue((count = Utils.check("repeatable-interval", nodeMap)))) this.setAutoRepeatInterval(Integer.parseInt(count));
+        String prop;
+        switch(Utils.check("drag-drop-mode", nodeMap)){
+            case "no-drag-drop": this.setDragDropMode(DragDropMode.NoDragDrop); break;
+            case "drop-only": this.setDragDropMode(DragDropMode.DropOnly); break;
+            case "drag-only": this.setDragDropMode(DragDropMode.DragOnly); break;
+            case "drag-drop": this.setDragDropMode(DragDropMode.DragDrop); break;
+            case "internal-move": this.setDragDropMode(DragDropMode.InternalMove); break;
+        }
+        switch(Utils.check("edit-trigger", nodeMap)){
+            case "no-edit-triggers": this.setEditTriggers(EditTrigger.NoEditTriggers); break;
+            case "current-change": this.setEditTriggers(EditTrigger.CurrentChanged); break;
+            case "double-click": this.setEditTriggers(EditTrigger.DoubleClicked); break;
+            case "selected-click": this.setEditTriggers(EditTrigger.SelectedClicked); break;
+            case "edit-key-press": this.setEditTriggers(EditTrigger.EditKeyPressed); break;
+            case "any-key-press": this.setEditTriggers(EditTrigger.AnyKeyPressed); break;
+            case "all-edit-triggers": this.setEditTriggers(EditTrigger.AllEditTriggers); break;
+        }
+        if(Utils.check("horizontal-scroll-mode", nodeMap).equals("scroll-per-item")) this.setHorizontalScrollMode(ScrollMode.ScrollPerItem);
+        if(Utils.check("horizontal-scroll-mode", nodeMap).equals("scroll-per-pixel")) this.setHorizontalScrollMode(ScrollMode.ScrollPerPixel);
+        if(Utils.check("vertical-scroll-mode", nodeMap).equals("scroll-per-item")) this.setVerticalScrollMode(ScrollMode.ScrollPerItem);
+        if(Utils.check("vertical-scroll-mode", nodeMap).equals("scroll-per-pixel")) this.setVerticalScrollMode(ScrollMode.ScrollPerPixel);
+        switch(Utils.check("selection-behavior", nodeMap)){
+            case "select-items": this.setSelectionBehavior(SelectionBehavior.SelectItems); break;
+            case "select-rows": this.setSelectionBehavior(SelectionBehavior.SelectRows); break;
+            case "select-columns": this.setSelectionBehavior(SelectionBehavior.SelectColumns); break;
+        }
+        switch(Utils.check("selection-mode", nodeMap)){
+            case "single-select": this.setSelectionMode(SelectionMode.SingleSelection); break;
+            case "contiguous-select": this.setSelectionMode(SelectionMode.ContiguousSelection); break;
+            case "extended-select": this.setSelectionMode(SelectionMode.ExtendedSelection); break;
+            case "multi-select": this.setSelectionMode(SelectionMode.MultiSelection); break;
+            case "no-select": this.setSelectionMode(SelectionMode.NoSelection); break;
+        }
+
+
+
+
+
         onFunction();
     }
 
@@ -62,20 +88,27 @@ public final class Checkbox extends QCheckBox implements Component {
     }
 
     private void onFunction() {
-        String[] callParts = Func("on-click");
-        if (callParts.length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
+        String[] callParts;
+        if ((callParts = Func("on-click")).length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.clicked.connect(QT.findComponent(callParts[0]), callParts[1]);
-        callParts = Func("on-release");
-        if (callParts.length == 1) this.released.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.released.connect(QT.findComponent(callParts[0]), callParts[1]);
-        callParts = Func("on-press");
-        if (callParts.length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
+        if ((callParts = Func("on-press")).length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.pressed.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-custom-context-menu-request")).length == 1) this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-double-click")).length == 1) this.doubleClicked.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.doubleClicked.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-activate")).length == 1) this.activated.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.activated.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-enter")).length == 1) this.entered.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.entered.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-viewport-enter")).length == 1) this.viewportEntered.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.viewportEntered.connect(QT.findComponent(callParts[0]), callParts[1]);
     }
+
 
     @Override
     public String setStyle() {
-        String component = "QCheckBox";
+        String component = "QColumnView";
         String name = (!this.Name.equals("")) ? this.Name : component;
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
             if (style.getKey().startsWith(component)){
@@ -120,11 +153,11 @@ public final class Checkbox extends QCheckBox implements Component {
 
     @Override
     public String Component() {
-        return "Checkbox";
+        return "button";
     }
 
     @Override
-    public QCheckBox Widgit() {
+    public QColumnView Widgit() {
         return this;
     }
 

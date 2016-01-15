@@ -183,4 +183,33 @@ public abstract class Events {
     public void tabletEvent(QSlider component, QTabletEvent event) {}
     public void timerEvent(QSlider component, QTimerEvent event) {}
     public void wheelEvent(QSlider component, QWheelEvent event) {}
+    /*column view events*/
+    public void actionEvent(QColumnView component, QActionEvent event) {}
+    public void changeEvent(QColumnView component, QEvent event) {}
+    public void childEvent(QColumnView component, QChildEvent event) {}
+    public void closeEvent(QColumnView component, QCloseEvent event) {}
+    public void contextMenuEvent(QColumnView component, QEvent event){}
+    public void dragEnterEvent(QColumnView component, QDragEnterEvent event) {}
+    public void dragLeaveEvent(QColumnView component, QDragLeaveEvent event) {}
+    public void dragMoveEvent(QColumnView component, QDragMoveEvent event) {}
+    public void dropEvent(QColumnView component, QDropEvent event) {}
+    public void enterEvent(QColumnView component, QEvent event) {}
+    public void focusInEvent(QColumnView component, QFocusEvent event) {}
+    public void focusOutEvent(QColumnView component, QFocusEvent event) {}
+    public void hideEvent(QColumnView component, QHideEvent event) {}
+    public void inputMethodEvent(QColumnView component, QInputMethodEvent event) {}
+    public void keyPressEvent(QColumnView component, QKeyEvent event) {}
+    public void keyReleaseEvent(QColumnView component, QKeyEvent event) {}
+    public void leaveEvent(QColumnView component, QEvent event) {}
+    public void mouseDoubleClickEvent(QColumnView component, QMouseEvent event) {}
+    public void mouseMoveEvent(QColumnView component, QMouseEvent event) {}
+    public void mousePressEvent(QColumnView component, QEvent event){}
+    public void mouseReleaseEvent(QColumnView component, QMouseEvent event) {}
+    public void moveEvent(QColumnView component, QMoveEvent event) {}
+    public void paintEvent(QColumnView component, QPaintEvent event) {}
+    public void resizeEvent(QColumnView component, QResizeEvent event) {}
+    public void showEvent(QColumnView component, QEvent event){}
+    public void tabletEvent(QColumnView component, QTabletEvent event) {}
+    public void timerEvent(QColumnView component, QTimerEvent event) {}
+    public void wheelEvent(QColumnView component, QWheelEvent event) {}
 }
