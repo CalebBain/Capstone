@@ -8,7 +8,8 @@ import com.trolltech.qt.gui.QWidget;
  */
 public abstract class Events {
 
-    public void windowMousePressed(QWidget component, QEvent event){}
-
+    public void windowWhenMousePressed(QWidget component, QEvent event){}
+    public void windowWhenMenuOpens(QWidget component, QEvent event){}
+    public void windowWhenShows(QWidget component, QEvent event){}
 
 }

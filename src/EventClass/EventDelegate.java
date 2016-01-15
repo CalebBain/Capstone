@@ -27,7 +27,9 @@ final class EventLookUp {
     public void getBusinessService(String EventType, QWidget component, QEvent event){
         Events events = new Events(){};
         switch(EventType){
-            case "window-mouse-pressed": events.windowMousePressed(component, event); break;
+            case "window-mouse-pressed": events.windowWhenMousePressed(component, event); break;
+            case "window-context-menu":  events.windowWhenMenuOpens(component, event);    break;
+            case "window-shows":         events.windowWhenShows(component, event);        break;
         }
     }
 }
