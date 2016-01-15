@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Assembler {
+public final class Assembler {
     public static void main(String[] args) {
         Assembler a = new Assembler();
         a.input();
@@ -37,17 +37,7 @@ public class Assembler {
             Map<String, Style> styles = new HashMap<>();
             if (style != null) styles = new StyleParser().Parse(style);
             Node window = docElement.getElementsByTagName("window").item(0);
-            if (window != null) ParseFlavor(window, styles);
-        }
-    }
-
-    private void ParseFlavor(Node window, Map<String, Style> styles) {
-        NamedNodeMap nodeMap = window.getAttributes();
-        String s = nodeMap.getNamedItem("flavor").getNodeValue();
-        switch (s.toLowerCase()) {
-            case "qt":
-                new QT(window, styles, new String[0]);
-                break;
+            if (window != null) new QT(window, styles, new String[0]);
         }
     }
 
@@ -71,4 +61,16 @@ public class Assembler {
             }
         }
     }
+
+    /*private void ParseFlavor(Node window, Map<String, Style> styles) {
+        NamedNodeMap nodeMap = window.getAttributes();
+        String s = nodeMap.getNamedItem("flavor").getNodeValue();
+        switch (s.toLowerCase()) {
+            case "qt":
+
+                break;
+        }
+    }*/
+
+
 }

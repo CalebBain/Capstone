@@ -7,7 +7,7 @@ import org.w3c.dom.Node;
 /**
  * Created by Caleb Bain on 1/13/2016.
  */
-public class Utils {
+public final class Utils {
 
     public static boolean tryValue(String value) {
         boolean result = false;

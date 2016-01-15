@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by Caleb Bain on 1/7/2016.
  */
-public class Button extends QPushButton implements Component {
+public final class Button extends QPushButton implements Component {
 
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
@@ -82,15 +82,24 @@ public class Button extends QPushButton implements Component {
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
             if (style.getKey().startsWith("QPushButton")){
                 if(style.getKey().equals("QPushButton")) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else{
+                    style.getValue().setComponent("QPushButton");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
             if(style.getKey().startsWith(this.Name)&&!this.Name.isEmpty()){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else{
+                    style.getValue().setComponent("QPushButton");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
             if(style.getKey().startsWith(this.Class)&&!this.Class.isEmpty()){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else{
+                    style.getValue().setComponent("QPushButton");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
         }
         Utils.setStyle(styles.get(name), nodeMap);

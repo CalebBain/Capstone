@@ -45,7 +45,7 @@ public class StyleParser {
             s = s.substring(1, s.length() - 2);
             String[] commands = s.split("}");
             for (String command : commands) {
-                String[] parts = command.split(" \\{ ");
+                String[] parts = command.split(" ?\\{ ?");
                 String[] names = parts[0].split(", ");
                 for (String name : names) {
                     Style style = new Style(name, name.startsWith("."));

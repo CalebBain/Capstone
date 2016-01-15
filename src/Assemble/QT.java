@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Created by Caleb Bain on 1/7/2016.
  */
-public class QT extends QApplication {
+public final class QT extends QApplication {
     public static List<Component> components = new ArrayList<>();
     public static Map<String, Style> styles = new HashMap<>();
 

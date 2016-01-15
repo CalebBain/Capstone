@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by Caleb Bain on 1/8/2016.
  */
-public class Number extends QLCDNumber implements Component {
+public final class Number extends QLCDNumber implements Component {
 
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
@@ -100,15 +100,24 @@ public class Number extends QLCDNumber implements Component {
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
             if (style.getKey().startsWith("QLCDNumber")){
                 if(style.getKey().equals("QLCDNumber")) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else {
+                    style.getValue().setComponent("QLDCNumebr");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
             if(style.getKey().startsWith(this.Name)&&!this.Name.isEmpty()){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else {
+                    style.getValue().setComponent("QLDCNumebr");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
             if(style.getKey().startsWith(this.Class)&&!this.Class.isEmpty()){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else {
+                    style.getValue().setComponent("QLDCNumebr");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
         }
         Utils.setStyle(styles.get(name), nodeMap);

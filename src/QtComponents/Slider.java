@@ -3,6 +3,7 @@ package QtComponents;
 import Assemble.QT;
 import Assemble.Utils;
 import StyleComponents.Style;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QSlider;
 import com.trolltech.qt.gui.QWidget;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Caleb Bain on 1/8/2016.
  */
-public class Slider extends QSlider implements Component {
+public final class Slider extends QSlider implements Component {
 
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
@@ -45,6 +46,8 @@ public class Slider extends QSlider implements Component {
             case "no-ticks": this.setTickPosition(TickPosition.NoTicks);
         }
         String steps;
+        if(Utils.check("orientation", nodeMap).equals("horizontal")) this.setOrientation(Qt.Orientation.Horizontal);
+        if(Utils.check("orientation", nodeMap).equals("vertical")) this.setOrientation(Qt.Orientation.Vertical);
         if (Utils.tryValue(steps = Utils.check("interval", nodeMap))) this.setMinimum(Integer.parseInt(steps));
         if (Utils.tryValue(steps = Utils.check("min-value", nodeMap))) this.setMinimum(Integer.parseInt(steps));
         if (Utils.tryValue(steps = Utils.check("max-value", nodeMap))) this.setMaximum(Integer.parseInt(steps));
@@ -81,15 +84,24 @@ public class Slider extends QSlider implements Component {
         for(Map.Entry<String, Style> style : QT.styles.entrySet()){
             if (style.getKey().startsWith("QSlider")){
                 if(style.getKey().equals("QSlider")) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else {
+                    style.getValue().setComponent("QSlider");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
             if(style.getKey().startsWith(this.Name)&&!this.Name.isEmpty()){
                 if(style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else {
+                    style.getValue().setComponent("QSlider");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
             if(style.getKey().startsWith(this.Class)&&!this.Class.isEmpty()){
                 if(style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else styles.put(style.getKey(), style.getValue());
+                else {
+                    style.getValue().setComponent("QSlider");
+                    styles.put(style.getKey(), style.getValue());
+                }
             }
         }
         Utils.setStyle(styles.get(name), nodeMap);

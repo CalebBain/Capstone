@@ -5,27 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Style {
+public final class Style {
     private String name;
     private String fullName;
-    private List<String> nameAttributes;
-    private String subControl;
+    private List<String> nameAttributes = new ArrayList<>();
+    private String subControl = "";
     private String component;
     private boolean special;
     private Map<String, String> attributes = new HashMap<>();
 
     public Style(String name, boolean special) {
         parseName(setName(name));
-        this.nameAttributes = new ArrayList<>();
-        this.subControl = "";
         this.special = special;
     }
 
     public Style(String name, String component, boolean special) {
         parseName(setName(name));
-        this.nameAttributes = new ArrayList<>();
         this.component = component;
-        this.subControl = "";
         this.special = special;
     }
 
@@ -88,12 +84,16 @@ public class Style {
     }
 
     public void setAttributes(String attributes){
-        String[] parts = attributes.split(" ");
+        String[] parts = attributes.split("; ");
         for (String part : parts) {
             part = part.replaceAll(";", "");
             String[] params = part.split(":");
             this.attributes.put(params[0], params[1]);
         }
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
     }
 
     public void setSubControl(String subControl) {
@@ -104,20 +104,12 @@ public class Style {
         if (!nameAttributes.contains(prop)) nameAttributes.add(prop);
     }
 
-    public String ToString(){
-        StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String, String> attribute : attributes.entrySet()){
-            sb.append(attribute.getKey() + ": ");
-            sb.append(attribute.getValue() + ";\n");
-        }
-        return sb.toString();
-    }
-
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append(component);
         if(special) sb.append("#" + name);
+
         if(!subControl.isEmpty()) sb.append("::" + subControl);
         for(String nameAttribute : nameAttributes) sb.append(":" + nameAttribute);
         sb.append("\n{\n");
