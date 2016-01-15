@@ -2,7 +2,7 @@ package QtComponents;
 
 import Assemble.QT;
 import Assemble.Utils;
-import EventClass.EventDelegate;
+import EventClass.Events;
 import StyleComponents.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
@@ -18,7 +18,7 @@ import java.util.Map;
  * Created by Caleb Bain on 1/7/2016.
  */
 public final class Window extends QMainWindow implements Component {
-
+    private Events events = new Events() {};
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
     private String Class;
@@ -109,119 +109,32 @@ public final class Window extends QMainWindow implements Component {
         this.setStyleSheet(sheet);
     }
 
-
-    @Override
-    public void actionEvent(QActionEvent event) {
-    }
-
-    @Override
-    public void changeEvent(QEvent event) {
-    }
-
-    @Override
-    public void closeEvent(QCloseEvent event) {
-    }
-
-    @Override
-    public void dragEnterEvent(QDragEnterEvent event) {
-    }
-
-    @Override
-    public void dragLeaveEvent(QDragLeaveEvent event) {
-    }
-
-    @Override
-    public void dragMoveEvent(QDragMoveEvent event) {
-    }
-
-    @Override
-    public void dropEvent(QDropEvent event) {
-    }
-
-    @Override
-    public void enterEvent(QEvent event) {
-    }
-
-    @Override
-    public void focusInEvent(QFocusEvent event) {
-    }
-
-    @Override
-    public void focusOutEvent(QFocusEvent event) {
-    }
-
-    @Override
-    public void hideEvent(QHideEvent event) {
-    }
-
-    @Override
-    public void inputMethodEvent(QInputMethodEvent event) {
-    }
-
-    @Override
-    public void keyPressEvent(QKeyEvent event) {
-    }
-
-    @Override
-    public void keyReleaseEvent(QKeyEvent event) {
-    }
-
-    @Override
-    public void leaveEvent(QEvent event) {
-    }
-
-    @Override
-    public void mouseDoubleClickEvent(QMouseEvent event) {
-    }
-
-    @Override
-    public void mouseMoveEvent(QMouseEvent event) {
-    }
-
-    @Override
-    public void mouseReleaseEvent(QMouseEvent event) {
-    }
-
-    @Override
-    public void moveEvent(QMoveEvent event) {
-    }
-
-    @Override
-    public void paintEvent(QPaintEvent event) {
-    }
-
-    @Override
-    public void resizeEvent(QResizeEvent event) {
-    }
-
-    @Override
-    public void tabletEvent(QTabletEvent event) {
-    }
-
-    @Override
-    public void wheelEvent(QWheelEvent event) {
-    }
-
-    @Override
-    public void childEvent(QChildEvent event) {
-    }
-
-    @Override
-    public void timerEvent(QTimerEvent event) {
-    }
-
-    @Override
-    public void showEvent(QShowEvent event){
-        new EventDelegate("window-shows", this).doTask(event);
-    }
-
-    @Override
-    public void contextMenuEvent(QContextMenuEvent event){
-        new EventDelegate("window-context-menu", this).doTask(event);
-    }
-
-    @Override
-    public void mousePressEvent(QMouseEvent event){
-        new EventDelegate("window-mouse-pressed", this).doTask(event);
-    }
+    public void actionEvent(QActionEvent event) { events.actionEvent(this, event); }
+    public void changeEvent(QEvent event) { events.changeEvent(this, event); }
+    public void closeEvent(QCloseEvent event) { events.closeEvent(this, event); }
+    public void dragEnterEvent(QDragEnterEvent event) { events.dragEnterEvent(this, event); }
+    public void dragLeaveEvent(QDragLeaveEvent event) { events.dragLeaveEvent(this, event); }
+    public void dragMoveEvent(QDragMoveEvent event) { events.dragMoveEvent(this, event); }
+    public void dropEvent(QDropEvent event) { events.dropEvent(this, event); }
+    public void enterEvent(QEvent event) { events.enterEvent(this, event); }
+    public void focusInEvent(QFocusEvent event) { events.focusInEvent(this, event); }
+    public void focusOutEvent(QFocusEvent event) { events.focusOutEvent(this, event); }
+    public void hideEvent(QHideEvent event) { events.hideEvent(this, event); }
+    public void inputMethodEvent(QInputMethodEvent event) { events.inputMethodEvent(this, event); }
+    public void keyPressEvent(QKeyEvent event) { events.keyPressEvent(this, event); }
+    public void keyReleaseEvent(QKeyEvent event) { events.keyReleaseEvent(this, event); }
+    public void leaveEvent(QEvent event) { events.leaveEvent(this, event); }
+    public void mouseDoubleClickEvent(QMouseEvent event) { events.mouseDoubleClickEvent(this, event); }
+    public void mouseMoveEvent(QMouseEvent event) { events.mouseMoveEvent(this, event); }
+    public void mouseReleaseEvent(QMouseEvent event) { events.mouseReleaseEvent(this, event); }
+    public void moveEvent(QMoveEvent event) { events.moveEvent(this, event); }
+    public void paintEvent(QPaintEvent event) { events.paintEvent(this, event); }
+    public void resizeEvent(QResizeEvent event) { events.resizeEvent(this, event); }
+    public void tabletEvent(QTabletEvent event) { events.tabletEvent(this, event); }
+    public void wheelEvent(QWheelEvent event) { events.wheelEvent(this, event); }
+    public void childEvent(QChildEvent event) { events.childEvent(this, event); }
+    public void timerEvent(QTimerEvent event) { events.timerEvent(this, event); }
+    public void showEvent(QShowEvent event){ events.showEvent(this, event); }
+    public void contextMenuEvent(QContextMenuEvent event){ events.contextMenuEvent(this, event); }
+    public void mousePressEvent(QMouseEvent event) { events.mousePressEvent(this, event); }
 }
