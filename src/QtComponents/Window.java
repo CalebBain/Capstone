@@ -4,9 +4,7 @@ import Assemble.QT;
 import Assemble.Utils;
 import EventClass.EventDelegate;
 import StyleComponents.Style;
-import com.trolltech.qt.gui.QDesktopWidget;
-import com.trolltech.qt.gui.QMainWindow;
-import com.trolltech.qt.gui.QMouseEvent;
+import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -49,8 +47,18 @@ public final class Window extends QMainWindow implements Component {
     }
 
     @Override
+    public void showEvent(QShowEvent event){
+
+    }
+
+    @Override
+    public void contextMenuEvent(QContextMenuEvent event){
+
+    }
+
+    @Override
     public void mousePressEvent(QMouseEvent event){
-        new EventDelegate("window").doTask(event);
+        new EventDelegate("window-mouse-pressed", this).doTask(event);
     }
 
     @Override
