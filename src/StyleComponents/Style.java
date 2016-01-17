@@ -48,18 +48,18 @@ public final class Style {
         } else this.name = name;
     }
 
-    private String setName(String name){
-        Map<String, String> components = new HashMap<String, String>(){{
+    private String setName(String name) {
+        Map<String, String> components = new HashMap<String, String>() {{
             put("button", "QPushButton");
-            put("window","QMainWindow");
+            put("window", "QMainWindow");
             put("number", "QLCDNumber");
             put("radio", "QRadioButton");
             put("slider", "QSlider");
             put("check-box", "QCheckBox");
         }};
-        for(Map.Entry<String, String> entry : components.entrySet())
-            if(name.startsWith(entry.getKey()))
-                name = name.replaceFirst(entry.getKey(),entry.getValue());
+        for (Map.Entry<String, String> entry : components.entrySet())
+            if (name.startsWith(entry.getKey()))
+                name = name.replaceFirst(entry.getKey(), entry.getValue());
         return name;
     }
 
@@ -79,17 +79,17 @@ public final class Style {
         return attributes;
     }
 
-    public void addAttribute(String key, String value) {
-        attributes.put(key, value);
-    }
-
-    public void setAttributes(String attributes){
+    public void setAttributes(String attributes) {
         String[] parts = attributes.split("; ");
         for (String part : parts) {
             part = part.replaceAll(";", "");
             String[] params = part.split(":");
             this.attributes.put(params[0], params[1]);
         }
+    }
+
+    public void addAttribute(String key, String value) {
+        attributes.put(key, value);
     }
 
     public void setComponent(String component) {
@@ -105,15 +105,15 @@ public final class Style {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(component);
-        if(special) sb.append("#" + name);
+        if (special) sb.append("#" + name);
 
-        if(!subControl.isEmpty()) sb.append("::" + subControl);
-        for(String nameAttribute : nameAttributes) sb.append(":" + nameAttribute);
+        if (!subControl.isEmpty()) sb.append("::" + subControl);
+        for (String nameAttribute : nameAttributes) sb.append(":" + nameAttribute);
         sb.append("\n{\n");
-        for(Map.Entry<String, String> attribute : attributes.entrySet()){
+        for (Map.Entry<String, String> attribute : attributes.entrySet()) {
             sb.append(attribute.getKey() + ":");
             sb.append(attribute.getValue() + ";\n");
         }

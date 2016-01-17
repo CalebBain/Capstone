@@ -14,7 +14,8 @@ public final class Utils {
         try {
             Integer.parseInt(value);
             result = true;
-        } catch (NumberFormatException nfe) {}
+        } catch (NumberFormatException nfe) {
+        }
         return result;
     }
 
@@ -23,15 +24,17 @@ public final class Utils {
         try {
             Node word = nodeMap.getNamedItem(keyword);
             result = (word != null) ? word.getNodeValue() : "";
-        } catch (NullPointerException e) {}
+        } catch (NullPointerException e) {
+        }
         return result;
     }
 
     private static void addAttribute(Style style, NamedNodeMap nodeMap, String attribute) {
         String prop = check(attribute, nodeMap);
-        try{
+        try {
             if (!prop.isEmpty()) style.addAttribute(attribute, prop);
-        }catch (NullPointerException e){}
+        } catch (NullPointerException e) {
+        }
     }
 
     private static void addAttribute(Style style, NamedNodeMap nodeMap, String attribute, String attributeName) {

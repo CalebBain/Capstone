@@ -31,7 +31,8 @@ public final class StyleParser {
                 try (BufferedReader br = new BufferedReader(new FileReader(link))) {
                     String CurrentLine;
                     while ((CurrentLine = br.readLine()) != null) sheet += CurrentLine;
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                }
                 styles.putAll(GetContent(sheet));
             }
         }
