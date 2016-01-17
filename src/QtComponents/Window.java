@@ -4,10 +4,7 @@ import Assemble.QT;
 import Assemble.Utils;
 import EventClass.Events;
 import StyleComponents.Style;
-import com.trolltech.qt.core.QChildEvent;
-import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QTimerEvent;
-import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -154,6 +151,11 @@ public final class Window extends QMainWindow implements Component {
     @Override
     public void SetStylesheet(String sheet) {
         this.setStyleSheet(sheet);
+    }
+
+    @Override
+    public void addChild(QObject child, Node node) {
+
     }
 
     public void actionEvent(QActionEvent event) { events.actionEvent(this, event); }

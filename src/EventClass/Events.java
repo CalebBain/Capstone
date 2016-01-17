@@ -212,4 +212,8 @@ public abstract class Events {
     public void tabletEvent(QColumnView component, QTabletEvent event) {}
     public void timerEvent(QColumnView component, QTimerEvent event) {}
     public void wheelEvent(QColumnView component, QWheelEvent event) {}
+    /*grid layout events*/
+    public void childEvent(QGridLayout component, QChildEvent event) {}
+    public void timerEvent(QGridLayout component, QTimerEvent event) {}
+
 }

@@ -10,14 +10,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+// (least to most important)
+//  1. External style sheet
+//  2. Internal style sheet (in the style section)
+//  3.Inline style (inside an JAML element)
+
 /**
  * Created by Caleb Bain on 1/9/2016.
  */
-public class StyleParser {
-
-    public StyleParser() {
-
-    }
+public final class StyleParser {
 
     public Map<String, Style> Parse(Node style) {
         Map<String, Style> styles = new HashMap<>();

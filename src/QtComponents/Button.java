@@ -6,6 +6,7 @@ import EventClass.Events;
 import StyleComponents.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
@@ -136,6 +137,11 @@ public final class Button extends QPushButton implements Component {
     @Override
     public void SetStylesheet(String sheet) {
         this.setStyleSheet(sheet);
+    }
+
+    @Override
+    public void addChild(QObject child, Node node) {
+
     }
 
     public void actionEvent(QActionEvent event) { events.actionEvent(this, event); }

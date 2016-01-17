@@ -6,6 +6,7 @@ import EventClass.Events;
 import StyleComponents.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
@@ -17,7 +18,7 @@ import java.util.Map;
 /**
  * Created by Caleb Bain on 1/15/2016.
  */
-public class ColumnView extends QColumnView implements Component {
+public final class ColumnView extends QColumnView implements Component {
     private Events events = new Events() {};
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
@@ -40,7 +41,6 @@ public class ColumnView extends QColumnView implements Component {
     }
 
     private void setProps() {
-        String prop;
         switch(Utils.check("drag-drop-mode", nodeMap)){
             case "no-drag-drop": this.setDragDropMode(DragDropMode.NoDragDrop); break;
             case "drop-only": this.setDragDropMode(DragDropMode.DropOnly); break;
@@ -73,11 +73,8 @@ public class ColumnView extends QColumnView implements Component {
             case "multi-select": this.setSelectionMode(SelectionMode.MultiSelection); break;
             case "no-select": this.setSelectionMode(SelectionMode.NoSelection); break;
         }
-
-
-
-
-
+        if (Utils.check("resize-grips-visible", nodeMap).equals("true")) this.setResizeGripsVisible(true);
+        if (Utils.check("resize-grips-visible", nodeMap).equals("false")) this.setResizeGripsVisible(false);
         onFunction();
     }
 
@@ -103,10 +100,10 @@ public class ColumnView extends QColumnView implements Component {
         else if (callParts.length == 2) this.entered.connect(QT.findComponent(callParts[0]), callParts[1]);
         if ((callParts = Func("on-viewport-enter")).length == 1) this.viewportEntered.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.viewportEntered.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Func("on-preview-update")).length == 1) this.updatePreviewWidget.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.updatePreviewWidget.connect(QT.findComponent(callParts[0]), callParts[1]);
     }
 
-
-    @Override
     public String setStyle() {
         String component = "QColumnView";
         String name = (!this.Name.equals("")) ? this.Name : component;
@@ -140,30 +137,23 @@ public class ColumnView extends QColumnView implements Component {
         for(Map.Entry<String, Style> style: styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
     }
-
-    @Override
     public String Name() {
         return Name;
     }
-
-    @Override
     public String Class() {
         return Class;
     }
-
-    @Override
     public String Component() {
         return "button";
     }
-
-    @Override
     public QColumnView Widgit() {
         return this;
     }
-
-    @Override
     public void SetStylesheet(String sheet) {
         this.setStyleSheet(sheet);
+    }
+    public void addChild(QObject child, Node node) {
+        if(child instanceof QWidget) this.setPreviewWidget((QWidget) child);
     }
 
     public void actionEvent(QActionEvent event) { events.actionEvent(this, event); }

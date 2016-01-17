@@ -17,11 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// (least to most important)
-//  1. External style sheet
-//  2. Internal style sheet (in the style section)
-//  3.Inline style (inside an JAML element)
-
 /**
  * Created by Caleb Bain on 1/7/2016.
  */
@@ -29,6 +24,7 @@ public final class QT extends QApplication {
     public static List<Component> components = new ArrayList<>();
     public static Map<String, Style> styles = new HashMap<>();
     private StringBuilder sb = new StringBuilder();
+    private QWidget window;
 
     public QT(Node window, Map<String, Style> styles, String[] args) {
         super(args);
@@ -36,7 +32,7 @@ public final class QT extends QApplication {
         CompileElements(window);
     }
 
-    public static QWidget findComponent(String component) {
+    public static QObject findComponent(String component) {
         for (Component com : components)
             if (com.Name().equals(component) || com.Class().equals(component) || com.Component().equals(component))
                 return com.Widgit();
@@ -54,28 +50,34 @@ public final class QT extends QApplication {
 
     public void CompileElements(Node Window) {
         NodeList nodeList = Window.getChildNodes();
-        QWidget window = new Window(Window);
+        window = new Window(Window);
         components.add((Component) window);
         sb.append(((Component) window).setStyle());
-        window.setStyleSheet(nodeLoop(nodeList, window));
+        window.setStyleSheet(nodeLoop(nodeList, null));
         window.show();
         this.exec();
     }
 
-    private QObject elementsSwitch(String name, QWidget parent, Node node){
+    private QObject elementsSwitch(String name, Component parent, Node node){
         QObject component = null;
         switch (name) {
             case "button":
-                String type = check(node.getAttributes(), "type");
-                if (type.equals("radio")) component = new Radio(parent, node);
-                else if (type.equals("check-box")) component = new Checkbox(parent, node, false);
-                else if (type.equals("tri-state")) component = new Checkbox(parent, node, true);
-                else component = new Button(parent, node);
+                switch(check(node.getAttributes(), "type")){
+                    case "radio": component = new Radio(window, node); break;
+                    case "check-box": component = new Checkbox(window, node, false); break;
+                    case "tri-state": component = new Checkbox(window, node, true); break;
+                    default: component = new Button(window, node);
+                }
+                if(parent != null) parent.addChild(component, node);
                 break;
-            case "number": component = new Number(parent, node); break;
-            case "slider": component = new Slider(parent, node); break;
-            case "grid": component = new Grid(parent);
-
+            case "number": component = new Number(window, node);
+                if(parent != null) parent.addChild(component, node);
+                break;
+            case "slider": component = new Slider(window, node);
+                if(parent != null) parent.addChild(component, node);
+                break;
+            case "grid": component = new Grid(window, node);
+                if(parent != null) parent.addChild(component, node);
                 break;
         }
         if(component != null){
@@ -85,27 +87,12 @@ public final class QT extends QApplication {
         return component;
     }
 
-    public String nodeLoop(NodeList nodeList, QWidget parent){
+    public String nodeLoop(NodeList nodeList, Component parent){
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             QObject component = elementsSwitch(node.getNodeName(), parent, node);
-            if(component instanceof QLayout){
-
-            }
+            if(component instanceof QLayout) nodeLoop(node.getChildNodes(), (Component) component);
         }
         return sb.toString();
-    }
-
-
-
-    public QWidget findParent(Node node) {
-        NamedNodeMap nodeMap = node.getAttributes();
-        String component = node.getNodeName();
-        Node Class = nodeMap.getNamedItem("class");
-        Node name = nodeMap.getNamedItem("name");
-        for (Component com : components)
-            if (com.Name().equals(name) || com.Class().equals(Class) || com.Component().equals(component))
-                return com.Widgit();
-        return components.get(0).Widgit();
     }
 }
