@@ -29,16 +29,28 @@ public final class Checkbox extends QCheckBox implements Component {
     public Checkbox(Node node, boolean TriState) {
         this.setTristate(TriState);
         this.nodeMap = node.getAttributes();
-        setIdentity(nodeMap);
+        setIdentity(nodeMap, (TriState)? "tri-state" : "check-box");
     }
 
-    private void setIdentity(NamedNodeMap nodeMap) {
+    private void setIdentity(NamedNodeMap nodeMap, String TriState) {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
+        QDesktopWidget desktop = new QDesktopWidget();
+        String name = "QCheckBox";
         if (!Name.isEmpty()) {
-            this.styles.put(Name, new Style(Name, "QCheckBox", true));
+            this.styles.put(Name, new Style(Name, name, true));
+            this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
+            this.styles.get(Name).addAttribute("min-height", "1");
+            this.styles.get(Name).addAttribute("max-width", desktop.screenGeometry().width() + "");
+            this.styles.get(Name).addAttribute("min-width", "1");
             this.setAccessibleName(Name);
-        } else this.styles.put("QCheckBox", new Style("QCheckBox", "QCheckBox", false));
+        } else {
+            this.styles.put(TriState, new Style(TriState, name, false));
+            this.styles.get(TriState).addAttribute("max-height", desktop.screenGeometry().height() + "");
+            this.styles.get(TriState).addAttribute("min-height", "1");
+            this.styles.get(TriState).addAttribute("max-width", desktop.screenGeometry().width() + "");
+            this.styles.get(TriState).addAttribute("min-width", "1");
+        }
     }
 
     private void setProps() {

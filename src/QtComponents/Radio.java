@@ -35,10 +35,22 @@ public final class Radio extends QRadioButton implements Component {
     private void setIdentity(NamedNodeMap nodeMap) {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
+        QDesktopWidget desktop = new QDesktopWidget();
+        String name = "QRadioButton";
         if (!Name.isEmpty()) {
-            this.styles.put(Name, new Style(Name, "QRadioButton", true));
+            this.styles.put(Name, new Style(Name, name, true));
+            this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
+            this.styles.get(Name).addAttribute("min-height", "1");
+            this.styles.get(Name).addAttribute("max-width", desktop.screenGeometry().width() + "");
+            this.styles.get(Name).addAttribute("min-width", "1");
             this.setAccessibleName(Name);
-        } else this.styles.put("QRadioButton", new Style("QRadioButton", "QRadioButton", false));
+        } else {
+            this.styles.put(name, new Style(name, name, false));
+            this.styles.get(name).addAttribute("max-height", desktop.screenGeometry().height() + "");
+            this.styles.get(name).addAttribute("min-height", "1");
+            this.styles.get(name).addAttribute("max-width", desktop.screenGeometry().width() + "");
+            this.styles.get(name).addAttribute("min-width", "1");
+        }
     }
 
     private void setProps() {
