@@ -10,8 +10,7 @@ import com.trolltech.qt.gui.*;
  */
 public abstract class Events {
     /*window events*/
-    public void actionEvent(QMainWindow component, QActionEvent event) {
-    }
+    public void actionEvent(QMainWindow component, QActionEvent event) {}
 
     public void changeEvent(QMainWindow component, QEvent event) {
     }
@@ -168,6 +167,7 @@ public abstract class Events {
     }
 
     public void showEvent(QPushButton component, QEvent event) {
+        component.repaint();
     }
 
     public void tabletEvent(QPushButton component, QTabletEvent event) {

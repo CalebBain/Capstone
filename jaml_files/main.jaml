@@ -1,7 +1,7 @@
 <jaml>
     <style link="">
         window {
-            height: 300px;
+            height: 100px;
             background-color: #1d1d1d;
         }
 
@@ -18,18 +18,21 @@
         slide:horizontal {
             min-height: 30px;
             max-height: 30px;
-            min-width: 30px;
-            max-width: 30px;
+            min-width: 70px;
+            max-width: 70px;
         }
     </style>
     <window title="Hello World">
-
+        <grid>
             <number name="lcd" row="1" mode="dec" />
-            <slider class="slide" row="2"  range="0 99" value="0" tick-position="above"/>
+            <slider class="slide" row="2"  range="0 99" value="0" tick-position="above"
+                    on-value-change="lcd:display(int)" orientation="horizontal"/>
             <button on-click="quit()" row="3">Quit!</button>
+        </grid>
 
 
-        <!--layout type="Box" orientation="vertical"><grid></grid></layout-->
+
+        <!--layout type="Box" orientation="vertical"></layout-->
     </window>
 </jaml>
 

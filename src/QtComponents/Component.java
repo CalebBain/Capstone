@@ -1,6 +1,7 @@
 package QtComponents;
 
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.Node;
 
 /**
@@ -20,6 +21,6 @@ public interface Component {
 
     public void SetStylesheet(String sheet);
 
-    public void addChild(QObject child, Node node);
+    public void addChild(Component child, Node node);
 
 }

@@ -5,9 +5,8 @@ import QtComponents.Layouts.Grid;
 import QtComponents.Number;
 import StyleComponents.Style;
 import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QLayout;
-import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -77,25 +76,25 @@ public final class QT extends QApplication {
                 }
                 components.add((Component) component);
                 sb.append(((Component) component).setStyle());
-                if (parent != null) parent.addChild(component, node);
+                if (parent != null) parent.addChild((Component) component, node);
                 break;
             case "number":
                 component = new Number(node);
                 components.add((Component) component);
                 sb.append(((Component) component).setStyle());
-                if (parent != null) parent.addChild(component, node);
+                if (parent != null) parent.addChild((Component)component, node);
                 break;
             case "slider":
                 component = new Slider(node);
                 components.add((Component) component);
                 sb.append(((Component) component).setStyle());
-                if (parent != null) parent.addChild(component, node);
+                if (parent != null) parent.addChild((Component)component, node);
                 break;
             case "grid":
                 component = new Grid();
                 components.add((Component) component);
                 sb.append(((Component) component).setStyle());
-                if (parent != null) parent.addChild(component, node);
+                if (parent != null) parent.addChild((Component)component, node);
                 break;
         }
         return component;
