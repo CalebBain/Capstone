@@ -1,9 +1,9 @@
-package QtComponents;
+package QT.QtComponents;
 
-import Assemble.QT;
-import Assemble.Utils;
-import EventClass.Events;
-import StyleComponents.Style;
+import QT.Assemble.QT;
+import QT.Assemble.Utils;
+import QT.EventClass.Events;
+import QT.StyleComponents.Style;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
@@ -15,31 +15,28 @@ import java.util.Map;
 /**
  * Created by Caleb Bain on 1/7/2016.
  */
-public final class Button extends QPushButton implements Component {
+public final class Window extends QMainWindow implements Component {
     private Events events = new Events() {
     };
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
+    private QWidget centerWidget;
+    private Component layout = null;
 
-    public Button(Node node) {
-        super(node.getTextContent());
-        this.nodeMap = node.getAttributes();
-        setIdentity(nodeMap);
-    }
-
-    public Button(Node node, QWidget parent) {
-        super(node.getTextContent(), parent);
+    public Window(Node node) {
+        this.centerWidget = new QWidget(this);
+        this.setCentralWidget(centerWidget);
         this.nodeMap = node.getAttributes();
         setIdentity(nodeMap);
     }
 
     private void setIdentity(NamedNodeMap nodeMap) {
+        QDesktopWidget desktop = new QDesktopWidget();
+        String name = "QMainWindow";
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
-        QDesktopWidget desktop = new QDesktopWidget();
-        String name = "QPushButton";
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, name, true));
             this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
@@ -57,85 +54,54 @@ public final class Button extends QPushButton implements Component {
     }
 
     private void setProps() {
-        if (Utils.check("exclusive", nodeMap).equals("true")) this.setAutoExclusive(true);
-        else if (Utils.check("exclusive", nodeMap).equals("false")) this.setAutoExclusive(false);
-        if (Utils.check("repeatable", nodeMap).equals("true")) this.setAutoRepeat(true);
-        else if (Utils.check("repeatable", nodeMap).equals("false")) this.setAutoRepeat(false);
-        if (Utils.check("checkable", nodeMap).equals("true")) this.setCheckable(true);
-        else if (Utils.check("checkable", nodeMap).equals("false")) this.setCheckable(false);
-        if (Utils.check("checked", nodeMap).equals("true")) this.setChecked(true);
-        else if (Utils.check("checked", nodeMap).equals("false")) this.setChecked(false);
-        if (Utils.check("default", nodeMap).equals("true")) this.setDefault(true);
-        else if (Utils.check("default", nodeMap).equals("false")) this.setDefault(false);
-        if (Utils.check("flat", nodeMap).equals("true")) this.setFlat(true);
-        else if (Utils.check("flat", nodeMap).equals("false")) this.setFlat(false);
-        String count;
-        if (Utils.tryValue((count = Utils.check("repeatable-delay", nodeMap))))
-            this.setAutoRepeatDelay(Integer.parseInt(count));
-        if (Utils.tryValue((count = Utils.check("repeatable-interval", nodeMap))))
-            this.setAutoRepeatInterval(Integer.parseInt(count));
+        String prop;
+        this.setWindowTitle(tr((!(prop = Utils.check("title", nodeMap)).isEmpty()) ? prop : "JAML Applicaiton"));
+        if (Utils.check("dock-animation", "true", nodeMap)) this.setAnimated(true);
+        else if (Utils.check("dock-animation", "false", nodeMap)) this.setAnimated(false);
+        if (Utils.check("dock-nesting", "true", nodeMap)) this.setDockNestingEnabled(true);
+        else if (Utils.check("dock-nesting", "false", nodeMap)) this.setDockNestingEnabled(false);
+        switch (Utils.check("dock-option", nodeMap)) {
+            case "animated-docks": this.setDockOptions(DockOption.AnimatedDocks); break;
+            case "allow-nested-docks": this.setDockOptions(DockOption.AllowNestedDocks); break;
+            case "allow-tabbed-docks": this.setDockOptions(DockOption.AllowTabbedDocks); break;
+            case "force-tabbed-docks": this.setDockOptions(DockOption.ForceTabbedDocks); break;
+            case "vertical-tabs": this.setDockOptions(DockOption.VerticalTabs); break;
+        }
+        if (Utils.check("document-mode", "true", nodeMap)) this.setDocumentMode(true);
+        else if (Utils.check("document-mode", "false",nodeMap)) this.setDocumentMode(false);
+        if (Utils.check("tab-shape", "rounded", nodeMap)) this.setTabShape(QTabWidget.TabShape.Rounded);
+        if (Utils.check("tab-shape", "triangular", nodeMap)) this.setTabShape(QTabWidget.TabShape.Triangular);
+        if (Utils.tryValue(prop = Utils.check("tab-shape", nodeMap))) this.setTabShape(QTabWidget.TabShape.resolve(Integer.parseInt(prop)));
+        switch (Utils.check("tool-button-style", nodeMap)) {
+            case "icon-only": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly); break;
+            case "text-only": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly); break;
+            case "text-beside-icon": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon); break;
+            case "text-under-icon": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon); break;
+            case "follow-style": this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonFollowStyle); break;
+        }
+        if (Utils.check("unified-mac-title-toolbar", "true", nodeMap)) this.setUnifiedTitleAndToolBarOnMac(true);
+        else if (Utils.check("unified-mac-title-toolbar", "false", nodeMap)) this.setUnifiedTitleAndToolBarOnMac(false);
+        Utils.setWidgetProps(this, nodeMap);
         onFunction();
-    }
-
-    private String[] Func(String prop) {
-        String call;
-        if (!(call = Utils.check(prop, nodeMap)).isEmpty()) return call.split(":");
-        return new String[0];
     }
 
     private void onFunction() {
         String[] callParts;
-        if ((callParts = Func("on-click")).length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.clicked.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-release")).length == 1) this.released.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.released.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-press")).length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.pressed.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-toggle")).length == 1) this.toggled.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.toggled.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-custom-context-menu-request")).length == 1)
-            this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2)
-            this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Utils.Func("on-icon-size-change", nodeMap)).length == 1) this.iconSizeChanged.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.iconSizeChanged.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Utils.Func("on-tool-button-style-change", nodeMap)).length == 1) this.toolButtonStyleChanged.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.toolButtonStyleChanged.connect(QT.findComponent(callParts[0]), callParts[1]);
+        Utils.onWidgetFunctions(this, nodeMap);
     }
 
     public String setStyle() {
-        String component = "QPushButton";
-        String name = (!this.Name.equals("")) ? this.Name : component;
-        for (Map.Entry<String, Style> style : QT.styles.entrySet()) {
-            if (style.getKey().startsWith(component)) {
-                if (style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Name) && !this.Name.isEmpty()) {
-                if (style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Class) && !this.Class.isEmpty()) {
-                if (style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-        }
+        String name = Utils.getStyleSheets("QMainWindow", styles, Name, Class);
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
         if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
-    }
-
-    @Override
-    public QSize sizeHint() {
-        return super.sizeHint();
     }
 
     public String Name() {
@@ -147,10 +113,10 @@ public final class Button extends QPushButton implements Component {
     }
 
     public String Component() {
-        return "button";
+        return "window";
     }
 
-    public QPushButton Widgit() {
+    public QMainWindow Widgit() {
         return this;
     }
 
@@ -159,7 +125,12 @@ public final class Button extends QPushButton implements Component {
     }
 
     public void addChild(Component child, Node node) {
-
+        if (child instanceof QWidget && layout != null) this.layout.addChild(child, node);
+        else if (child instanceof QWidget) ((QWidget) child).setParent(centerWidget);
+        if (child instanceof QLayout) {
+            if(layout != null) centerWidget.layout().dispose();
+            this.centerWidget.setLayout((QLayout) child.Widgit());
+        }
     }
 
     public void actionEvent(QActionEvent event) {

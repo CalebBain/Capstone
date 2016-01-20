@@ -1,13 +1,11 @@
-package Assemble;
+package QT.Assemble;
 
-import QtComponents.*;
-import QtComponents.Layouts.Grid;
-import QtComponents.Number;
-import StyleComponents.Style;
+import QT.QtComponents.*;
+import QT.QtComponents.Layouts.Grid;
+import QT.QtComponents.Number;
+import QT.StyleComponents.Style;
 import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -38,15 +36,6 @@ public final class QT extends QApplication {
         return components.get(0).Widgit();
     }
 
-    private String check(NamedNodeMap nodeMap, String keyword) {
-        try {
-            Node word = nodeMap.getNamedItem(keyword);
-            return (word != null) ? word.getNodeValue() : "";
-        } catch (NullPointerException e) {
-            return "";
-        }
-    }
-
     public void CompileElements(Node Window) {
         NodeList nodeList = Window.getChildNodes();
         window = new Window(Window);
@@ -60,20 +49,20 @@ public final class QT extends QApplication {
     private QObject elementsSwitch(String name, Component parent, Node node) {
         QObject component = null;
         switch (name) {
+            case "check-box":
+                component = new Checkbox(node, QT.Utils.check("type", "tri-state", node.getAttributes()));
+                components.add((Component) component);
+                sb.append(((Component) component).setStyle());
+                if (parent != null) parent.addChild((Component) component, node);
+                break;
+            case "radio":
+                component = new Radio(node);
+                components.add((Component) component);
+                sb.append(((Component) component).setStyle());
+                if (parent != null) parent.addChild((Component) component, node);
+                break;
             case "button":
-                switch (check(node.getAttributes(), "type")) {
-                    case "radio":
-                        component = new Radio(node);
-                        break;
-                    case "check-box":
-                        component = new Checkbox(node, false);
-                        break;
-                    case "tri-state":
-                        component = new Checkbox(node, true);
-                        break;
-                    default:
-                        component = new Button(node);
-                }
+                component = new Button(node);
                 components.add((Component) component);
                 sb.append(((Component) component).setStyle());
                 if (parent != null) parent.addChild((Component) component, node);

@@ -1,12 +1,11 @@
-package QtComponents;
+package QT.QtComponents;
 
-import Assemble.QT;
-import Assemble.Utils;
-import EventClass.Events;
-import StyleComponents.Style;
+import QT.Assemble.QT;
+import QT.Assemble.Utils;
+import QT.EventClass.Events;
+import QT.StyleComponents.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
@@ -54,144 +53,52 @@ public final class ColumnView extends QColumnView implements Component {
 
     private void setProps() {
         switch (Utils.check("drag-drop-mode", nodeMap)) {
-            case "no-drag-drop":
-                this.setDragDropMode(DragDropMode.NoDragDrop);
-                break;
-            case "drop-only":
-                this.setDragDropMode(DragDropMode.DropOnly);
-                break;
-            case "drag-only":
-                this.setDragDropMode(DragDropMode.DragOnly);
-                break;
-            case "drag-drop":
-                this.setDragDropMode(DragDropMode.DragDrop);
-                break;
-            case "internal-move":
-                this.setDragDropMode(DragDropMode.InternalMove);
-                break;
+            case "no-drag-drop": this.setDragDropMode(DragDropMode.NoDragDrop); break;
+            case "drop-only": this.setDragDropMode(DragDropMode.DropOnly); break;
+            case "drag-only": this.setDragDropMode(DragDropMode.DragOnly); break;
+            case "drag-drop": this.setDragDropMode(DragDropMode.DragDrop); break;
+            case "internal-move": this.setDragDropMode(DragDropMode.InternalMove); break;
         }
         switch (Utils.check("edit-trigger", nodeMap)) {
-            case "no-edit-triggers":
-                this.setEditTriggers(EditTrigger.NoEditTriggers);
-                break;
-            case "current-change":
-                this.setEditTriggers(EditTrigger.CurrentChanged);
-                break;
-            case "double-click":
-                this.setEditTriggers(EditTrigger.DoubleClicked);
-                break;
-            case "selected-click":
-                this.setEditTriggers(EditTrigger.SelectedClicked);
-                break;
-            case "edit-key-press":
-                this.setEditTriggers(EditTrigger.EditKeyPressed);
-                break;
-            case "any-key-press":
-                this.setEditTriggers(EditTrigger.AnyKeyPressed);
-                break;
-            case "all-edit-triggers":
-                this.setEditTriggers(EditTrigger.AllEditTriggers);
-                break;
+            case "no-edit-triggers": this.setEditTriggers(EditTrigger.NoEditTriggers); break;
+            case "current-change": this.setEditTriggers(EditTrigger.CurrentChanged); break;
+            case "double-click": this.setEditTriggers(EditTrigger.DoubleClicked); break;
+            case "selected-click": this.setEditTriggers(EditTrigger.SelectedClicked); break;
+            case "edit-key-press": this.setEditTriggers(EditTrigger.EditKeyPressed); break;
+            case "any-key-press": this.setEditTriggers(EditTrigger.AnyKeyPressed); break;
+            case "all-edit-triggers": this.setEditTriggers(EditTrigger.AllEditTriggers); break;
         }
-        if (Utils.check("horizontal-scroll-mode", nodeMap).equals("scroll-per-item"))
-            this.setHorizontalScrollMode(ScrollMode.ScrollPerItem);
-        if (Utils.check("horizontal-scroll-mode", nodeMap).equals("scroll-per-pixel"))
-            this.setHorizontalScrollMode(ScrollMode.ScrollPerPixel);
-        if (Utils.check("vertical-scroll-mode", nodeMap).equals("scroll-per-item"))
-            this.setVerticalScrollMode(ScrollMode.ScrollPerItem);
-        if (Utils.check("vertical-scroll-mode", nodeMap).equals("scroll-per-pixel"))
-            this.setVerticalScrollMode(ScrollMode.ScrollPerPixel);
+        if (Utils.check("horizontal-scroll-mode", nodeMap).equals("scroll-per-item")) this.setHorizontalScrollMode(ScrollMode.ScrollPerItem);
+        if (Utils.check("horizontal-scroll-mode", nodeMap).equals("scroll-per-pixel")) this.setHorizontalScrollMode(ScrollMode.ScrollPerPixel);
+        if (Utils.check("vertical-scroll-mode", nodeMap).equals("scroll-per-item")) this.setVerticalScrollMode(ScrollMode.ScrollPerItem);
+        if (Utils.check("vertical-scroll-mode", nodeMap).equals("scroll-per-pixel")) this.setVerticalScrollMode(ScrollMode.ScrollPerPixel);
         switch (Utils.check("selection-behavior", nodeMap)) {
-            case "select-items":
-                this.setSelectionBehavior(SelectionBehavior.SelectItems);
-                break;
-            case "select-rows":
-                this.setSelectionBehavior(SelectionBehavior.SelectRows);
-                break;
-            case "select-columns":
-                this.setSelectionBehavior(SelectionBehavior.SelectColumns);
-                break;
+            case "select-items": this.setSelectionBehavior(SelectionBehavior.SelectItems); break;
+            case "select-rows": this.setSelectionBehavior(SelectionBehavior.SelectRows); break;
+            case "select-columns": this.setSelectionBehavior(SelectionBehavior.SelectColumns); break;
         }
         switch (Utils.check("selection-mode", nodeMap)) {
-            case "single-select":
-                this.setSelectionMode(SelectionMode.SingleSelection);
-                break;
-            case "contiguous-select":
-                this.setSelectionMode(SelectionMode.ContiguousSelection);
-                break;
-            case "extended-select":
-                this.setSelectionMode(SelectionMode.ExtendedSelection);
-                break;
-            case "multi-select":
-                this.setSelectionMode(SelectionMode.MultiSelection);
-                break;
-            case "no-select":
-                this.setSelectionMode(SelectionMode.NoSelection);
-                break;
+            case "single-select": this.setSelectionMode(SelectionMode.SingleSelection); break;
+            case "contiguous-select": this.setSelectionMode(SelectionMode.ContiguousSelection); break;
+            case "extended-select": this.setSelectionMode(SelectionMode.ExtendedSelection); break;
+            case "multi-select": this.setSelectionMode(SelectionMode.MultiSelection); break;
+            case "no-select": this.setSelectionMode(SelectionMode.NoSelection); break;
         }
         if (Utils.check("resize-grips-visible", nodeMap).equals("true")) this.setResizeGripsVisible(true);
         if (Utils.check("resize-grips-visible", nodeMap).equals("false")) this.setResizeGripsVisible(false);
+        Utils.setWidgetProps(this, nodeMap);
         onFunction();
-    }
-
-    private String[] Func(String prop) {
-        String call;
-        if (!(call = Utils.check(prop, nodeMap)).isEmpty()) return call.split(":");
-        return new String[0];
     }
 
     private void onFunction() {
         String[] callParts;
-        if ((callParts = Func("on-click")).length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.clicked.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-press")).length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.pressed.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-custom-context-menu-request")).length == 1)
-            this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2)
-            this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-double-click")).length == 1)
-            this.doubleClicked.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.doubleClicked.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-activate")).length == 1)
-            this.activated.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.activated.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-enter")).length == 1) this.entered.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.entered.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-viewport-enter")).length == 1)
-            this.viewportEntered.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.viewportEntered.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-preview-update")).length == 1)
-            this.updatePreviewWidget.connect(QApplication.instance(), callParts[0]);
+        if ((callParts = Utils.Func("on-preview-update", nodeMap)).length == 1) this.updatePreviewWidget.connect(QApplication.instance(), callParts[0]);
         else if (callParts.length == 2) this.updatePreviewWidget.connect(QT.findComponent(callParts[0]), callParts[1]);
+        Utils.onAbstractItemViewFunctions(this, nodeMap);
     }
 
     public String setStyle() {
-        String component = "QColumnView";
-        String name = (!this.Name.equals("")) ? this.Name : component;
-        for (Map.Entry<String, Style> style : QT.styles.entrySet()) {
-            if (style.getKey().startsWith(component)) {
-                if (style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Name) && !this.Name.isEmpty()) {
-                if (style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Class) && !this.Class.isEmpty()) {
-                if (style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-        }
+        String name = Utils.getStyleSheets("QColumnView", styles, Name, Class);
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
         if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";

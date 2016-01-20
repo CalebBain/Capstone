@@ -1,7 +1,6 @@
-package QtComponents;
+package QT.QtComponents;
 
 import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.Node;
 
 /**

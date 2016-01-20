@@ -1,11 +1,11 @@
-package QtComponents;
+package QT.QtComponents;
 
-import Assemble.QT;
-import Assemble.Utils;
-import EventClass.Events;
-import QtComponents.Layouts.Grid;
-import StyleComponents.Style;
-import com.trolltech.qt.core.*;
+import QT.Assemble.Utils;
+import QT.EventClass.Events;
+import QT.StyleComponents.Style;
+import com.trolltech.qt.core.QChildEvent;
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -14,30 +14,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Caleb Bain on 1/7/2016.
+ * Created by Caleb Bain on 1/12/2016.
  */
-public final class Window extends QMainWindow implements Component {
+public final class Radio extends QRadioButton implements Component {
     private Events events = new Events() {
     };
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
-    private QWidget centerWidget;
-    private Component layout = null;
 
-    public Window(Node node) {
-        this.centerWidget = new QWidget(this);
-        this.setCentralWidget(centerWidget);
+    public Radio(Node node) {
+        super(node.getTextContent());
         this.nodeMap = node.getAttributes();
         setIdentity(nodeMap);
     }
 
     private void setIdentity(NamedNodeMap nodeMap) {
-        QDesktopWidget desktop = new QDesktopWidget();
-        String name = "QMainWindow";
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
+        QDesktopWidget desktop = new QDesktopWidget();
+        String name = "QRadioButton";
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, name, true));
             this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
@@ -55,105 +52,27 @@ public final class Window extends QMainWindow implements Component {
     }
 
     private void setProps() {
-        String prop;
-        if (Utils.check("dock-animation", nodeMap).equals("true")) this.setAnimated(true);
-        else if (Utils.check("dock-animation", nodeMap).equals("false")) this.setAnimated(false);
-        if (Utils.check("dock-nesting", nodeMap).equals("true")) this.setDockNestingEnabled(true);
-        else if (Utils.check("dock-nesting", nodeMap).equals("false")) this.setDockNestingEnabled(false);
-        switch (Utils.check("dock-option", nodeMap)) {
-            case "animated-docks":
-                this.setDockOptions(DockOption.AnimatedDocks);
-                break;
-            case "allow-nested-docks":
-                this.setDockOptions(DockOption.AllowNestedDocks);
-                break;
-            case "allow-tabbed-docks":
-                this.setDockOptions(DockOption.AllowTabbedDocks);
-                break;
-            case "force-tabbed-docks":
-                this.setDockOptions(DockOption.ForceTabbedDocks);
-                break;
-            case "vertical-tabs":
-                this.setDockOptions(DockOption.VerticalTabs);
-                break;
-        }
-        if (Utils.check("document-mode", nodeMap).equals("true")) this.setDocumentMode(true);
-        else if (Utils.check("document-mode", nodeMap).equals("false")) this.setDocumentMode(false);
-        if (Utils.check("tab-shape", nodeMap).equals("rounded")) this.setTabShape(QTabWidget.TabShape.Rounded);
-        if (Utils.check("tab-shape", nodeMap).equals("triangular")) this.setTabShape(QTabWidget.TabShape.Triangular);
-        if (Utils.tryValue(prop = Utils.check("tab-shape", nodeMap)))
-            this.setTabShape(QTabWidget.TabShape.resolve(Integer.parseInt(prop)));
-        switch (Utils.check("tool-button-style", nodeMap)) {
-            case "icon-only":
-                this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly);
-                break;
-            case "text-only":
-                this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly);
-                break;
-            case "text-beside-icon":
-                this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon);
-                break;
-            case "text-under-icon":
-                this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon);
-                break;
-            case "follow-style":
-                this.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonFollowStyle);
-                break;
-        }
-        if (Utils.check("unified-mac-title-toolbar", nodeMap).equals("true")) this.setUnifiedTitleAndToolBarOnMac(true);
-        else if (Utils.check("unified-mac-title-toolbar", nodeMap).equals("false"))
-            this.setUnifiedTitleAndToolBarOnMac(false);
-
-        onFunction();
-    }
-
-    private String[] Func(String prop) {
-        String call;
-        String[] calls = new String[0];
-        if (!(call = Utils.check(prop, nodeMap)).isEmpty()) calls = call.split(":");
-        return calls;
-    }
-
-    private void onFunction() {
-        String[] callParts;
-        if ((callParts = Func("on-custom-context-menu-request")).length == 1)
-            this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2)
-            this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if (Utils.check("exclusive", "true", nodeMap)) this.setAutoExclusive(true);
+        else if (Utils.check("exclusive", "false", nodeMap)) this.setAutoExclusive(false);
+        if (Utils.check("repeatable", "true", nodeMap)) this.setAutoRepeat(true);
+        else if (Utils.check("repeatable", "false", nodeMap)) this.setAutoRepeat(false);
+        if (Utils.check("checkable", "true", nodeMap)) this.setCheckable(true);
+        else if (Utils.check("checkable", "false", nodeMap)) this.setCheckable(false);
+        if (Utils.check("checked", "true", nodeMap)) this.setChecked(true);
+        else if (Utils.check("checked", "false", nodeMap)) this.setChecked(false);
+        String count;
+        if (Utils.tryValue((count = Utils.check("repeatable-delay", nodeMap)))) this.setAutoRepeatDelay(Integer.parseInt(count));
+        if (Utils.tryValue((count = Utils.check("repeatable-interval", nodeMap)))) this.setAutoRepeatInterval(Integer.parseInt(count));
+        Utils.onAbstractButtonFunctions(this, nodeMap);
     }
 
     public String setStyle() {
-        String component = "QMainWindow";
-        String name = (!this.Name.equals("")) ? this.Name : component;
-        for (Map.Entry<String, Style> style : QT.styles.entrySet()) {
-            if (style.getKey().startsWith(component)) {
-                if (style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Name) && !this.Name.isEmpty()) {
-                if (style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Class) && !this.Class.isEmpty()) {
-                if (style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-        }
+        String name = Utils.getStyleSheets("QRadioButton", styles, Name, Class);
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
-        String prop = Utils.check("title", nodeMap);
-        this.setWindowTitle(tr((!prop.isEmpty()) ? prop : "JAML Applicaiton"));
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
+        Utils.setWidgetProps(this, nodeMap);
         StringBuilder sb = new StringBuilder();
+        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
     }
@@ -167,10 +86,10 @@ public final class Window extends QMainWindow implements Component {
     }
 
     public String Component() {
-        return "window";
+        return "radio";
     }
 
-    public QMainWindow Widgit() {
+    public QRadioButton Widgit() {
         return this;
     }
 
@@ -179,16 +98,12 @@ public final class Window extends QMainWindow implements Component {
     }
 
     public void addChild(Component child, Node node) {
-        if (child instanceof QWidget && layout != null) this.layout.addChild(child, node);
-        else if (child instanceof QWidget) ((QWidget) child).setParent(centerWidget);
-        if (child instanceof QLayout) {
-            if(layout != null) centerWidget.layout().dispose();
-            this.centerWidget.setLayout((QLayout) child.Widgit());
-        }
+
     }
 
     public void actionEvent(QActionEvent event) {
         super.actionEvent(event);
+        events.actionEvent(this, event);
     }
 
     public void changeEvent(QEvent event) {

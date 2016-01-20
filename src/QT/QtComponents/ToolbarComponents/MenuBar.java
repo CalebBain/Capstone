@@ -1,9 +1,10 @@
-package QtComponents;
+package QT.QtComponents.ToolbarComponents;
 
-import Assemble.QT;
-import Assemble.Utils;
-import EventClass.Events;
-import StyleComponents.Style;
+import QT.Assemble.QT;
+import QT.Assemble.Utils;
+import QT.EventClass.Events;
+import QT.QtComponents.Component;
+import QT.StyleComponents.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QObject;
@@ -16,9 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Caleb Bain on 1/12/2016.
+ * Created by Caleb Bain on 1/19/2016.
  */
-public final class Checkbox extends QCheckBox implements Component {
+public class MenuBar extends QMenuBar implements Component {
     private Events events = new Events() {
     };
     private Map<String, Style> styles = new HashMap<>();
@@ -26,17 +27,16 @@ public final class Checkbox extends QCheckBox implements Component {
     private String Class;
     private NamedNodeMap nodeMap;
 
-    public Checkbox(Node node, boolean TriState) {
-        this.setTristate(TriState);
+    public MenuBar(Node node) {
         this.nodeMap = node.getAttributes();
-        setIdentity(nodeMap, (TriState)? "tri-state" : "check-box");
+        setIdentity(nodeMap);
     }
 
-    private void setIdentity(NamedNodeMap nodeMap, String TriState) {
+    private void setIdentity(NamedNodeMap nodeMap) {
+        QDesktopWidget desktop = new QDesktopWidget();
+        String name = "QMenuBar";
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
-        QDesktopWidget desktop = new QDesktopWidget();
-        String name = "QCheckBox";
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, name, true));
             this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
@@ -45,78 +45,34 @@ public final class Checkbox extends QCheckBox implements Component {
             this.styles.get(Name).addAttribute("min-width", "1");
             this.setAccessibleName(Name);
         } else {
-            this.styles.put(TriState, new Style(TriState, name, false));
-            this.styles.get(TriState).addAttribute("max-height", desktop.screenGeometry().height() + "");
-            this.styles.get(TriState).addAttribute("min-height", "1");
-            this.styles.get(TriState).addAttribute("max-width", desktop.screenGeometry().width() + "");
-            this.styles.get(TriState).addAttribute("min-width", "1");
+            this.styles.put(name, new Style(name, name, false));
+            this.styles.get(name).addAttribute("max-height", desktop.screenGeometry().height() + "");
+            this.styles.get(name).addAttribute("min-height", "1");
+            this.styles.get(name).addAttribute("max-width", desktop.screenGeometry().width() + "");
+            this.styles.get(name).addAttribute("min-width", "1");
         }
     }
 
     private void setProps() {
-        if (Utils.check("exclusive", nodeMap).equals("true")) this.setAutoExclusive(true);
-        else if (Utils.check("exclusive", nodeMap).equals("false")) this.setAutoExclusive(false);
-        if (Utils.check("repeatable", nodeMap).equals("true")) this.setAutoRepeat(true);
-        else if (Utils.check("repeatable", nodeMap).equals("false")) this.setAutoRepeat(false);
-        if (Utils.check("checkable", nodeMap).equals("true")) this.setCheckable(true);
-        else if (Utils.check("checkable", nodeMap).equals("false")) this.setCheckable(false);
-        if (Utils.check("checked", nodeMap).equals("true")) this.setChecked(true);
-        else if (Utils.check("checked", nodeMap).equals("false")) this.setChecked(false);
-        String count;
-        if (Utils.tryValue((count = Utils.check("repeatable-delay", nodeMap))))
-            this.setAutoRepeatDelay(Integer.parseInt(count));
-        if (Utils.tryValue((count = Utils.check("repeatable-interval", nodeMap))))
-            this.setAutoRepeatInterval(Integer.parseInt(count));
         onFunction();
+        Utils.setWidgetProps(this, nodeMap);
     }
 
-    private String[] Func(String prop) {
-        String call;
-        if (!(call = Utils.check(prop, nodeMap)).isEmpty()) return call.split(":");
-        return new String[0];
-    }
+
 
     private void onFunction() {
-        String[] callParts = Func("on-click");
-        if (callParts.length == 1) this.clicked.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.clicked.connect(QT.findComponent(callParts[0]), callParts[1]);
-        callParts = Func("on-release");
-        if (callParts.length == 1) this.released.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.released.connect(QT.findComponent(callParts[0]), callParts[1]);
-        callParts = Func("on-press");
-        if (callParts.length == 1) this.pressed.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.pressed.connect(QT.findComponent(callParts[0]), callParts[1]);
+        String[] callParts;
+        if ((callParts = Utils.Func("on-hover", nodeMap)).length == 1) this.hovered.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.hovered.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Utils.Func("on-trigger", nodeMap)).length == 1) this.triggered.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.triggered.connect(QT.findComponent(callParts[0]), callParts[1]);
+        Utils.onWidgetFunctions(this, nodeMap);
     }
 
     public String setStyle() {
-        String component = "QCheckBox";
-        String name = (!this.Name.equals("")) ? this.Name : component;
-        for (Map.Entry<String, Style> style : QT.styles.entrySet()) {
-            if (style.getKey().startsWith(component)) {
-                if (style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Name) && !this.Name.isEmpty()) {
-                if (style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Class) && !this.Class.isEmpty()) {
-                if (style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-        }
+        String name = Utils.getStyleSheets("QMenuBar", styles, Name, Class);
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
@@ -131,10 +87,10 @@ public final class Checkbox extends QCheckBox implements Component {
     }
 
     public String Component() {
-        return "Checkbox";
+        return "menu-bar";
     }
 
-    public QCheckBox Widgit() {
+    public QObject Widgit() {
         return this;
     }
 
@@ -143,7 +99,10 @@ public final class Checkbox extends QCheckBox implements Component {
     }
 
     public void addChild(Component child, Node node) {
-
+        if(child instanceof QAction) this.addAction((QAction) child);
+        if(child instanceof QMenu) this.addMenu((QMenu) child);
+        if(child instanceof QWidget) this.setCornerWidget((QWidget) child);
+        if(child instanceof Separator) this.addSeparator();
     }
 
     public void actionEvent(QActionEvent event) {

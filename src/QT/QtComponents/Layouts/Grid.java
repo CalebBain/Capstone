@@ -1,10 +1,9 @@
-package QtComponents.Layouts;
+package QT.QtComponents.Layouts;
 
-import Assemble.Utils;
-import EventClass.Events;
-import QtComponents.Component;
+import QT.Assemble.Utils;
+import QT.EventClass.Events;
+import QT.QtComponents.Component;
 import com.trolltech.qt.core.QChildEvent;
-import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QGridLayout;
@@ -53,10 +52,10 @@ public final class Grid extends QGridLayout implements Component {
     public void addChild(Component child, Node node) {
         String prop;
         NamedNodeMap nodeMap = node.getAttributes();
-        int row = (Utils.tryValue((prop = Utils.check("row", nodeMap)))) ? Integer.parseInt(prop) : 0,
-                col = (Utils.tryValue((prop = Utils.check("column", nodeMap)))) ? Integer.parseInt(prop) : 0,
-                rspan = ((Utils.tryValue((prop = Utils.check("row-span", nodeMap)))) ? Integer.parseInt(prop) : 1) + row - 1,
-                cspan = ((Utils.tryValue((prop = Utils.check("column-span", nodeMap)))) ? Integer.parseInt(prop) : 1) + col - 1;
+        int row = (Utils.tryValue((prop = Utils.check("row", nodeMap)))) ? Integer.parseInt(prop) : 1,
+                col = (Utils.tryValue((prop = Utils.check("column", nodeMap)))) ? Integer.parseInt(prop) : 1,
+                rspan = ((Utils.tryValue((prop = Utils.check("row-span", nodeMap)))) ? row + Integer.parseInt(prop) : row),
+                cspan = ((Utils.tryValue((prop = Utils.check("column-span", nodeMap)))) ? col + Integer.parseInt(prop) : col);
         Qt.AlignmentFlag align;
         switch (Utils.check("grid-alignment", nodeMap)) {
             case "bottom":
@@ -87,10 +86,13 @@ public final class Grid extends QGridLayout implements Component {
             default:
                 align = Qt.AlignmentFlag.AlignAbsolute;
         }
-        if (child instanceof QWidget)
-            this.addWidget((QWidget) child.Widgit(), row, col, align);
-        if (child instanceof QLayout)
-            this.addLayout((QLayout) child, row, col, align);
+        if (child instanceof QWidget) this.addWidget((QWidget) child, row, col, rspan, cspan, align);
+        if (child instanceof QLayout){
+            if (rspan != -1 && cspan != -1) this.addLayout((QLayout) child, row, col, rspan, cspan, align);
+            else if (rspan != -1) this.addLayout((QLayout) child, row, col, rspan, col, align);
+            else if (cspan != -1) this.addLayout((QLayout) child, row, col, row, cspan, align);
+            else this.addLayout((QLayout) child, row, col, align);
+        }
     }
 
     public void childEvent(QChildEvent event) {

@@ -1,12 +1,11 @@
-package QtComponents;
+package QT.QtComponents;
 
-import Assemble.QT;
-import Assemble.Utils;
-import EventClass.Events;
-import StyleComponents.Style;
+import QT.Assemble.QT;
+import QT.Assemble.Utils;
+import QT.EventClass.Events;
+import QT.StyleComponents.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
@@ -16,26 +15,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Caleb Bain on 1/8/2016.
+ * Created by Caleb Bain on 1/12/2016.
  */
-public final class Number extends QLCDNumber implements Component {
+public final class Checkbox extends QCheckBox implements Component {
     private Events events = new Events() {
     };
     private Map<String, Style> styles = new HashMap<>();
     private String Name;
     private String Class;
     private NamedNodeMap nodeMap;
+    private boolean TriState;
 
-    public Number(Node node) {
+    public Checkbox(Node node, boolean TriState) {
+        this.setTristate(TriState);
         this.nodeMap = node.getAttributes();
-        setIdentity();
+        this.TriState = TriState;
+        setIdentity(nodeMap, (TriState)? "QTriState" : "QCheckBox");
     }
 
-    private void setIdentity() {
+    private void setIdentity(NamedNodeMap nodeMap, String TriState) {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
         QDesktopWidget desktop = new QDesktopWidget();
-        String name = "QLCDNumber";
+        String name = "QCheckBox";
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, name, true));
             this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
@@ -44,141 +46,43 @@ public final class Number extends QLCDNumber implements Component {
             this.styles.get(Name).addAttribute("min-width", "1");
             this.setAccessibleName(Name);
         } else {
-            this.styles.put(name, new Style(name, name, false));
-            this.styles.get(name).addAttribute("max-height", desktop.screenGeometry().height() + "");
-            this.styles.get(name).addAttribute("min-height", "1");
-            this.styles.get(name).addAttribute("max-width", desktop.screenGeometry().width() + "");
-            this.styles.get(name).addAttribute("min-width", "1");
+            this.styles.put(TriState, new Style(TriState, name, true));
+            this.styles.get(TriState).addAttribute("max-height", desktop.screenGeometry().height() + "");
+            this.styles.get(TriState).addAttribute("min-height", "1");
+            this.styles.get(TriState).addAttribute("max-width", desktop.screenGeometry().width() + "");
+            this.styles.get(TriState).addAttribute("min-width", "1");
         }
     }
 
     private void setProps() {
-        switch (Utils.check("segment-style", nodeMap)) {
-            case "outline":
-                this.setSegmentStyle(SegmentStyle.Outline);
-                break;
-            case "filled":
-                this.setSegmentStyle(SegmentStyle.Filled);
-                break;
-            case "flat":
-                this.setSegmentStyle(SegmentStyle.Flat);
-                break;
-        }
-
-        switch (Utils.check("mode", nodeMap)) {
-            case "hex":
-                this.setMode(Mode.Hex);
-                break;
-            case "dec":
-                this.setMode(Mode.Dec);
-                break;
-            case "oct":
-                this.setMode(Mode.Oct);
-                break;
-            case "bin":
-                this.setMode(Mode.Bin);
-                break;
-        }
-
-        if (Utils.check("small-decimal-point", nodeMap).equals("true")) this.setSmallDecimalPoint(true);
-        else if (Utils.check("small-decimal-point", nodeMap).equals("false")) this.setSmallDecimalPoint(false);
-
+        if (Utils.check("exclusive", "true", nodeMap)) this.setAutoExclusive(true);
+        else if (Utils.check("exclusive", "false", nodeMap)) this.setAutoExclusive(false);
+        if (Utils.check("repeatable", "true", nodeMap)) this.setAutoRepeat(true);
+        else if (Utils.check("repeatable", "false", nodeMap)) this.setAutoRepeat(false);
+        if (Utils.check("checkable", "true", nodeMap)) this.setCheckable(true);
+        else if (Utils.check("checkable", "false", nodeMap)) this.setCheckable(false);
+        if (Utils.check("checked", "true", nodeMap)) this.setChecked(true);
+        else if (Utils.check("checked", "false", nodeMap)) this.setChecked(false);
         String count;
-        if (Utils.tryValue((count = Utils.check("digit-count", nodeMap)))) this.setDigitCount(Integer.parseInt(count));
-        if (Utils.tryValue((count = Utils.check("value", nodeMap)))) this.display(Integer.parseInt(count));
-        setFrameProps();
+        if (Utils.tryValue((count = Utils.check("repeatable-delay", nodeMap)))) this.setAutoRepeatDelay(Integer.parseInt(count));
+        if (Utils.tryValue((count = Utils.check("repeatable-interval", nodeMap)))) this.setAutoRepeatInterval(Integer.parseInt(count));
+        Utils.setWidgetProps(this, nodeMap);
         onFunction();
-    }
-
-    private void setFrameProps() {
-        String count;
-        if (Utils.tryValue((count = Utils.check("shadow", nodeMap))))
-            this.setFrameShadow(Shadow.resolve(Integer.parseInt(count)));
-        switch (Utils.check("shadow", nodeMap)) {
-            case "plain":
-                this.setFrameShadow(Shadow.Plain);
-                break;
-            case "raised":
-                this.setFrameShadow(Shadow.Raised);
-                break;
-            case "sunken":
-                this.setFrameShadow(Shadow.Sunken);
-                break;
-        }
-
-        if (Utils.tryValue((count = Utils.check("shape", nodeMap))))
-            this.setFrameShape(Shape.resolve(Integer.parseInt(count)));
-        switch (Utils.check("shape", nodeMap)) {
-            case "no-frame":
-                this.setFrameShape(Shape.NoFrame);
-                break;
-            case "box":
-                this.setFrameShape(Shape.Box);
-                break;
-            case "panel":
-                this.setFrameShape(Shape.Panel);
-                break;
-            case "styled-panel":
-                this.setFrameShape(Shape.StyledPanel);
-                break;
-            case "horizontal-line":
-                this.setFrameShape(Shape.HLine);
-                break;
-            case "vertical-line":
-                this.setFrameShape(Shape.VLine);
-                break;
-            case "window-panel":
-                this.setFrameShape(Shape.WinPanel);
-                break;
-        }
-    }
-
-    private String[] Func(String prop) {
-        String call;
-        if (!(call = Utils.check(prop, nodeMap)).isEmpty()) return call.split(":");
-        return new String[0];
     }
 
     private void onFunction() {
         String[] callParts;
-        if ((callParts = Func("on-overflow")).length == 1) this.overflow.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.overflow.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-custom-context-menu-request")).length == 1)
-            this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2)
-            this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if ((callParts = Utils.Func("on-state-change", nodeMap)).length == 1) this.stateChanged.connect(QApplication.instance(), callParts[0]);
+        else if (callParts.length == 2) this.stateChanged.connect(QT.findComponent(callParts[0]), callParts[1]);
+        Utils.onAbstractButtonFunctions(this, nodeMap);
     }
 
     public String setStyle() {
-        String component = "QLCDNumber";
-        String name = (!this.Name.equals("")) ? this.Name : component;
-        for (Map.Entry<String, Style> style : QT.styles.entrySet()) {
-            if (style.getKey().startsWith(component)) {
-                if (style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Name) && !this.Name.isEmpty()) {
-                if (style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Class) && !this.Class.isEmpty()) {
-                if (style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-        }
+        String name = Utils.getStyleSheets("QCheckBox", styles, Name, Class);
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
-        StringBuilder sb = new StringBuilder();
         if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
+        StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
     }
@@ -192,10 +96,10 @@ public final class Number extends QLCDNumber implements Component {
     }
 
     public String Component() {
-        return "number";
+        return "Checkbox";
     }
 
-    public QLCDNumber Widgit() {
+    public QCheckBox Widgit() {
         return this;
     }
 

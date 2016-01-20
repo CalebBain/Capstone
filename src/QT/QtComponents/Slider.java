@@ -1,9 +1,9 @@
-package QtComponents;
+package QT.QtComponents;
 
-import Assemble.QT;
-import Assemble.Utils;
-import EventClass.Events;
-import StyleComponents.Style;
+import QT.Assemble.QT;
+import QT.Assemble.Utils;
+import QT.EventClass.Events;
+import QT.StyleComponents.Style;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
@@ -66,81 +66,30 @@ public final class Slider extends QSlider implements Component {
                 this.setTickPosition(TickPosition.NoTicks);
         }
         String steps;
-        if (Utils.check("orientation", nodeMap).equals("horizontal")) this.setOrientation(Qt.Orientation.Horizontal);
-        if (Utils.check("orientation", nodeMap).equals("vertical")) this.setOrientation(Qt.Orientation.Vertical);
+        steps = Utils.check("range", nodeMap);
+        String[] range = steps.split(" ");
+        if (range.length > 1) this.setRange(Integer.parseInt(range[0]), Integer.parseInt(range[1]));
+        if (Utils.check("orientation", "horizontal", nodeMap)) this.setOrientation(Qt.Orientation.Horizontal);
+        if (Utils.check("orientation", "vertical", nodeMap)) this.setOrientation(Qt.Orientation.Vertical);
         if (Utils.tryValue(steps = Utils.check("interval", nodeMap))) this.setMinimum(Integer.parseInt(steps));
         if (Utils.tryValue(steps = Utils.check("min-value", nodeMap))) this.setMinimum(Integer.parseInt(steps));
         if (Utils.tryValue(steps = Utils.check("max-value", nodeMap))) this.setMaximum(Integer.parseInt(steps));
         if (Utils.tryValue(steps = Utils.check("value", nodeMap))) this.setValue(Integer.parseInt(steps));
         if (Utils.tryValue(steps = Utils.check("page-steps", nodeMap))) this.setPageStep(Integer.parseInt(steps));
         if (Utils.tryValue(steps = Utils.check("arrow-steps", nodeMap))) this.setSingleStep(Integer.parseInt(steps));
-        if (Utils.check("invert-numbers", nodeMap).equals("true")) this.setInvertedAppearance(true);
-        else if (Utils.check("invert-numbers", nodeMap).equals("false")) this.setInvertedAppearance(false);
-        if (Utils.check("invert-controls", nodeMap).equals("true")) this.setInvertedControls(true);
-        else if (Utils.check("invert-controls", nodeMap).equals("false")) this.setInvertedControls(false);
-        onFunction();
-    }
-
-    private String[] Func(String prop) {
-        String call;
-        String[] calls = new String[0];
-        if (!(call = Utils.check(prop, nodeMap)).isEmpty()) calls = call.split(":");
-        return calls;
-    }
-
-    private void onFunction() {
-        String[] callParts;
-        if ((callParts = Func("on-value-change")).length == 1)
-            this.valueChanged.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.valueChanged.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-release")).length == 1)
-            this.sliderReleased.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.sliderReleased.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-press")).length == 1)
-            this.sliderPressed.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.sliderPressed.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-action-trigger")).length == 1)
-            this.actionTriggered.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.actionTriggered.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-range-change")).length == 1)
-            this.rangeChanged.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2) this.rangeChanged.connect(QT.findComponent(callParts[0]), callParts[1]);
-        if ((callParts = Func("on-custom-context-menu-request")).length == 1)
-            this.customContextMenuRequested.connect(QApplication.instance(), callParts[0]);
-        else if (callParts.length == 2)
-            this.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
+        if (Utils.check("invert-numbers", "true", nodeMap)) this.setInvertedAppearance(true);
+        else if (Utils.check("invert-numbers", "false", nodeMap)) this.setInvertedAppearance(false);
+        if (Utils.check("invert-controls", "true", nodeMap)) this.setInvertedControls(true);
+        else if (Utils.check("invert-controls", "false", nodeMap)) this.setInvertedControls(false);
+        Utils.setWidgetProps(this, nodeMap);
+        Utils.onAbstractSliderFunctions(this, nodeMap);
     }
 
     public String setStyle() {
-        String component = "QSlider";
-        String name = (!this.Name.equals("")) ? this.Name : component;
-        for (Map.Entry<String, Style> style : QT.styles.entrySet()) {
-            if (style.getKey().startsWith(component)) {
-                if (style.getKey().equals(component)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Name) && !this.Name.isEmpty()) {
-                if (style.getKey().equals(this.Name)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-            if (style.getKey().startsWith(this.Class) && !this.Class.isEmpty()) {
-                if (style.getKey().equals(this.Class)) styles.get(name).addAll(style.getValue());
-                else {
-                    style.getValue().setComponent(component);
-                    styles.put(style.getKey(), style.getValue());
-                }
-            }
-        }
+        String name = Utils.getStyleSheets("QSlider", styles, Name, Class);
         Utils.setStyle(styles.get(name), nodeMap);
         setProps();
         StringBuilder sb = new StringBuilder();
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
     }

@@ -1,6 +1,6 @@
-package Assemble;
+package QT.Assemble;
 
-import StyleComponents.Style;
+import QT.StyleComponents.Style;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 

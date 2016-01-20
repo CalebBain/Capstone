@@ -1,4 +1,4 @@
-package StyleComponents;
+package QT.StyleComponents;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +56,8 @@ public final class Style {
             put("radio", "QRadioButton");
             put("slider", "QSlider");
             put("check-box", "QCheckBox");
+            put("tri-state", "QTriState");
+            put("menu-bar", "QMenuBar");
         }};
         for (Map.Entry<String, String> entry : components.entrySet())
             if (name.startsWith(entry.getKey()))

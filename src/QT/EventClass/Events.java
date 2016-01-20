@@ -1,4 +1,4 @@
-package EventClass;
+package QT.EventClass;
 
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
@@ -10,7 +10,8 @@ import com.trolltech.qt.gui.*;
  */
 public abstract class Events {
     /*window events*/
-    public void actionEvent(QMainWindow component, QActionEvent event) {}
+    public void actionEvent(QMainWindow component, QActionEvent event) {
+    }
 
     public void changeEvent(QMainWindow component, QEvent event) {
     }
@@ -137,6 +138,8 @@ public abstract class Events {
     }
 
     public void keyPressEvent(QPushButton component, QKeyEvent event) {
+        state = !state;
+        component.setFlat(state);
     }
 
     public void keyReleaseEvent(QPushButton component, QKeyEvent event) {
@@ -151,7 +154,10 @@ public abstract class Events {
     public void mouseMoveEvent(QPushButton component, QMouseEvent event) {
     }
 
+    private boolean state = false;
     public void mousePressEvent(QPushButton component, QEvent event) {
+        state = !state;
+        component.setFlat(state);
     }
 
     public void mouseReleaseEvent(QPushButton component, QMouseEvent event) {
@@ -167,7 +173,6 @@ public abstract class Events {
     }
 
     public void showEvent(QPushButton component, QEvent event) {
-        component.repaint();
     }
 
     public void tabletEvent(QPushButton component, QTabletEvent event) {
@@ -609,5 +614,90 @@ public abstract class Events {
     }
 
     public void timerEvent(QGridLayout component, QTimerEvent event) {
+    }
+
+    /*menubar events*/
+    public void actionEvent(QMenuBar menubar, QActionEvent event) {
+    }
+
+    public void changeEvent(QMenuBar menubar, QEvent event) {
+    }
+
+    public void childEvent(QMenuBar component, QChildEvent event) {
+    }
+
+    public void closeEvent(QMenuBar component, QCloseEvent event) {
+    }
+
+    public void contextMenuEvent(QMenuBar component, QEvent event) {
+    }
+
+    public void dragEnterEvent(QMenuBar component, QDragEnterEvent event) {
+    }
+
+    public void dragLeaveEvent(QMenuBar component, QDragLeaveEvent event) {
+    }
+
+    public void dragMoveEvent(QMenuBar component, QDragMoveEvent event) {
+    }
+
+    public void dropEvent(QMenuBar component, QDropEvent event) {
+    }
+
+    public void enterEvent(QMenuBar component, QEvent event) {
+    }
+
+    public void focusInEvent(QMenuBar component, QFocusEvent event) {
+    }
+
+    public void focusOutEvent(QMenuBar component, QFocusEvent event) {
+    }
+
+    public void hideEvent(QMenuBar component, QHideEvent event) {
+    }
+
+    public void inputMethodEvent(QMenuBar component, QInputMethodEvent event) {
+    }
+
+    public void keyPressEvent(QMenuBar component, QKeyEvent event) {
+    }
+
+    public void keyReleaseEvent(QMenuBar component, QKeyEvent event) {
+    }
+
+    public void leaveEvent(QMenuBar component, QEvent event) {
+    }
+
+    public void mouseDoubleClickEvent(QMenuBar component, QMouseEvent event) {
+    }
+
+    public void mouseMoveEvent(QMenuBar component, QMouseEvent event) {
+    }
+
+    public void mousePressEvent(QMenuBar component, QEvent event) {
+    }
+
+    public void mouseReleaseEvent(QMenuBar component, QMouseEvent event) {
+    }
+
+    public void moveEvent(QMenuBar component, QMoveEvent event) {
+    }
+
+    public void paintEvent(QMenuBar component, QPaintEvent event) {
+    }
+
+    public void resizeEvent(QMenuBar component, QResizeEvent event) {
+    }
+
+    public void showEvent(QMenuBar component, QEvent event) {
+    }
+
+    public void tabletEvent(QMenuBar component, QTabletEvent event) {
+    }
+
+    public void timerEvent(QMenuBar component, QTimerEvent event) {
+    }
+
+    public void wheelEvent(QMenuBar component, QWheelEvent event) {
     }
 }
