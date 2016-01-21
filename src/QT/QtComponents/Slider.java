@@ -31,63 +31,32 @@ public final class Slider extends QSlider implements Component {
     private void setIdentity(NamedNodeMap nodeMap) {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
-        QDesktopWidget desktop = new QDesktopWidget();
         String name = "QSlider";
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, name, true));
-            this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
-            this.styles.get(Name).addAttribute("min-height", "1");
-            this.styles.get(Name).addAttribute("max-width", desktop.screenGeometry().width() + "");
-            this.styles.get(Name).addAttribute("min-width", "1");
+            Utils.setDimensions(styles, Name);
             this.setAccessibleName(Name);
         } else {
             this.styles.put(name, new Style(name, name, false));
-            this.styles.get(name).addAttribute("max-height", desktop.screenGeometry().height() + "");
-            this.styles.get(name).addAttribute("min-height", "1");
-            this.styles.get(name).addAttribute("max-width", desktop.screenGeometry().width() + "");
-            this.styles.get(name).addAttribute("min-width", "1");
+            Utils.setDimensions(styles, name);
         }
     }
 
     private void setProps() {
+        String prop;
         switch (Utils.check("position", nodeMap)) {
-            case "both":
-                this.setTickPosition(TickPosition.TicksBothSides);
-                break;
-            case "left":
-            case "above":
-                this.setTickPosition(TickPosition.TicksAbove);
-                break;
-            case "right":
-            case "below":
-                this.setTickPosition(TickPosition.TicksBelow);
-                break;
-            case "no-ticks":
-                this.setTickPosition(TickPosition.NoTicks);
+            case "both": this.setTickPosition(TickPosition.TicksBothSides); break;
+            case "left": case "above": this.setTickPosition(TickPosition.TicksAbove); break;
+            case "right": case "below": this.setTickPosition(TickPosition.TicksBelow); break;
+            case "no-ticks": this.setTickPosition(TickPosition.NoTicks);
         }
-        String steps;
-        steps = Utils.check("range", nodeMap);
-        String[] range = steps.split(" ");
-        if (range.length > 1) this.setRange(Integer.parseInt(range[0]), Integer.parseInt(range[1]));
-        if (Utils.check("orientation", "horizontal", nodeMap)) this.setOrientation(Qt.Orientation.Horizontal);
-        if (Utils.check("orientation", "vertical", nodeMap)) this.setOrientation(Qt.Orientation.Vertical);
-        if (Utils.tryValue(steps = Utils.check("interval", nodeMap))) this.setMinimum(Integer.parseInt(steps));
-        if (Utils.tryValue(steps = Utils.check("min-value", nodeMap))) this.setMinimum(Integer.parseInt(steps));
-        if (Utils.tryValue(steps = Utils.check("max-value", nodeMap))) this.setMaximum(Integer.parseInt(steps));
-        if (Utils.tryValue(steps = Utils.check("value", nodeMap))) this.setValue(Integer.parseInt(steps));
-        if (Utils.tryValue(steps = Utils.check("page-steps", nodeMap))) this.setPageStep(Integer.parseInt(steps));
-        if (Utils.tryValue(steps = Utils.check("arrow-steps", nodeMap))) this.setSingleStep(Integer.parseInt(steps));
-        if (Utils.check("invert-numbers", "true", nodeMap)) this.setInvertedAppearance(true);
-        else if (Utils.check("invert-numbers", "false", nodeMap)) this.setInvertedAppearance(false);
-        if (Utils.check("invert-controls", "true", nodeMap)) this.setInvertedControls(true);
-        else if (Utils.check("invert-controls", "false", nodeMap)) this.setInvertedControls(false);
+        if (Utils.tryValue(prop = Utils.check("interval", nodeMap))) this.setTickInterval(Integer.parseInt(prop));
         Utils.setWidgetProps(this, nodeMap);
         Utils.onAbstractSliderFunctions(this, nodeMap);
     }
 
     public String setStyle() {
-        String name = Utils.getStyleSheets("QSlider", styles, Name, Class);
-        Utils.setStyle(styles.get(name), nodeMap);
+        Utils.getStyleSheets("QSlider", styles, Name, Class, nodeMap);
         setProps();
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());

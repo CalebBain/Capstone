@@ -126,12 +126,6 @@ public final class Utils {
         else if (callParts.length == 2) component.customContextMenuRequested.connect(QT.findComponent(callParts[0]), callParts[1]);
     }
 
-    public static int[] StringArrayToIntArray(String[] array){
-        int[] result = new int[array.length];
-        for(int i = 0; i < result.length; i++) result[i] = Integer.parseInt(array[i]);
-        return result;
-    }
-
     public static void setDimensions(Map<String, Style> styles, String name){
         QDesktopWidget desktop = new QDesktopWidget();
         styles.get(name).addAttribute("max-height", desktop.screenGeometry().height() + "");
@@ -258,6 +252,30 @@ public final class Utils {
             else if(sizes.length == 3) component.setFrameRect(new QRect(sizes[0], sizes[0], sizes[1], sizes[2]));
             else if(sizes.length == 4) component.setFrameRect(new QRect(sizes[0], sizes[1], sizes[2], sizes[3]));
         }
+        setWidgetProps(component, nodeMap);
+    }
+
+    public static void setAbstractSliderProps(QAbstractSlider component, NamedNodeMap nodeMap){
+        String prop;
+        prop = Utils.check("range", nodeMap);
+        String[] range = prop.split(" ");
+        if (range.length > 1) component.setRange(Integer.parseInt(range[0]), Integer.parseInt(range[1]));
+        if (Utils.check("orientation", "horizontal", nodeMap)) component.setOrientation(Qt.Orientation.Horizontal);
+        else if (Utils.check("orientation", "vertical", nodeMap)) component.setOrientation(Qt.Orientation.Vertical);
+        if (Utils.tryValue(prop = Utils.check("min-value", nodeMap))) component.setMinimum(Integer.parseInt(prop));
+        if (Utils.tryValue(prop = Utils.check("max-value", nodeMap))) component.setMaximum(Integer.parseInt(prop));
+        if (Utils.tryValue(prop = Utils.check("value", nodeMap))) component.setValue(Integer.parseInt(prop));
+        if (Utils.tryValue(prop = Utils.check("page-steps", nodeMap))) component.setPageStep(Integer.parseInt(prop));
+        if (Utils.tryValue(prop = Utils.check("arrow-steps", nodeMap))) component.setSingleStep(Integer.parseInt(prop));
+        if (Utils.check("invert-numbers", "true", nodeMap)) component.setInvertedAppearance(true);
+        else if (Utils.check("invert-numbers", "false", nodeMap)) component.setInvertedAppearance(false);
+        if (Utils.check("invert-controls", "true", nodeMap)) component.setInvertedControls(true);
+        else if (Utils.check("invert-controls", "false", nodeMap)) component.setInvertedControls(false);
+        if (Utils.check("tracking", "true", nodeMap)) component.setTracking(true);
+        else if (Utils.check("tracking", "false", nodeMap)) component.setTracking(false);
+        if (Utils.check("slide-down-tracking", "true", nodeMap)) component.setSliderDown(true);
+        else if (Utils.check("slide-down-tracking", "false", nodeMap)) component.setSliderDown(false);
+        if (Utils.tryValue((prop = Utils.check("slide-position", nodeMap)))) component.setSliderPosition(Integer.parseInt(prop));
         setWidgetProps(component, nodeMap);
     }
 
