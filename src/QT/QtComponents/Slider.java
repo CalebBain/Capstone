@@ -51,7 +51,7 @@ public final class Slider extends QSlider implements Component {
             case "no-ticks": this.setTickPosition(TickPosition.NoTicks);
         }
         if (Utils.tryValue(prop = Utils.check("interval", nodeMap))) this.setTickInterval(Integer.parseInt(prop));
-        Utils.setWidgetProps(this, nodeMap);
+        Utils.setAbstractSliderProps(this, nodeMap);
         Utils.onAbstractSliderFunctions(this, nodeMap);
     }
 
