@@ -33,104 +33,37 @@ public final class Number extends QLCDNumber implements Component {
     private void setIdentity() {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
-        QDesktopWidget desktop = new QDesktopWidget();
         String name = "QLCDNumber";
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, name, true));
-            this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
-            this.styles.get(Name).addAttribute("min-height", "1");
-            this.styles.get(Name).addAttribute("max-width", desktop.screenGeometry().width() + "");
-            this.styles.get(Name).addAttribute("min-width", "1");
+            Utils.setDimensions(styles, Name);
             this.setAccessibleName(Name);
         } else {
             this.styles.put(name, new Style(name, name, false));
-            this.styles.get(name).addAttribute("max-height", desktop.screenGeometry().height() + "");
-            this.styles.get(name).addAttribute("min-height", "1");
-            this.styles.get(name).addAttribute("max-width", desktop.screenGeometry().width() + "");
-            this.styles.get(name).addAttribute("min-width", "1");
+            Utils.setDimensions(styles, name);
         }
     }
 
     private void setProps() {
         switch (Utils.check("segment-style", nodeMap)) {
-            case "outline":
-                this.setSegmentStyle(SegmentStyle.Outline);
-                break;
-            case "filled":
-                this.setSegmentStyle(SegmentStyle.Filled);
-                break;
-            case "flat":
-                this.setSegmentStyle(SegmentStyle.Flat);
-                break;
+            case "outline": this.setSegmentStyle(SegmentStyle.Outline); break;
+            case "filled": this.setSegmentStyle(SegmentStyle.Filled); break;
+            case "flat": this.setSegmentStyle(SegmentStyle.Flat); break;
         }
-
         switch (Utils.check("mode", nodeMap)) {
-            case "hex":
-                this.setMode(Mode.Hex);
-                break;
-            case "dec":
-                this.setMode(Mode.Dec);
-                break;
-            case "oct":
-                this.setMode(Mode.Oct);
-                break;
-            case "bin":
-                this.setMode(Mode.Bin);
-                break;
+            case "hex": this.setMode(Mode.Hex); break;
+            case "dec": this.setMode(Mode.Dec); break;
+            case "oct": this.setMode(Mode.Oct); break;
+            case "bin": this.setMode(Mode.Bin); break;
         }
-
         if (Utils.check("small-decimal-point", nodeMap).equals("true")) this.setSmallDecimalPoint(true);
         else if (Utils.check("small-decimal-point", nodeMap).equals("false")) this.setSmallDecimalPoint(false);
 
         String count;
         if (Utils.tryValue((count = Utils.check("digit-count", nodeMap)))) this.setDigitCount(Integer.parseInt(count));
         if (Utils.tryValue((count = Utils.check("value", nodeMap)))) this.display(Integer.parseInt(count));
-        setFrameProps();
-        Utils.setWidgetProps(this, nodeMap);
+        Utils.setFrameProps(this, nodeMap);
         onFunction();
-    }
-
-    private void setFrameProps() {
-        String count;
-        if (Utils.tryValue((count = Utils.check("shadow", nodeMap))))
-            this.setFrameShadow(Shadow.resolve(Integer.parseInt(count)));
-        switch (Utils.check("shadow", nodeMap)) {
-            case "plain":
-                this.setFrameShadow(Shadow.Plain);
-                break;
-            case "raised":
-                this.setFrameShadow(Shadow.Raised);
-                break;
-            case "sunken":
-                this.setFrameShadow(Shadow.Sunken);
-                break;
-        }
-
-        if (Utils.tryValue((count = Utils.check("shape", nodeMap))))
-            this.setFrameShape(Shape.resolve(Integer.parseInt(count)));
-        switch (Utils.check("shape", nodeMap)) {
-            case "no-frame":
-                this.setFrameShape(Shape.NoFrame);
-                break;
-            case "box":
-                this.setFrameShape(Shape.Box);
-                break;
-            case "panel":
-                this.setFrameShape(Shape.Panel);
-                break;
-            case "styled-panel":
-                this.setFrameShape(Shape.StyledPanel);
-                break;
-            case "horizontal-line":
-                this.setFrameShape(Shape.HLine);
-                break;
-            case "vertical-line":
-                this.setFrameShape(Shape.VLine);
-                break;
-            case "window-panel":
-                this.setFrameShape(Shape.WinPanel);
-                break;
-        }
     }
 
     private void onFunction() {
@@ -141,11 +74,9 @@ public final class Number extends QLCDNumber implements Component {
     }
 
     public String setStyle() {
-        String name = Utils.getStyleSheets("QLDCNumber", styles, Name, Class);
-        Utils.setStyle(styles.get(name), nodeMap);
+        Utils.getStyleSheets("QLDCNumber", styles, Name, Class, nodeMap);
         setProps();
         StringBuilder sb = new StringBuilder();
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
     }
@@ -171,7 +102,6 @@ public final class Number extends QLCDNumber implements Component {
     }
 
     public void addChild(Component child, Node node) {
-
     }
 
     public void actionEvent(QActionEvent event) {

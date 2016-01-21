@@ -132,6 +132,14 @@ public final class Utils {
         return result;
     }
 
+    public static void setDimensions(Map<String, Style> styles, String name){
+        QDesktopWidget desktop = new QDesktopWidget();
+        styles.get(name).addAttribute("max-height", desktop.screenGeometry().height() + "");
+        styles.get(name).addAttribute("min-height", "1");
+        styles.get(name).addAttribute("max-width", desktop.screenGeometry().width() + "");
+        styles.get(name).addAttribute("min-width", "1");
+    }
+
     public static String getStyleSheets(String component, Map<String, Style> styles, String Name, String Class, NamedNodeMap nodeMap){
         String name = (!Name.equals("")) ? Name : component;
         for (Map.Entry<String, Style> style : QT.styles.entrySet()) {

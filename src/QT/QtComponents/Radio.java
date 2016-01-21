@@ -33,46 +33,22 @@ public final class Radio extends QRadioButton implements Component {
     private void setIdentity(NamedNodeMap nodeMap) {
         this.Name = Utils.check("name", nodeMap);
         this.Class = Utils.check("class", nodeMap);
-        QDesktopWidget desktop = new QDesktopWidget();
         String name = "QRadioButton";
         if (!Name.isEmpty()) {
             this.styles.put(Name, new Style(Name, name, true));
-            this.styles.get(Name).addAttribute("max-height", desktop.screenGeometry().height() + "");
-            this.styles.get(Name).addAttribute("min-height", "1");
-            this.styles.get(Name).addAttribute("max-width", desktop.screenGeometry().width() + "");
-            this.styles.get(Name).addAttribute("min-width", "1");
+            Utils.setDimensions(styles, Name);
             this.setAccessibleName(Name);
         } else {
             this.styles.put(name, new Style(name, name, false));
-            this.styles.get(name).addAttribute("max-height", desktop.screenGeometry().height() + "");
-            this.styles.get(name).addAttribute("min-height", "1");
-            this.styles.get(name).addAttribute("max-width", desktop.screenGeometry().width() + "");
-            this.styles.get(name).addAttribute("min-width", "1");
+            Utils.setDimensions(styles, name);
         }
     }
 
-    private void setProps() {
-        if (Utils.check("exclusive", "true", nodeMap)) this.setAutoExclusive(true);
-        else if (Utils.check("exclusive", "false", nodeMap)) this.setAutoExclusive(false);
-        if (Utils.check("repeatable", "true", nodeMap)) this.setAutoRepeat(true);
-        else if (Utils.check("repeatable", "false", nodeMap)) this.setAutoRepeat(false);
-        if (Utils.check("checkable", "true", nodeMap)) this.setCheckable(true);
-        else if (Utils.check("checkable", "false", nodeMap)) this.setCheckable(false);
-        if (Utils.check("checked", "true", nodeMap)) this.setChecked(true);
-        else if (Utils.check("checked", "false", nodeMap)) this.setChecked(false);
-        String count;
-        if (Utils.tryValue((count = Utils.check("repeatable-delay", nodeMap)))) this.setAutoRepeatDelay(Integer.parseInt(count));
-        if (Utils.tryValue((count = Utils.check("repeatable-interval", nodeMap)))) this.setAutoRepeatInterval(Integer.parseInt(count));
-        Utils.onAbstractButtonFunctions(this, nodeMap);
-    }
-
     public String setStyle() {
-        String name = Utils.getStyleSheets("QRadioButton", styles, Name, Class);
-        Utils.setStyle(styles.get(name), nodeMap);
-        setProps();
-        Utils.setWidgetProps(this, nodeMap);
+        Utils.getStyleSheets("QRadioButton", styles, Name, Class, nodeMap);
+        Utils.setAbstractButtonProps(this, nodeMap);
+        Utils.onAbstractButtonFunctions(this, nodeMap);
         StringBuilder sb = new StringBuilder();
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
     }
@@ -98,7 +74,6 @@ public final class Radio extends QRadioButton implements Component {
     }
 
     public void addChild(Component child, Node node) {
-
     }
 
     public void actionEvent(QActionEvent event) {
