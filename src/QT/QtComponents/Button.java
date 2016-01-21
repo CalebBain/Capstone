@@ -56,30 +56,17 @@ public final class Button extends QPushButton implements Component {
     }
 
     private void setProps() {
-        if (Utils.check("exclusive", "true", nodeMap)) this.setAutoExclusive(true);
-        else if (Utils.check("exclusive", "false", nodeMap)) this.setAutoExclusive(false);
-        if (Utils.check("repeatable", "true", nodeMap)) this.setAutoRepeat(true);
-        else if (Utils.check("repeatable", "false", nodeMap)) this.setAutoRepeat(false);
-        if (Utils.check("checkable", "true", nodeMap)) this.setCheckable(true);
-        else if (Utils.check("checkable", "false", nodeMap)) this.setCheckable(false);
-        if (Utils.check("checked", "true", nodeMap)) this.setChecked(true);
-        else if (Utils.check("checked", "false", nodeMap)) this.setChecked(false);
         if (Utils.check("default", "true", nodeMap)) this.setDefault(true);
         else if (Utils.check("default", "false", nodeMap)) this.setDefault(false);
         if (Utils.check("flat", "true", nodeMap)) this.setFlat(true);
         else if (Utils.check("flat", "false", nodeMap)) this.setFlat(false);
-        String count;
-        if (Utils.tryValue((count = Utils.check("repeatable-delay", nodeMap)))) this.setAutoRepeatDelay(Integer.parseInt(count));
-        if (Utils.tryValue((count = Utils.check("repeatable-interval", nodeMap)))) this.setAutoRepeatInterval(Integer.parseInt(count));
+        Utils.setAbstractButtonProps(this, nodeMap);
         Utils.onAbstractButtonFunctions(this, nodeMap);
-        Utils.setWidgetProps(this, nodeMap);
     }
 
     public String setStyle() {
-        String name = Utils.getStyleSheets("QPushButton", styles, Name, Class);
-        Utils.setStyle(styles.get(name), nodeMap);
+        Utils.getStyleSheets("QPushButton", styles, Name, Class, nodeMap);
         setProps();
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();

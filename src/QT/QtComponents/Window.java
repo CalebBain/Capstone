@@ -95,10 +95,8 @@ public final class Window extends QMainWindow implements Component {
     }
 
     public String setStyle() {
-        String name = Utils.getStyleSheets("QMainWindow", styles, Name, Class);
-        Utils.setStyle(styles.get(name), nodeMap);
+        Utils.getStyleSheets("QMainWindow", styles, Name, Class, nodeMap);
         setProps();
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();

@@ -52,41 +52,9 @@ public final class ColumnView extends QColumnView implements Component {
     }
 
     private void setProps() {
-        switch (Utils.check("drag-drop-mode", nodeMap)) {
-            case "no-drag-drop": this.setDragDropMode(DragDropMode.NoDragDrop); break;
-            case "drop-only": this.setDragDropMode(DragDropMode.DropOnly); break;
-            case "drag-only": this.setDragDropMode(DragDropMode.DragOnly); break;
-            case "drag-drop": this.setDragDropMode(DragDropMode.DragDrop); break;
-            case "internal-move": this.setDragDropMode(DragDropMode.InternalMove); break;
-        }
-        switch (Utils.check("edit-trigger", nodeMap)) {
-            case "no-edit-triggers": this.setEditTriggers(EditTrigger.NoEditTriggers); break;
-            case "current-change": this.setEditTriggers(EditTrigger.CurrentChanged); break;
-            case "double-click": this.setEditTriggers(EditTrigger.DoubleClicked); break;
-            case "selected-click": this.setEditTriggers(EditTrigger.SelectedClicked); break;
-            case "edit-key-press": this.setEditTriggers(EditTrigger.EditKeyPressed); break;
-            case "any-key-press": this.setEditTriggers(EditTrigger.AnyKeyPressed); break;
-            case "all-edit-triggers": this.setEditTriggers(EditTrigger.AllEditTriggers); break;
-        }
-        if (Utils.check("horizontal-scroll-mode", nodeMap).equals("scroll-per-item")) this.setHorizontalScrollMode(ScrollMode.ScrollPerItem);
-        if (Utils.check("horizontal-scroll-mode", nodeMap).equals("scroll-per-pixel")) this.setHorizontalScrollMode(ScrollMode.ScrollPerPixel);
-        if (Utils.check("vertical-scroll-mode", nodeMap).equals("scroll-per-item")) this.setVerticalScrollMode(ScrollMode.ScrollPerItem);
-        if (Utils.check("vertical-scroll-mode", nodeMap).equals("scroll-per-pixel")) this.setVerticalScrollMode(ScrollMode.ScrollPerPixel);
-        switch (Utils.check("selection-behavior", nodeMap)) {
-            case "select-items": this.setSelectionBehavior(SelectionBehavior.SelectItems); break;
-            case "select-rows": this.setSelectionBehavior(SelectionBehavior.SelectRows); break;
-            case "select-columns": this.setSelectionBehavior(SelectionBehavior.SelectColumns); break;
-        }
-        switch (Utils.check("selection-mode", nodeMap)) {
-            case "single-select": this.setSelectionMode(SelectionMode.SingleSelection); break;
-            case "contiguous-select": this.setSelectionMode(SelectionMode.ContiguousSelection); break;
-            case "extended-select": this.setSelectionMode(SelectionMode.ExtendedSelection); break;
-            case "multi-select": this.setSelectionMode(SelectionMode.MultiSelection); break;
-            case "no-select": this.setSelectionMode(SelectionMode.NoSelection); break;
-        }
         if (Utils.check("resize-grips-visible", nodeMap).equals("true")) this.setResizeGripsVisible(true);
-        if (Utils.check("resize-grips-visible", nodeMap).equals("false")) this.setResizeGripsVisible(false);
-        Utils.setWidgetProps(this, nodeMap);
+        else if (Utils.check("resize-grips-visible", nodeMap).equals("false")) this.setResizeGripsVisible(false);
+        Utils.setAbstractItemViewProps(this, nodeMap);
         onFunction();
     }
 
@@ -98,10 +66,8 @@ public final class ColumnView extends QColumnView implements Component {
     }
 
     public String setStyle() {
-        String name = Utils.getStyleSheets("QColumnView", styles, Name, Class);
-        Utils.setStyle(styles.get(name), nodeMap);
+        Utils.getStyleSheets("QColumnView", styles, Name, Class, nodeMap);
         setProps();
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();

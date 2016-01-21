@@ -1,6 +1,8 @@
 package QT.Assemble;
 
 import QT.StyleComponents.Style;
+import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
@@ -130,7 +132,7 @@ public final class Utils {
         return result;
     }
 
-    public static String getStyleSheets(String component, Map<String, Style> styles, String Name, String Class){
+    public static String getStyleSheets(String component, Map<String, Style> styles, String Name, String Class, NamedNodeMap nodeMap){
         String name = (!Name.equals("")) ? Name : component;
         for (Map.Entry<String, Style> style : QT.styles.entrySet()) {
             if (style.getKey().startsWith(component)) {
@@ -155,7 +157,119 @@ public final class Utils {
                 }
             }
         }
+        Utils.setStyle(styles.get(name), nodeMap);
         return name;
+    }
+
+    public static void setAbstractItemViewProps(QAbstractItemView component, NamedNodeMap nodeMap){
+        String prop;
+        if (Utils.check("alt-row-color", "true", nodeMap)) component.setAlternatingRowColors(true);
+        else if (Utils.check("alt-row-color", "false", nodeMap)) component.setAlternatingRowColors(false);
+        if (Utils.tryValue((prop = Utils.check("auto-scroll-margin", nodeMap)))) component.setAutoScrollMargin(Integer.parseInt(prop));
+        switch (Utils.check("drag-drop-mode", nodeMap)) {
+            case "no-drag-drop": component.setDragDropMode(QAbstractItemView.DragDropMode.NoDragDrop); break;
+            case "drop-only": component.setDragDropMode(QAbstractItemView.DragDropMode.DropOnly); break;
+            case "drag-only": component.setDragDropMode(QAbstractItemView.DragDropMode.DragOnly); break;
+            case "drag-drop": component.setDragDropMode(QAbstractItemView.DragDropMode.DragDrop); break;
+            case "internal-move": component.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove); break;
+        }
+        if (Utils.check("draggable", "true", nodeMap)) component.setDragEnabled(true);
+        else if (Utils.check("draggable", "false", nodeMap)) component.setDragEnabled(false);
+        switch (Utils.check("edit-trigger", nodeMap)) {
+            case "no-edit-triggers": component.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers); break;
+            case "current-change": component.setEditTriggers(QAbstractItemView.EditTrigger.CurrentChanged); break;
+            case "double-click": component.setEditTriggers(QAbstractItemView.EditTrigger.DoubleClicked); break;
+            case "selected-click": component.setEditTriggers(QAbstractItemView.EditTrigger.SelectedClicked); break;
+            case "edit-key-press": component.setEditTriggers(QAbstractItemView.EditTrigger.EditKeyPressed); break;
+            case "any-key-press": component.setEditTriggers(QAbstractItemView.EditTrigger.AnyKeyPressed); break;
+            case "all-edit-triggers":
+                component.setEditTriggers(QAbstractItemView.EditTrigger.AllEditTriggers); break;
+        }
+        if (Utils.check("auto-scroll", "true", nodeMap)) component.setAutoScroll(true);
+        else if (Utils.check("auto-scroll", "false", nodeMap)) component.setAutoScroll(false);
+        switch (Utils.check("horizontal-scroll-mode", nodeMap)) {
+            case "per-item": component.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerItem); break;
+            case "per-pixel": component.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel); break;
+        }
+        switch (Utils.check("horizontal-scroll-mode", nodeMap)) {
+            case "items": component.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectItems); break;
+            case "rows": component.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows); break;
+            case "columns": component.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectColumns); break;
+        }
+        if (Utils.check("drop-indicator", "true", nodeMap)) component.setDropIndicatorShown(true);
+        else if (Utils.check("drop-indicator", "false", nodeMap)) component.setDropIndicatorShown(false);
+        if (Utils.check("tab-key-navigation", "true", nodeMap)) component.setTabKeyNavigation(true);
+        else if (Utils.check("tab-key-navigation", "false", nodeMap)) component.setTabKeyNavigation(false);
+        switch (Utils.check("text-elide-mode", nodeMap)) {
+            case "left": component.setTextElideMode(Qt.TextElideMode.ElideLeft); break;
+            case "right": component.setTextElideMode(Qt.TextElideMode.ElideRight); break;
+            case "middle": component.setTextElideMode(Qt.TextElideMode.ElideMiddle); break;
+            case "none": component.setTextElideMode(Qt.TextElideMode.ElideNone); break;
+        }
+        switch (Utils.check("vertical-scroll-mode", nodeMap)) {
+            case "per-item": component.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerItem); break;
+            case "per-pixel": component.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel); break;
+        }
+        setAbstractScrollAreaProps(component, nodeMap);
+    }
+
+    public static void setAbstractScrollAreaProps(QAbstractScrollArea component, NamedNodeMap nodeMap){
+        switch (Utils.check("horizontal-scroll-bar-policy", nodeMap)) {
+            case "always-on": component.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn); break;
+            case "as-needed": component.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded); break;
+            case "always-off": component.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff); break;
+        }
+        switch (Utils.check("vertical-scroll-bar-policy", nodeMap)) {
+            case "always-on": component.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn); break;
+            case "as-needed": component.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded); break;
+            case "always-off": component.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff); break;
+        }
+        setFrameProps(component, nodeMap);
+    }
+
+    public static void setFrameProps(QFrame component, NamedNodeMap nodeMap){
+        String prop;
+        switch (Utils.check("shadow", nodeMap)) {
+            case "sunken": component.setFrameShadow(QFrame.Shadow.Sunken); break;
+            case "plain": component.setFrameShadow(QFrame.Shadow.Plain); break;
+            case "raised": component.setFrameShadow(QFrame.Shadow.Raised); break;
+        }
+        switch (Utils.check("shape", nodeMap)) {
+            case "no-frame": component.setFrameShape(QFrame.Shape.NoFrame); break;
+            case "box": component.setFrameShape(QFrame.Shape.Box); break;
+            case "panel": component.setFrameShape(QFrame.Shape.Panel); break;
+            case "styled-panel": component.setFrameShape(QFrame.Shape.StyledPanel); break;
+            case "horizontal-line": component.setFrameShape(QFrame.Shape.HLine); break;
+            case "vertical-line": component.setFrameShape(QFrame.Shape.VLine); break;
+            case "window-panel": component.setFrameShape(QFrame.Shape.WinPanel); break;
+        }
+        if(!(prop = check("size", nodeMap)).isEmpty()){
+            int[] sizes = StringArrayToIntArray(prop, " ");
+            if(sizes.length == 1) component.setFrameRect(new QRect(0, 0, sizes[0], sizes[0]));
+            else if(sizes.length == 2) component.setFrameRect(new QRect(0, 0, sizes[0], sizes[1]));
+            else if(sizes.length == 3) component.setFrameRect(new QRect(sizes[0], sizes[0], sizes[1], sizes[2]));
+            else if(sizes.length == 4) component.setFrameRect(new QRect(sizes[0], sizes[1], sizes[2], sizes[3]));
+        }
+        setWidgetProps(component, nodeMap);
+    }
+
+    public static void setAbstractButtonProps(QAbstractButton component, NamedNodeMap nodeMap){
+        String prop;
+        if (Utils.check("checkable", "true", nodeMap)) component.setCheckable(true);
+        else if (Utils.check("checkable", "false", nodeMap)) component.setCheckable(false);
+        if (Utils.check("checked", "true", nodeMap)) component.setChecked(true);
+        else if (Utils.check("checked", "false", nodeMap)) component.setChecked(false);
+        if (Utils.check("pressed", "true", nodeMap)) component.setDown(true);
+        else if (Utils.check("pressed", "false", nodeMap)) component.setDown(false);
+        if (Utils.check("repeatable", "true", nodeMap)) component.setAutoRepeat(true);
+        else if (Utils.check("repeatable", "false", nodeMap)) component.setAutoRepeat(false);
+        if (Utils.check("exclusive", "true", nodeMap)) component.setAutoExclusive(true);
+        else if (Utils.check("exclusive", "false", nodeMap)) component.setAutoExclusive(false);
+        if (!(prop = Utils.check("text", nodeMap)).isEmpty()) component.setText(prop);
+        if (!(prop = Utils.check("short-cut", nodeMap)).isEmpty()) component.setShortcut(prop);
+        if (Utils.tryValue((prop = Utils.check("repeatable-delay", nodeMap)))) component.setAutoRepeatDelay(Integer.parseInt(prop));
+        if (Utils.tryValue((prop = Utils.check("repeatable-interval", nodeMap)))) component.setAutoRepeatInterval(Integer.parseInt(prop));
+        setWidgetProps(component, nodeMap);
     }
 
     public static void setWidgetProps(QWidget component, NamedNodeMap nodeMap){

@@ -7,6 +7,7 @@ import QT.StyleComponents.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QTimerEvent;
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -55,17 +56,12 @@ public final class Checkbox extends QCheckBox implements Component {
     }
 
     private void setProps() {
-        if (Utils.check("exclusive", "true", nodeMap)) this.setAutoExclusive(true);
-        else if (Utils.check("exclusive", "false", nodeMap)) this.setAutoExclusive(false);
-        if (Utils.check("repeatable", "true", nodeMap)) this.setAutoRepeat(true);
-        else if (Utils.check("repeatable", "false", nodeMap)) this.setAutoRepeat(false);
-        if (Utils.check("checkable", "true", nodeMap)) this.setCheckable(true);
-        else if (Utils.check("checkable", "false", nodeMap)) this.setCheckable(false);
-        if (Utils.check("checked", "true", nodeMap)) this.setChecked(true);
-        else if (Utils.check("checked", "false", nodeMap)) this.setChecked(false);
-        String count;
-        if (Utils.tryValue((count = Utils.check("repeatable-delay", nodeMap)))) this.setAutoRepeatDelay(Integer.parseInt(count));
-        if (Utils.tryValue((count = Utils.check("repeatable-interval", nodeMap)))) this.setAutoRepeatInterval(Integer.parseInt(count));
+        switch(Utils.check("check-state", nodeMap)){
+            case "unchecked": this.setCheckState(Qt.CheckState.Unchecked); break;
+            case "partially-checked": this.setCheckState(Qt.CheckState.PartiallyChecked); break;
+            case "checked": this.setCheckState(Qt.CheckState.Checked); break;
+        }
+        Utils.setAbstractButtonProps(this, nodeMap);
         Utils.setWidgetProps(this, nodeMap);
         onFunction();
     }
@@ -78,10 +74,8 @@ public final class Checkbox extends QCheckBox implements Component {
     }
 
     public String setStyle() {
-        String name = Utils.getStyleSheets("QCheckBox", styles, Name, Class);
-        Utils.setStyle(styles.get(name), nodeMap);
+        Utils.getStyleSheets("QCheckBox", styles, Name, Class, nodeMap);
         setProps();
-        if (styles.size() == 1 && styles.get(name).getAttributes().size() == 0) return "";
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Style> style : styles.entrySet()) sb.append(style.getValue().toString());
         return sb.toString();
