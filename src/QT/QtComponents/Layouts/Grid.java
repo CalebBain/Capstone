@@ -1,14 +1,10 @@
 package QT.QtComponents.Layouts;
 
-import QT.Assemble.Utils;
+import Compiler.Utils;
 import QT.EventClass.Events;
 import QT.QtComponents.Component;
-import com.trolltech.qt.core.QChildEvent;
-import com.trolltech.qt.core.QTimerEvent;
-import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QGridLayout;
-import com.trolltech.qt.gui.QLayout;
-import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.core.*;
+import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 

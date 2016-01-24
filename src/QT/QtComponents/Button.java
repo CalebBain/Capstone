@@ -1,8 +1,8 @@
 package QT.QtComponents;
 
-import QT.Assemble.Utils;
+import Compiler.Utils;
 import QT.EventClass.Events;
-import QT.StyleComponents.Style;
+import Compiler.Parser.Style;
 import com.trolltech.qt.core.*;
 import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;

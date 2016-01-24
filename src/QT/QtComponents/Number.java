@@ -1,9 +1,9 @@
 package QT.QtComponents;
 
-import QT.Assemble.QT;
-import QT.Assemble.Utils;
+import QT.QT;
+import Compiler.Utils;
 import QT.EventClass.Events;
-import QT.StyleComponents.Style;
+import Compiler.Parser.Style;
 import com.trolltech.qt.core.QChildEvent;
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QTimerEvent;
