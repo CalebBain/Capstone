@@ -1,56 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6b4ecd3f-a827-4cec-a0a9-c91b4176df66" name="Default" comment="">
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\jaml_files\main.jaml" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\Assemble\Assembler.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\Assemble\QT.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\Assemble\StyleParser.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\Assemble\Utils.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\EventClass\Events.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Button$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Button.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Checkbox$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Checkbox.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\ColumnView$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\ColumnView.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Component.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Layouts\Grid$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Layouts\Grid.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Number$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Number.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Radio$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Radio.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Slider$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Slider.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\ToolbarComponents\Action.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\ToolbarComponents\Menu.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\ToolbarComponents\MenuBar$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\ToolbarComponents\MenuBar.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\ToolbarComponents\Separator.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Window$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\QtComponents\Window.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\StyleComponents\Style$1.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\out\production\JAML\StyleComponents\Style.class" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\Assemble\Assembler.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\Assemble\QT.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\Assemble\StyleParser.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\Assemble\Utils.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\EventClass\Events.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\StyleComponents\Style.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\stylesheets\Main.css" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/Button.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/Button.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/Checkbox.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/Checkbox.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/ColumnView.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/ColumnView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/Layouts/Grid.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/Layouts/Grid.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/ToolbarComponents/MenuBar.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/ToolbarComponents/MenuBar.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/Number.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/Number.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/Radio.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/Radio.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/Slider.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/Slider.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/Window.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/Window.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="6b4ecd3f-a827-4cec-a0a9-c91b4176df66" name="Default" comment="" />
     <ignored path="JAML.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -140,8 +91,8 @@
       <file leaf-file-name="ComponentParser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/ComponentParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.4858116" vertical-offset="598" max-vertical-offset="1479">
-              <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.26674235" vertical-offset="598" max-vertical-offset="1479">
+              <caret line="49" column="26" selection-start-line="10" selection-start-column="0" selection-end-line="49" selection-end-column="26" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -771,12 +722,12 @@
       <workItem from="1453401647034" duration="7984000" />
       <workItem from="1453482470499" duration="11811000" />
       <workItem from="1453570246304" duration="25084000" />
-      <workItem from="1453658623286" duration="163000" />
+      <workItem from="1453658623286" duration="308000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="329375000" />
+    <option name="totallyTimeSpent" value="329520000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="40" width="960" height="1040" extended-state="0" />
@@ -1322,8 +1273,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/ComponentParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.4858116" vertical-offset="598" max-vertical-offset="1479">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.26674235" vertical-offset="598" max-vertical-offset="1479">
+          <caret line="49" column="26" selection-start-line="10" selection-start-column="0" selection-end-line="49" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
