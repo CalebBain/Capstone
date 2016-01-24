@@ -90,14 +90,4 @@ public final class Grid extends QGridLayout implements Component {
             else this.addLayout((QLayout) child, row, col, align);
         }
     }
-
-    public void childEvent(QChildEvent event) {
-        super.childEvent(event);
-        events.childEvent(this, event);
-    }
-
-    public void timerEvent(QTimerEvent event) {
-        super.timerEvent(event);
-        events.timerEvent(this, event);
-    }
 }
