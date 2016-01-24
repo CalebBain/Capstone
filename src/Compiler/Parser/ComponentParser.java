@@ -1,8 +1,8 @@
 package Compiler.Parser;
 
-import QT.QtComponents.*;
 import Compiler.Utils;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.gui.QGridLayout;
 import com.trolltech.qt.gui.QLayout;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -12,11 +12,11 @@ public class ComponentParser {
     private InlineStyleParser styles = new InlineStyleParser();
     private FunctionParser functions = new FunctionParser();
 
-    public String nodeLoop(NodeList nodeList, Component parent) {
+    public String nodeLoop(QObject parent, StringBuilder sb, NodeList nodeList) {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             QObject component = elementsSwitch(node.getNodeName(), sb, node.getAttributes());
-            if (component instanceof QLayout) nodeLoop(node.getChildNodes(), (Component) component);
+            if (component instanceof QLayout) nodeLoop(component, sb, node.getChildNodes());
         }
         return sb.toString();
     }
@@ -30,19 +30,47 @@ public class ComponentParser {
             case "button": Button(name, sb, nodeMap); break;
             case "number": Number(name, sb, nodeMap); break;
             case "slider": Slider(name, sb, nodeMap); break;
-            case "grid": Grid(name, sb, nodeMap); break;
+            case "grid": Grid(name, sb, nodeMap);
+                component = new QGridLayout(); break;
         }
         return component;
     }
 
     private void Grid(String name, StringBuilder sb, NamedNodeMap nodeMap) {
+        sb.append(String.format("QGridLayout %1s = new QGridLayout();", name));
+    }
 
+    private void GridChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+        sb.append(String.format("%1s.add%2s(%3s, ", name, component, child));
+        int row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
+        int col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
+        Utils.tryValue("row-span", "%2s, ", row, sb, nodeMap);
+        Utils.tryValue("column-span", "%2s, ", col, sb, nodeMap);
+        sb.append("Qt.AlignmentFlag.");
+        switch(Utils.check("position", nodeMap)){
+            case "bottom": sb.append("AlignBottom);\n"); break;
+            case "center": sb.append("AlignCenter);\n"); break;
+            case "horizontal-center": sb.append("AlignHCenter);\n"); break;
+            case "justify": sb.append("AlignJustify);\n"); break;
+            case "left": sb.append("AlignLeft);\n"); break;
+            case "right": sb.append("AlignRight);\n"); break;
+            case "top": sb.append("AlignTop);\n"); break;
+            case "vertical-center": sb.append("AlignVCenter);\n"); break;
+            default: sb.append("AlignAbsolute);\n"); break;
+        }
+    }
+
+    private void addChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+        switch (name) {
+            case "grid": GridChild(name, component, child, sb, nodeMap); break;
+        }
     }
 
     private void Slider(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String prop;
+        sb.append(String.format("QSlider %1s = new QSlider();", name));
         if(!(prop = Utils.check("position", nodeMap)).isEmpty()){
-            sb.append(name + ".setTickPosition(TickPosition.");
+            sb.append(String.format("%1s.setTickPosition(TickPosition.", name));
             switch(prop){
                 case "both": sb.append("TicksBothSides);\n"); break;
                 case "left": sb.append("TicksAbove);\n"); break;
@@ -57,8 +85,9 @@ public class ComponentParser {
 
     private void Number(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String prop;
+        sb.append(String.format("QLCDNumber %1s = new QLCDNumber();", name));
         if(!(prop = Utils.check("segment-style", nodeMap)).isEmpty()){
-            sb.append(name + ".setSegmentStyle(SegmentStyle.");
+            sb.append(String.format("%1s.setSegmentStyle(SegmentStyle.", name));
             switch(prop){
                 case "outline": sb.append("Outline);\n"); break;
                 case "filled": sb.append("Filled);\n"); break;
@@ -66,7 +95,7 @@ public class ComponentParser {
             }
         }
         if(!(prop = Utils.check("mode", nodeMap)).isEmpty()){
-            sb.append(name + ".setMode(Mode.");
+            sb.append(String.format("%1s.setMode(Mode.", name));
             switch(prop){
                 case "hex": sb.append("Hex);\n"); break;
                 case "dec": sb.append("Dec);\n"); break;
@@ -83,6 +112,7 @@ public class ComponentParser {
     }
 
     private void Button(String name, StringBuilder sb, NamedNodeMap nodeMap){
+        sb.append(String.format("QPushButton %1s = new QPushButton();", name));
         Utils.tryBoolean(name, "default", "%1s.setDefault(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "flat", "%1s.setFlat(%2s);\n", sb, nodeMap);
         styles.AbstractButton(name, sb, nodeMap);
@@ -90,16 +120,17 @@ public class ComponentParser {
     }
 
     private void Radio(String name, StringBuilder sb, NamedNodeMap nodeMap){
+        sb.append(String.format("QRadioButton %1s = new QRadioButton();", name));
         styles.AbstractButton(name, sb, nodeMap);
         functions.onAbstractButtonFunctions(name, sb, nodeMap);
     }
 
     private void CheckBox(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String prop;
-        sb.append(String.format("QCheckBox %1s = new QCheckBox();"));
+        sb.append(String.format("QCheckBox %1s = new QCheckBox();", name));
         Utils.tryBoolean(name, "checkable", "%1s.setTristate(%2s);\n", sb, nodeMap);
         if(!(prop = Utils.check("check-state", nodeMap)).isEmpty()){
-            sb.append(name + ".setCheckState(Qt.CheckState.");
+            sb.append(String.format("%1s.setCheckState(Qt.CheckState.", name));
             switch(prop){
                 case "unchecked": sb.append("Unchecked);\n"); break;
                 case "partially-checked": sb.append("PartiallyChecked);\n"); break;

@@ -72,6 +72,22 @@ public final class Utils {
         if (Utils.tryValue(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
     }
 
+    public static void tryValue(String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
+        String p;
+        if (Utils.tryValue(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, p));
+        else sb.append(String.format(command, p));
+    }
+
+    public static int tryValue(String prop, String command, int replacement, StringBuilder sb, NamedNodeMap nodeMap){
+        String p;
+        int result = replacement;
+        if (Utils.tryValue(p = Utils.check(prop, nodeMap))){
+
+            sb.append(String.format(command, p));
+        } else sb.append(String.format(command, replacement));
+        return result;
+    }
+
     public static void tryBoolean(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
         String p;
         if (Utils.tryBoolean(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
