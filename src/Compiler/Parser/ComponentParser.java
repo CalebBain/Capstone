@@ -12,11 +12,11 @@ public class ComponentParser {
     private InlineStyleParser styles = new InlineStyleParser();
     private FunctionParser functions = new FunctionParser();
 
-    public String nodeLoop(QObject parent, StringBuilder sb, NodeList nodeList) {
+    public String nodeLoop(StringBuilder sb, NodeList nodeList) {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
             QObject component = elementsSwitch(node.getNodeName(), sb, node.getAttributes());
-            if (component instanceof QLayout) nodeLoop(component, sb, node.getChildNodes());
+            if (component instanceof QLayout) nodeLoop(sb, node.getChildNodes());
         }
         return sb.toString();
     }
@@ -60,8 +60,8 @@ public class ComponentParser {
         }
     }
 
-    private void addChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
-        switch (name) {
+    private void addChild(String name, String layout, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+        switch (layout) {
             case "grid": GridChild(name, component, child, sb, nodeMap); break;
         }
     }
@@ -81,6 +81,7 @@ public class ComponentParser {
         Utils.tryValue(name, "interval", "%1s.setTickInterval(%2s);\n", sb, nodeMap);
         styles.AbstractSlider(name, sb, nodeMap);
         functions.onAbstractSliderFunctions(name, sb, nodeMap);
+        addChild("QSlider", name, sb, nodeMap);
     }
 
     private void Number(String name, StringBuilder sb, NamedNodeMap nodeMap){
@@ -109,6 +110,7 @@ public class ComponentParser {
         styles.Frame(name, sb, nodeMap);
         functions.MakeFunc(name + ".overflow.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
         functions.onWidgetFunctions(name, sb, nodeMap);
+        addChild("QLCDNumber", name, sb, nodeMap);
     }
 
     private void Button(String name, StringBuilder sb, NamedNodeMap nodeMap){
@@ -117,12 +119,14 @@ public class ComponentParser {
         Utils.tryBoolean(name, "flat", "%1s.setFlat(%2s);\n", sb, nodeMap);
         styles.AbstractButton(name, sb, nodeMap);
         functions.onAbstractButtonFunctions(name, sb, nodeMap);
+        addChild("QPushButton", name, sb, nodeMap);
     }
 
     private void Radio(String name, StringBuilder sb, NamedNodeMap nodeMap){
         sb.append(String.format("QRadioButton %1s = new QRadioButton();", name));
         styles.AbstractButton(name, sb, nodeMap);
         functions.onAbstractButtonFunctions(name, sb, nodeMap);
+        addChild("QRadioButton", name, sb, nodeMap);
     }
 
     private void CheckBox(String name, StringBuilder sb, NamedNodeMap nodeMap){
@@ -140,6 +144,7 @@ public class ComponentParser {
         styles.AbstractButton(name, sb, nodeMap);
         functions.MakeFunc(name + ".stateChanged.connect(", Utils.check("on-state-change", nodeMap), sb, nodeMap);
         functions.onAbstractButtonFunctions(name, sb, nodeMap);
+        addChild("QCheckBox", name, sb, nodeMap);
     }
 
 

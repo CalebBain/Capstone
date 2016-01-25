@@ -22,15 +22,14 @@ public class CodeAssembler<T> {
 
     public void assemble(String name){
         StringBuilder sb = new StringBuilder();
-        sb.append(
-                "package GeneratedCode;\n" +
-                "import com.trolltech.qt.core.*;\n" +
-                "import com.trolltech.qt.gui.*;\n" +
-                "public class" + name + " {\n" +
-                    "\tpublic void run() {" +
-                        "\t\tQApplication app = new QApplication(new String[0]);");
-        sb.append(      "\t\tapp.exec();\n" +
-                    "\t}\n" +
+        sb.append("package GeneratedCode;\n");
+        sb.append("import com.trolltech.qt.core.*;\n");
+        sb.append("import com.trolltech.qt.gui.*;\n");
+        sb.append(String.format("public class %1s {\n", name));
+        sb.append("public void run() {\n");
+        sb.append("QApplication app = new QApplication(new String[0]);\n");
+        sb.append("app.exec();\n" +
+                "}\n" +
                 "}");
         write(sb, name);
     }

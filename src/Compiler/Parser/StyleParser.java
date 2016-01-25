@@ -8,7 +8,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import Compiler.Utils;
 
 // (least to most important)
 //  1. External style sheet
@@ -28,7 +27,7 @@ public final class StyleParser {
                 try (BufferedReader br = new BufferedReader(new FileReader(link))) {
                     String CurrentLine;
                     while ((CurrentLine = br.readLine()) != null) sheet += CurrentLine;
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
                 styles.putAll(GetContent(sheet));
             }
