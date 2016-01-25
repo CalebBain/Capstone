@@ -1,19 +1,9 @@
 package Compiler.Assemble;
 
-import Compiler.Parser.Style;
-import com.trolltech.qt.core.QRect;
-import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.*;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-/**
- * Created by Caleb Bain on 1/22/2016.
- */
 public class CodeAssembler<T> {
 
 
@@ -28,9 +18,9 @@ public class CodeAssembler<T> {
         sb.append(String.format("public class %1s {\n", name));
         sb.append("public void run() {\n");
         sb.append("QApplication app = new QApplication(new String[0]);\n");
-        sb.append("app.exec();\n" +
-                "}\n" +
-                "}");
+        sb.append("app.exec();\n");
+        sb.append("}\n");
+        sb.append("}");
         write(sb, name);
     }
 

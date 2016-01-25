@@ -97,4 +97,22 @@ public final class Utils {
         String p;
         if (Utils.tryBoolean(p = Utils.check(prop, nodeMap), v1, v2)) sb.append(String.format(command, name, p));
     }
+
+    public static void formatAppend(String command, StringBuilder sb, String... props){
+        sb.append(String.format(command, props));
+    }
+
+    public static String tryEmpty(String prop, String replacement, NamedNodeMap nodeMap){
+        String p;
+        return (!(p = Utils.check(prop, nodeMap)).isEmpty()) ? p : replacement;
+    }
+
+    public static void tryCapitalize(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
+        String p;
+        if(!(p = Utils.check(prop, nodeMap)).isEmpty()) formatAppend(command, sb, name, capitalize(p));
+    }
+
+    public static String capitalize(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
+    }
 }

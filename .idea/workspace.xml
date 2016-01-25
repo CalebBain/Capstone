@@ -2,13 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6b4ecd3f-a827-4cec-a0a9-c91b4176df66" name="Default" comment="">
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\QtComponents\Button.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\QtComponents\Checkbox.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\QtComponents\Number.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\QtComponents\Radio.java" afterPath="" />
-      <change type="DELETED" beforePath="E:\school\capstone\JAML\src\QT\QtComponents\Slider.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Compiler/Parser/ComponentParser.java" afterPath="$PROJECT_DIR$/src/Compiler/Parser/ComponentParser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QT/QtComponents/Layouts/Grid.java" afterPath="$PROJECT_DIR$/src/QT/QtComponents/Layouts/Grid.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="JAML.iws" />
@@ -55,7 +48,7 @@
             <file leaf-file-name="InlineStyleParser.java" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/InlineStyleParser.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.0" vertical-offset="2216" max-vertical-offset="4216">
+                  <state vertical-scroll-proportion="0.0" vertical-offset="714" max-vertical-offset="4216">
                     <caret line="142" column="8" selection-start-line="141" selection-start-column="8" selection-end-line="142" selection-end-column="8" />
                     <folding>
                       <element signature="imports" expanded="true" />
@@ -67,8 +60,8 @@
             <file leaf-file-name="StyleParser.java" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/StyleParser.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.0" vertical-offset="163" max-vertical-offset="1088">
-                    <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
+                  <state vertical-scroll-proportion="0.0" vertical-offset="146" max-vertical-offset="1071">
+                    <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
                     <folding>
                       <element signature="imports" expanded="true" />
                     </folding>
@@ -76,16 +69,23 @@
                 </provider>
               </entry>
             </file>
-            <file leaf-file-name="Grid.java" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/src/QT/QtComponents/Layouts/Grid.java">
+            <file leaf-file-name="Utils.java" pinned="false" current-in-tab="false">
+              <entry file="file://$PROJECT_DIR$/src/Compiler/Utils.java">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="1.1118422" vertical-offset="295" max-vertical-offset="1445">
-                    <caret line="91" column="5" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
+                  <state vertical-scroll-proportion="0.0" vertical-offset="839" max-vertical-offset="1768">
+                    <caret line="78" column="5" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+            <file leaf-file-name="CodeAssembler.java" pinned="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/src/Compiler/Assemble/CodeAssembler.java">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.31567568" vertical-offset="167" max-vertical-offset="1173">
+                    <caret line="27" column="63" selection-start-line="27" selection-start-column="63" selection-end-line="27" selection-end-column="63" />
                     <folding>
-                      <element signature="e#692#693#0" expanded="true" />
-                      <element signature="e#721#722#0" expanded="true" />
-                      <element signature="e#756#757#0" expanded="true" />
-                      <element signature="e#783#784#0" expanded="true" />
+                      <element signature="imports" expanded="true" />
                     </folding>
                   </state>
                 </provider>
@@ -105,18 +105,20 @@
       <file leaf-file-name="ComponentParser.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/ComponentParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.15668203" vertical-offset="187" max-vertical-offset="2057">
-              <caret line="3" column="22" selection-start-line="3" selection-start-column="22" selection-end-line="3" selection-end-column="22" />
-              <folding />
+            <state vertical-scroll-proportion="0.17626728" vertical-offset="0" max-vertical-offset="2669">
+              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="18" selection-end-column="81" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Utils.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Compiler/Utils.java">
+      <file leaf-file-name="QtParser.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/QtParser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="605" max-vertical-offset="1496">
-              <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
+              <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -169,17 +171,17 @@
         <option value="$PROJECT_DIR$/src/GeneratedCode/index.java" />
         <option value="$PROJECT_DIR$/src/QT/Utils.java" />
         <option value="$PROJECT_DIR$/src/QT/QtComponents/Checkbox.java" />
-        <option value="$PROJECT_DIR$/src/Compiler/Parser/StyleParser.java" />
-        <option value="$PROJECT_DIR$/src/Compiler/Assemble/CodeAssembler.java" />
         <option value="$PROJECT_DIR$/src/QT/QT.java" />
         <option value="$PROJECT_DIR$/src/Compiler/Parser/InlineStyleParser.java" />
         <option value="$PROJECT_DIR$/src/Compiler/Parser/FunctionParser.java" />
-        <option value="$PROJECT_DIR$/src/Compiler/Utils.java" />
         <option value="$PROJECT_DIR$/src/QT/QtComponents/Radio.java" />
         <option value="$PROJECT_DIR$/src/QT/QtComponents/Button.java" />
         <option value="$PROJECT_DIR$/src/QT/QtComponents/Number.java" />
         <option value="$PROJECT_DIR$/src/QT/QtComponents/Slider.java" />
         <option value="$PROJECT_DIR$/src/QT/QtComponents/Layouts/Grid.java" />
+        <option value="$PROJECT_DIR$/src/Compiler/Utils.java" />
+        <option value="$PROJECT_DIR$/src/Compiler/Parser/StyleParser.java" />
+        <option value="$PROJECT_DIR$/src/Compiler/Assemble/CodeAssembler.java" />
         <option value="$PROJECT_DIR$/src/Compiler/Parser/ComponentParser.java" />
       </list>
     </option>
@@ -254,28 +256,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="QtComponents" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="JAML" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="JAML" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="QtComponents" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Layouts" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -734,12 +714,12 @@
       <workItem from="1453401647034" duration="7984000" />
       <workItem from="1453482470499" duration="11811000" />
       <workItem from="1453570246304" duration="25084000" />
-      <workItem from="1453658623286" duration="4796000" />
+      <workItem from="1453658623286" duration="16023000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="334008000" />
+    <option name="totallyTimeSpent" value="345235000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="40" width="960" height="1040" extended-state="0" />
@@ -842,7 +822,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="611" max-vertical-offset="1479">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1072,13 +1054,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/QtParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13709678" vertical-offset="0" max-vertical-offset="868">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/QT/QtComponents/Window.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.56797236" vertical-offset="0" max-vertical-offset="4437">
@@ -1117,28 +1092,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Compiler/Assemble/CodeAssembler.java">
+    <entry file="file://$PROJECT_DIR$/src/QT/QtComponents/ColumnView.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.118663594" vertical-offset="237" max-vertical-offset="1190">
-          <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
+        <state vertical-scroll-proportion="0.19585253" vertical-offset="204" max-vertical-offset="3672">
+          <caret line="34" column="51" selection-start-line="34" selection-start-column="51" selection-end-line="34" selection-end-column="51" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Compiler/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="628" max-vertical-offset="1496">
-          <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="839" max-vertical-offset="1768">
+          <caret line="78" column="5" selection-start-line="78" selection-start-column="5" selection-end-line="78" selection-end-column="5" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/FunctionParser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="61" max-vertical-offset="986">
-          <caret line="25" column="45" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1152,42 +1118,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/StyleParser.java">
+    <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/FunctionParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="163" max-vertical-offset="1088">
-          <caret line="31" column="13" selection-start-line="31" selection-start-column="13" selection-end-line="31" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="61" max-vertical-offset="986">
+          <caret line="25" column="45" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/QT/QtComponents/ColumnView.java">
+    <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/QtParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.19585253" vertical-offset="204" max-vertical-offset="3672">
-          <caret line="34" column="51" selection-start-line="34" selection-start-column="51" selection-end-line="34" selection-end-column="51" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
+          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/QT/QtComponents/Layouts/Grid.java">
+    <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/StyleParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1118422" vertical-offset="295" max-vertical-offset="1445">
-          <caret line="91" column="5" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="146" max-vertical-offset="1071">
+          <caret line="9" column="21" selection-start-line="9" selection-start-column="21" selection-end-line="9" selection-end-column="21" />
           <folding>
-            <element signature="e#692#693#0" expanded="true" />
-            <element signature="e#721#722#0" expanded="true" />
-            <element signature="e#756#757#0" expanded="true" />
-            <element signature="e#783#784#0" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Compiler/Assemble/CodeAssembler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.31567568" vertical-offset="167" max-vertical-offset="1173">
+          <caret line="27" column="63" selection-start-line="27" selection-start-column="63" selection-end-line="27" selection-end-column="63" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Compiler/Parser/ComponentParser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.15668203" vertical-offset="187" max-vertical-offset="2057">
-          <caret line="3" column="22" selection-start-line="3" selection-start-column="22" selection-end-line="3" selection-end-column="22" />
-          <folding />
+        <state vertical-scroll-proportion="0.17626728" vertical-offset="0" max-vertical-offset="2669">
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="18" selection-end-column="81" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
