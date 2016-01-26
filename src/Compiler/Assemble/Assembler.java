@@ -1,8 +1,7 @@
 package Compiler.Assemble;
 
-import Compiler.Parser.ComponentParser;
-import Compiler.Parser.StyleParser;
-import Compiler.Parser.Style;
+import Compiler.Parsers.StyleParser;
+import Compiler.Parsers.Style;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;

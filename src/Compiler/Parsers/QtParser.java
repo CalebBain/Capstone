@@ -1,4 +1,4 @@
-package Compiler.Parser;
+package Compiler.Parsers;
 
 
 public class QtParser {

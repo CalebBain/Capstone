@@ -1,6 +1,6 @@
 package Compiler;
 
-import Compiler.Parser.Style;
+import Compiler.Parsers.Style;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 

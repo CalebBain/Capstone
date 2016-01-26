@@ -1,10 +1,6 @@
-package Compiler.Parser;
+package Compiler.Parsers;
 
 import Compiler.Utils;
-import com.trolltech.qt.core.QObject;
-import com.trolltech.qt.gui.QGridLayout;
-import com.trolltech.qt.gui.QLayout;
-import com.trolltech.qt.gui.QWidget;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -152,11 +148,12 @@ public class ComponentParser {
         if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
             sb.append(String.format("%1s.setTickPosition(TickPosition.", n));
             switch(prop){
-                case "both": sb.append("TicksBothSides);\n"); break;
-                case "above": case "left": sb.append("TicksAbove);\n"); break;
-                case "below": case "right": sb.append("TicksBelow);\n"); break;
-                case "no-ticks": sb.append("NoTicks);\n"); break;
+                case "both": sb.append("TicksBothSides"); break;
+                case "above": case "left": sb.append("TicksAbove"); break;
+                case "below": case "right": sb.append("TicksBelow"); break;
+                default: sb.append("NoTicks"); break;
             }
+            sb.append(");\n");
         }
         Utils.tryValue(n, "interval", "%1s.setTickInterval(%2s);\n", sb, nodeMap);
         styles.AbstractSlider(n, sb, nodeMap);

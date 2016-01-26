@@ -1,6 +1,6 @@
 package Compiler.Assemble;
 
-import Compiler.Parser.ComponentParser;
+import Compiler.Parsers.ComponentParser;
 import org.w3c.dom.Node;
 
 import java.io.*;
@@ -42,15 +42,9 @@ public class CodeAssembler {
     public void run(String name){
         try {
             Class<?> c = Class.forName(name);
-            Method method = c.getDeclaredMethod("run");
+            Method method = c.getMethod("run");
             method.invoke(c, null);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

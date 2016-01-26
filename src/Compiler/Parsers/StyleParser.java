@@ -1,4 +1,4 @@
-package Compiler.Parser;
+package Compiler.Parsers;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
