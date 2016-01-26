@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InlineStyleParser {
-
     private Map<String, Style> styles = new HashMap<>();
 
     public void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){
@@ -138,7 +137,8 @@ public class InlineStyleParser {
 
     public void AbstractSlider(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String[] range = Utils.check("range", nodeMap).split(" ");
-        if (range.length > 1) sb.append(String.format("%1s.setRange(%2s, %3s);", name, range[0], range[1]));
+        if (range.length > 1) sb.append(String.format("%1s.setRange(%2s, %3s);\n", name, range[0], range[1]));
+        Utils.tryBoolean(name, "orientation", "vertical", "horizontal", "%1s.setOrientation(%2s);\n", sb, nodeMap);
         Utils.tryValue(name, "min-value", "%1s.setMinimum(%2s);\n", sb, nodeMap);
         Utils.tryValue(name, "max-value", "%1s.setMaximum(%2s);\n", sb, nodeMap);
         Utils.tryValue(name, "value", "%1s.setValue(%2s);\n", sb, nodeMap);

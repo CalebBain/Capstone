@@ -1,27 +1,31 @@
 package Compiler.Assemble;
 
+import Compiler.Parser.ComponentParser;
+import org.w3c.dom.Node;
+
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class CodeAssembler<T> {
+public class CodeAssembler {
 
-
-    public CodeAssembler(String name) {
+    public CodeAssembler() {
     }
 
-    public void assemble(String name){
+    public void assemble(String name, Node node){
         StringBuilder sb = new StringBuilder();
         sb.append("package GeneratedCode;\n");
         sb.append("import com.trolltech.qt.core.*;\n");
         sb.append("import com.trolltech.qt.gui.*;\n");
-        sb.append(String.format("public class %1s {\n", name));
-        sb.append("public void run() {\n");
-        sb.append("QApplication app = new QApplication(new String[0]);\n");
-        sb.append("app.exec();\n");
+        sb.append("public class qt {\n");
+        sb.append("public void run() {\n\n");
+        sb.append(String.format("QApplication %1s = new QApplication(new String[0]);\n", name));
+        new ComponentParser(name, sb, node);
+        sb.append("\napp.exec();\n");
         sb.append("}\n");
         sb.append("}");
-        write(sb, name);
+        System.out.println(sb.toString());
+        //write(sb, name);
     }
 
     public void write(StringBuilder sb, String name){

@@ -9,14 +9,26 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/* notes
+*   this is the second implantation of the code generator
+*
+*   the first one relied on the component classes and that interpreted the jaml
+*
+*   this one compiles the code into a java qt code and runs it
+*       I chose to move to this because it was
+*
+*
+*
+* */
+
 public class ComponentParser {
     private InlineStyleParser styles = new InlineStyleParser();
     private FunctionParser functions = new FunctionParser();
     private StringBuilder sb;
 
-    public ComponentParser(StringBuilder sb, Node node) {
+    public ComponentParser(String name, StringBuilder sb, Node node) {
         this.sb = sb;
-        Window("QMainWindow", node);
+        Window(name, "QMainWindow", node);
         nodeLoop(node);
     }
 
@@ -24,14 +36,14 @@ public class ComponentParser {
         NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node n = nodeList.item(i);
-            QObject component = elementsSwitch(n.getNodeName(), n);
-            if (component instanceof QLayout) nodeLoop(n);
+            boolean component = elementsSwitch(n.getNodeName(), n);
+            if (component) nodeLoop(n);
         }
         return sb.toString();
     }
 
-    public QObject elementsSwitch(String name, Node node){
-        QObject component = new QWidget();
+    public boolean elementsSwitch(String name, Node node){
+        boolean layout = false;
         switch (name) {
             case "check-box": CheckBox(name, node); break;
             case "radio": Radio(name, node); break;
@@ -39,22 +51,22 @@ public class ComponentParser {
             case "number": Number(name, node); break;
             case "slider": Slider(name, node); break;
             case "grid": Grid(name, node);
-                component = new QGridLayout(); break;
+                layout = true; break;
         }
-        return component;
+        return layout;
     }
 
     private void addChild(String name, String layout, String component, String child, NamedNodeMap nodeMap){
         switch (layout) {
-            case "window": WindowChild(name, component); break;
+            case "window": WindowChild(child, component); break;
             case "grid" : GridChild(name, component, child, nodeMap); break;
         }
     }
 
     private void WindowChild(String name, String componentType){
         switch (componentType){
-            case "layout" : sb.append(String.format("centerWidget.setLayout(%1s);", name)); break;
-            case "widget" : sb.append(String.format("%1s.setParent(centerWidget);", name)); break;
+            case "layout" : sb.append(String.format("centerWidget.setLayout(%1s);\n", name)); break;
+            case "widget" : sb.append(String.format("%1s.setParent(centerWidget);\n", name)); break;
         }
     }
 
@@ -82,17 +94,17 @@ public class ComponentParser {
     private void ColumnViewChild(String name, String component){
         switch (component){
             case "window" : case "grid" : break;
-            default: sb.append(String.format("ColumnView.setPreviewWidget((%1s);", name)); break;
+            default: sb.append(String.format("ColumnView.setPreviewWidget((%1s);\n", name)); break;
         }
     }
 
-    private void Window(String name, Node node){
+    private void Window(String app, String name, Node node){
         String prop;
         NamedNodeMap nodeMap = node.getAttributes();
-        sb.append("QMainWindow window = new QMainWindow();");
-        sb.append("QWidget centerWidget = new QWidget();");
-        sb.append("window.setCentralWidget(centerWidget);");
-        sb.append(String.format("%1s.setWindowTitle(tr(%2s));\n", name, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
+        sb.append(String.format("QMainWindow window = new QMainWindow(%1s);\n", app));
+        sb.append("QWidget centerWidget = new QWidget();\n");
+        sb.append("window.setCentralWidget(centerWidget);\n");
+        sb.append(String.format("%1s.setWindowTitle(tr(\"%2s\"));\n", name, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
         Utils.tryBoolean(name, "dock-animation", "%1s.setAnimated(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "dock-nesting", "%1s.setDockNestingEnabled(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "document-mode", "%1s.setDocumentMode(%2s);\n", sb, nodeMap);
@@ -131,96 +143,114 @@ public class ComponentParser {
 
     private void Slider(String name, Node node){
         String prop;
-        String layout = node.getParentNode().getNodeName();
-        String layoutName = Utils.check("name", node.getParentNode().getAttributes());
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
-        sb.append(String.format("QSlider %1s = new QSlider();", name));
-        if(!(prop = Utils.check("position", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setTickPosition(TickPosition.", name));
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        sb.append(String.format("QSlider %1s = new QSlider();\n", n));
+        if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
+            sb.append(String.format("%1s.setTickPosition(TickPosition.", n));
             switch(prop){
                 case "both": sb.append("TicksBothSides);\n"); break;
-                case "left": sb.append("TicksAbove);\n"); break;
-                case "right": sb.append("TicksBelow);\n"); break;
+                case "above": case "left": sb.append("TicksAbove);\n"); break;
+                case "below": case "right": sb.append("TicksBelow);\n"); break;
                 case "no-ticks": sb.append("NoTicks);\n"); break;
             }
         }
-        Utils.tryValue(name, "interval", "%1s.setTickInterval(%2s);\n", sb, nodeMap);
-        styles.AbstractSlider(name, sb, nodeMap);
-        functions.onAbstractSliderFunctions(name, sb, nodeMap);
-        addChild(layoutName, layout, "widget", name, nodeMap);
+        Utils.tryValue(n, "interval", "%1s.setTickInterval(%2s);\n", sb, nodeMap);
+        styles.AbstractSlider(n, sb, nodeMap);
+        functions.onAbstractSliderFunctions(n, sb, nodeMap);
+        addChild(layoutName, layout, "widget", n, nodeMap);
     }
 
     private void Number(String name, Node node){
-        String layout = node.getParentNode().getNodeName();
-        String layoutName = Utils.check("name", node.getParentNode().getAttributes());
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
-        sb.append(String.format("QLCDNumber %1s = new QLCDNumber();", name));
-        Utils.tryCapitalize(name, "segment-style", "%1s.setSegmentStyle(SegmentStyle.%2s);\n", sb, nodeMap);
-        Utils.tryCapitalize(name, "mode", "%1s.setMode(Mode.%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "small-decimal-point", "%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "digit-count", "%1s.setDigitCount(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "value", "%1s.display(%2s);\n", sb, nodeMap);
-        styles.Frame(name, sb, nodeMap);
-        functions.MakeFunc(name + ".overflow.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
-        functions.onWidgetFunctions(name, sb, nodeMap);
-        addChild(layoutName, layout, "widget", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        sb.append(String.format("QLCDNumber %1s = new QLCDNumber();\n", n));
+        Utils.tryCapitalize(n, "segment-style", "%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
+        Utils.tryCapitalize(n, "mode", "%1s.setMode(QLCDNumber.Mode.%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "small-decimal-point", "%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "digit-count", "%1s.setDigitCount(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "value", "%1s.display(%2s);\n", sb, nodeMap);
+        styles.Frame(n, sb, nodeMap);
+        functions.MakeFunc(n + ".overflow.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        functions.onWidgetFunctions(n, sb, nodeMap);
+        addChild(layoutName, layout, "widget", n, nodeMap);
     }
 
     private void Button(String name, Node node){
-        String layout = node.getParentNode().getNodeName();
-        String layoutName = Utils.check("name", node.getParentNode().getAttributes());
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
-        sb.append(String.format("QPushButton %1s = new QPushButton();", name));
-        Utils.tryBoolean(name, "default", "%1s.setDefault(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "flat", "%1s.setFlat(%2s);\n", sb, nodeMap);
-        styles.AbstractButton(name, sb, nodeMap);
-        functions.onAbstractButtonFunctions(name, sb, nodeMap);
-        addChild(layoutName, layout, "widget", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        sb.append(String.format("QPushButton %1s = new QPushButton(\"%2s\");\n", n, node.getTextContent()));
+        Utils.tryBoolean(n, "default", "%1s.setDefault(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "flat", "%1s.setFlat(%2s);\n", sb, nodeMap);
+        styles.AbstractButton(n, sb, nodeMap);
+        functions.onAbstractButtonFunctions(n, sb, nodeMap);
+        addChild(layoutName, layout, "widget", n, nodeMap);
     }
 
     private void Radio(String name, Node node){
-        String layout = node.getParentNode().getNodeName();
-        String layoutName = Utils.check("name", node.getParentNode().getAttributes());
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
-        sb.append(String.format("QRadioButton %1s = new QRadioButton();", name));
-        styles.AbstractButton(name, sb, nodeMap);
-        functions.onAbstractButtonFunctions(name, sb, nodeMap);
-        addChild(layoutName, layout, "widget", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        sb.append(String.format("QRadioButton %1s = new QRadioButton();\n", n));
+        styles.AbstractButton(n, sb, nodeMap);
+        functions.onAbstractButtonFunctions(n, sb, nodeMap);
+        addChild(layoutName, layout, "widget", n, nodeMap);
     }
 
     private void CheckBox(String name, Node node){
         String prop;
-        String layout = node.getParentNode().getNodeName();
-        String layoutName = Utils.check("name", node.getParentNode().getAttributes());
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
-        sb.append(String.format("QCheckBox %1s = new QCheckBox();", name));
-        Utils.tryBoolean(name, "checkable", "%1s.setTristate(%2s);\n", sb, nodeMap);
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        sb.append(String.format("QCheckBox %1s = new QCheckBox();\n", n));
+        Utils.tryBoolean(n, "checkable", "%1s.setTristate(%2s);\n", sb, nodeMap);
         if(!(prop = Utils.check("check-state", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setCheckState(Qt.CheckState.", name));
+            sb.append(String.format("%1s.setCheckState(Qt.CheckState.", n));
             switch(prop){
                 case "unchecked": sb.append("Unchecked);\n"); break;
                 case "partially-checked": sb.append("PartiallyChecked);\n"); break;
                 case "checked": sb.append("Checked);\n"); break;
             }
         }
-        styles.AbstractButton(name, sb, nodeMap);
-        functions.MakeFunc(name + ".stateChanged.connect(", Utils.check("on-state-change", nodeMap), sb, nodeMap);
-        functions.onAbstractButtonFunctions(name, sb, nodeMap);
-        addChild(layoutName, layout, "widget", name, nodeMap);
+        styles.AbstractButton(n, sb, nodeMap);
+        functions.MakeFunc(n + ".stateChanged.connect(", Utils.check("on-state-change", nodeMap), sb, nodeMap);
+        functions.onAbstractButtonFunctions(n, sb, nodeMap);
+        addChild(layoutName, layout, "widget", n, nodeMap);
     }
 
     private void ColumnView(String name, Node node){
-        String layout = node.getParentNode().getNodeName();
-        String layoutName = Utils.check("name", node.getParentNode().getAttributes());
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
-        Utils.tryBoolean(name, "resize-grips-visible", "%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
-        styles.AbstractItemView(name, sb, nodeMap);
-        functions.MakeFunc(name + ".updatePreviewWidget.connect(", "on-preview-update", sb, nodeMap);
-        functions.onAbstractItemViewFunctions(name, sb, nodeMap);
-        addChild(layoutName, layout, "widget", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        Utils.tryBoolean(n, "resize-grips-visible", "%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
+        styles.AbstractItemView(n, sb, nodeMap);
+        functions.MakeFunc(n + ".updatePreviewWidget.connect(", "on-preview-update", sb, nodeMap);
+        functions.onAbstractItemViewFunctions(n, sb, nodeMap);
+        addChild(layoutName, layout, "widget", n, nodeMap);
     }
 
     private void Grid(String name, Node node) {
-        sb.append(String.format("QGridLayout %1s = new QGridLayout();", name));
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
+        NamedNodeMap nodeMap = node.getAttributes();
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        sb.append(String.format("QGridLayout %1s = new QGridLayout();\n", n));
+        addChild(layoutName, layout, "layout", n, nodeMap);
     }
 }

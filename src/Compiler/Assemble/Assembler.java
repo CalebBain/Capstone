@@ -1,5 +1,6 @@
 package Compiler.Assemble;
 
+import Compiler.Parser.ComponentParser;
 import Compiler.Parser.StyleParser;
 import Compiler.Parser.Style;
 import org.w3c.dom.*;
@@ -21,12 +22,12 @@ public final class Assembler {
             File fXmlFile = new File("jaml/index.jaml");
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
-
             doc.getDocumentElement().normalize();
             System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
             if (doc.hasChildNodes()){
                 NodeList nodeList = doc.getChildNodes();
                 printNote(nodeList);
+                System.out.println("\n\n");
                 Node node = nodeList.item(0);
                 if (node instanceof Element && node.getNodeName().equals("jaml")) {
                     Element docElement = (Element) node;
@@ -34,7 +35,7 @@ public final class Assembler {
                     Map<String, Style> styles = new HashMap<>();
                     if (style != null) styles = new StyleParser().Parse(style);
                     Node window = docElement.getElementsByTagName("window").item(0);
-                    //if (window != null) new QT(window, styles, new String[0]);
+                    if (window != null) new CodeAssembler().assemble("index", window);
                 }
             }
         } catch (Exception e) {

@@ -7,9 +7,9 @@ public class FunctionParser {
 
     public void MakeFunc(String name, String prop, StringBuilder sb, NamedNodeMap nodeMap){
         String[] callParts = new String[0];
-        if (!prop.isEmpty()){
-            String call;
-            if (!(call = Utils.check(prop, nodeMap)).isEmpty()) callParts = call.split(":");
+        String p;
+        if (!(p = Utils.check(prop, nodeMap)).isEmpty()){
+            if (!p.isEmpty()) callParts = p.split(":");
             sb.append(name);
             if(callParts.length == 1) sb.append(String.format("QApplication.instance(), %1s);\n", callParts[0]));
             else if(callParts.length == 2) sb.append(String.format("%1s, %2s);\n", callParts[0], callParts[1]));
