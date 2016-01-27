@@ -16,6 +16,18 @@ public final class Utils {
         return result;
     }
 
+    public static boolean exists(String keyword, NamedNodeMap nodeMap){
+        boolean result;
+        try {
+            Node word = nodeMap.getNamedItem(keyword);
+            word.getNodeValue();
+            result = true;
+        } catch (NullPointerException ignored) {
+            result = false;
+        }
+        return result;
+    }
+
     public static String check(String keyword, NamedNodeMap nodeMap) {
         String result = "";
         try {

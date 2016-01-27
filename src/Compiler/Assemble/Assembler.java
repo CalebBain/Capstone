@@ -22,6 +22,7 @@ public final class Assembler {
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
+            System.out.println(doc.getDocumentURI());
             System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
             if (doc.hasChildNodes()){
                 NodeList nodeList = doc.getChildNodes();
@@ -31,7 +32,7 @@ public final class Assembler {
                 if (node instanceof Element && node.getNodeName().equals("jaml")) {
                     Element docElement = (Element) node;
                     Node style = docElement.getElementsByTagName("style").item(0);
-                    Map<String, Style> styles = new HashMap<>();
+                    Map<String, Style> styles;
                     if (style != null) styles = new StyleParser().Parse(style);
                     Node window = docElement.getElementsByTagName("window").item(0);
                     if (window != null) new CodeAssembler().assemble("index", window);
