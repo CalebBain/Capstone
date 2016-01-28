@@ -17,35 +17,35 @@ public class FunctionParser {
     }
 
     public void onAbstractSliderFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(name + ".valueChanged.connect(", "on-value-change", sb, nodeMap);
-        MakeFunc(name + ".sliderReleased.connect(", "on-release", sb, nodeMap);
-        MakeFunc(name + ".sliderMoved.connect(", "on-move", sb, nodeMap);
-        MakeFunc(name + ".sliderPressed.connect(", "on-press", sb, nodeMap);
-        MakeFunc(name + ".actionTriggered.connect(", "on-action-trigger", sb, nodeMap);
-        MakeFunc(name + ".actionTriggered.connect(", "on-range-change", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".valueChanged.connect(", "on-value-change", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".sliderReleased.connect(", "on-release", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".sliderMoved.connect(", "on-move", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".sliderPressed.connect(", "on-press", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".actionTriggered.connect(", "on-action-trigger", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".actionTriggered.connect(", "on-range-change", sb, nodeMap);
         onWidgetFunctions(name, sb, nodeMap);
     }
 
     public void onAbstractButtonFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(name + ".clicked.connect(", "on-click", sb, nodeMap);
-        MakeFunc(name + ".released.connect(", "on-release", sb, nodeMap);
-        MakeFunc(name + ".pressed.connect(", "on-press", sb, nodeMap);
-        MakeFunc(name + ".toggled.connect(", "on-toggle", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".clicked.connect(", "on-click", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".released.connect(", "on-release", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".pressed.connect(", "on-press", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".toggled.connect(", "on-toggle", sb, nodeMap);
         onWidgetFunctions(name, sb, nodeMap);
     }
 
     public void onAbstractItemViewFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(name + ".clicked.connect(", "on-click", sb, nodeMap);
-        MakeFunc(name + ".pressed.connect(", "on-press", sb, nodeMap);
-        MakeFunc(name + ".doubleClicked.connect(", "on-double-click", sb, nodeMap);
-        MakeFunc(name + ".activated.connect(", "on-activate", sb, nodeMap);
-        MakeFunc(name + ".entered.connect(", "on-enter", sb, nodeMap);
-        MakeFunc(name + ".viewportEntered.connect(", "on-viewport-enter", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".clicked.connect(", "on-click", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".pressed.connect(", "on-press", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".doubleClicked.connect(", "on-double-click", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".activated.connect(", "on-activate", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".entered.connect(", "on-enter", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".viewportEntered.connect(", "on-viewport-enter", sb, nodeMap);
         onWidgetFunctions(name, sb, nodeMap);
     }
 
     public void onWidgetFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(name + ".customContextMenuRequested.connect(", "on-custom-context-menu-request", sb, nodeMap);
+        MakeFunc("\t\t" + name + ".customContextMenuRequested.connect(", "on-custom-context-menu-request", sb, nodeMap);
     }
 
 

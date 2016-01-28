@@ -35,7 +35,7 @@ public final class Assembler {
                     Map<String, Style> styles;
                     if (style != null) styles = new StyleParser().Parse(style);
                     Node window = docElement.getElementsByTagName("window").item(0);
-                    if (window != null) new CodeAssembler().assemble("index", window);
+                    if (window != null) new CodeAssembler().assemble(fXmlFile.getName(), "index", window);
                 }
             }
         } catch (Exception e) {

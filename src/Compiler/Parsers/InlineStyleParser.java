@@ -11,14 +11,14 @@ public class InlineStyleParser {
 
     public void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String prop;
-        Utils.tryBoolean(name, "alt-row-color", "%1s.setAlternatingRowColors(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "draggable", "%1s.setDragEnabled(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "auto-scroll", "%1s.setAutoScroll(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "drop-indicator", "%1s.setDropIndicatorShown(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "tab-key-navigation", "%1s.TabKeyNavigation(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "auto-scroll-margin", "%1s.setAutoScrollMargin(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "alt-row-color", "\t\t%1s.setAlternatingRowColors(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "draggable", "\t\t%1s.setDragEnabled(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "auto-scroll", "\t\t%1s.setAutoScroll(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "drop-indicator", "\t\t%1s.setDropIndicatorShown(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "tab-key-navigation", "\t\t%1s.TabKeyNavigation(%2s);\n", sb, nodeMap);
+        Utils.tryValue(name, "auto-scroll-margin", "\t\t%1s.setAutoScrollMargin(%2s);\n", sb, nodeMap);
         if (!(prop = Utils.check("drag-drop-mode", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setDragDropMode(QAbstractItemView.DragDropMode.", name));
+            sb.append(String.format("\t\t%1s.setDragDropMode(QAbstractItemView.DragDropMode.", name));
             switch (prop) {
                 case "no-drag-drop": sb.append("NoDragDrop);\n"); break;
                 case "drop-only": sb.append("DropOnly);\n"); break;
@@ -28,7 +28,7 @@ public class InlineStyleParser {
             }
         }
         if (!(prop = Utils.check("edit-trigger", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setEditTriggers(QAbstractItemView.EditTrigger.", name));
+            sb.append(String.format("\t\t%1s.setEditTriggers(QAbstractItemView.EditTrigger.", name));
             switch (prop) {
                 case "no-edit-triggers": sb.append("NoEditTriggers);\n"); break;
                 case "current-change": sb.append("CurrentChanged);\n"); break;
@@ -40,14 +40,14 @@ public class InlineStyleParser {
             }
         }
         if (!(prop = Utils.check("horizontal-scroll-mode", nodeMap)).isEmpty()) {
-            sb.append(String.format("%1s.setHorizontalScrollMode(QAbstractItemView.ScrollMode.", name));
+            sb.append(String.format("\t\t%1s.setHorizontalScrollMode(QAbstractItemView.ScrollMode.", name));
             switch (prop) {
                 case "per-item": sb.append("ScrollPerItem);\n"); break;
                 case "per-pixel": sb.append("ScrollPerPixel);\n"); break;
             }
         }
         if (!(prop = Utils.check("selection-behavior", nodeMap)).isEmpty()) {
-            sb.append(String.format("%1s.setSelectionBehavior(QAbstractItemView.SelectionBehavior.", name));
+            sb.append(String.format("\t\t%1s.setSelectionBehavior(QAbstractItemView.SelectionBehavior.", name));
             switch (prop) {
                 case "items": sb.append("SelectItems);\n"); break;
                 case "rows": sb.append("SelectRows);\n"); break;
@@ -55,7 +55,7 @@ public class InlineStyleParser {
             }
         }
         if (!(prop = Utils.check("text-elide-mode", nodeMap)).isEmpty()) {
-            sb.append(String.format("%1s.setTextElideMode(Qt.TextElideMode.", name));
+            sb.append(String.format("\t\t%1s.setTextElideMode(Qt.TextElideMode.", name));
             switch (prop) {
                 case "left": sb.append("ElideLeft);\n"); break;
                 case "right": sb.append("ElideRight);\n"); break;
@@ -64,7 +64,7 @@ public class InlineStyleParser {
             }
         }
         if (!(prop = Utils.check("vertical-scroll-mode", nodeMap)).isEmpty()) {
-            sb.append(String.format("%1s.setVerticalScrollMode(QAbstractItemView.ScrollMode.", name));
+            sb.append(String.format("\t\t%1s.setVerticalScrollMode(QAbstractItemView.ScrollMode.", name));
             switch (prop) {
                 case "per-item": sb.append("ScrollPerItem);\n"); break;
                 case "per-pixel": sb.append("ScrollPerPixel);\n"); break;
@@ -76,7 +76,7 @@ public class InlineStyleParser {
     public void AbstractScrollArea(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String prop;
         if(!(prop = Utils.check("horizontal-scroll-bar-policy", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.", name));
+            sb.append(String.format("\t\t%1s.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.", name));
             switch (prop) {
                 case "always-on": sb.append("ScrollBarAlwaysOn);\n"); break;
                 case "as-needed": sb.append("ScrollBarAsNeeded);\n"); break;
@@ -84,7 +84,7 @@ public class InlineStyleParser {
             }
         }
         if(!(prop = Utils.check("vertical-scroll-bar-policy", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.", name));
+            sb.append(String.format("\t\t%1s.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.", name));
             switch (prop) {
                 case "always-on": sb.append("ScrollBarAlwaysOn);\n"); break;
                 case "as-needed": sb.append("ScrollBarAsNeeded);\n"); break;
@@ -97,7 +97,7 @@ public class InlineStyleParser {
     public void Frame(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String prop;
         if(!(prop = Utils.check("shadow", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setFrameShadow(QFrame.Shadow.", name));
+            sb.append(String.format("\t\t%1s.setFrameShadow(QFrame.Shadow.", name));
             switch (prop) {
                 case "sunken": sb.append("Sunken);\n"); break;
                 case "plain": sb.append("Plain);\n"); break;
@@ -105,7 +105,7 @@ public class InlineStyleParser {
             }
         }
         if(!(prop = Utils.check("shape", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setFrameShape(QFrame.Shape.", name));
+            sb.append(String.format("\t\t%1s.setFrameShape(QFrame.Shape.", name));
             switch (prop) {
                 case "no-frame": sb.append("NoFrame);\n"); break;
                 case "box": sb.append("Box);\n"); break;
@@ -118,7 +118,7 @@ public class InlineStyleParser {
         }
         if(!(prop = Utils.check("size", nodeMap)).isEmpty()){
             String[] sizes = prop.split(" ");
-            sb.append(String.format("%1s.setFrameRect(new QRect(", name));
+            sb.append(String.format("\t\t%1s.setFrameRect(new QRect(", name));
 
             String v1 = "", v2 = "", v3 = "", v4 = "";
             try {
@@ -137,33 +137,33 @@ public class InlineStyleParser {
 
     public void AbstractSlider(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String[] range = Utils.check("range", nodeMap).split(" ");
-        if (range.length > 1) sb.append(String.format("%1s.setRange(%2s, %3s);\n", name, range[0], range[1]));
-        Utils.tryBoolean(name, "orientation", "vertical", "horizontal", "%1s.setOrientation(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "min-value", "%1s.setMinimum(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "max-value", "%1s.setMaximum(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "value", "%1s.setValue(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "page-steps", "%1s.setPageStep(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "single-steps", "%1s.setSingleStep(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "slide-position", "%1s.setSliderPosition(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "invert-numbers", "%1s.setInvertedControls(%2s);\n", "horizontal", "vertical", sb, nodeMap);
-        Utils.tryBoolean(name, "invert-numbers", "%1s.setInvertedControls(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "invert-controls", "%1s.setInvertedAppearance(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "tracking", "%1s.setTracking(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "slide-down-tracking", "%1s.setSliderPosition(%2s);\n", sb, nodeMap);
+        if (range.length > 1) sb.append(String.format("\t\t%1s.setRange(%2s, %3s);\n", name, range[0], range[1]));
+        Utils.tryBoolean(name, "orientation", "vertical", "horizontal", "\t\t%1s.setOrientation(%2s);\n", sb, nodeMap);
+        Utils.tryValue(name, "min-value", "\t\t%1s.setMinimum(%2s);\n", sb, nodeMap);
+        Utils.tryValue(name, "max-value", "\t\t%1s.setMaximum(%2s);\n", sb, nodeMap);
+        Utils.tryValue(name, "value", "\t\t%1s.setValue(%2s);\n", sb, nodeMap);
+        Utils.tryValue(name, "page-steps", "\t\t%1s.setPageStep(%2s);\n", sb, nodeMap);
+        Utils.tryValue(name, "single-steps", "\t\t%1s.setSingleStep(%2s);\n", sb, nodeMap);
+        Utils.tryValue(name, "slide-position", "\t\t%1s.setSliderPosition(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "invert-numbers", "\t\t%1s.setInvertedControls(%2s);\n", "horizontal", "vertical", sb, nodeMap);
+        Utils.tryBoolean(name, "invert-numbers", "\t\t%1s.setInvertedControls(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "invert-controls", "\t\t%1s.setInvertedAppearance(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "tracking", "\t\t%1s.setTracking(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "slide-down-tracking", "\t\t%1s.setSliderPosition(%2s);\n", sb, nodeMap);
         Widget(name, sb, nodeMap);
     }
 
     public void AbstractButton(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String prop;
-        if (Utils.tryBoolean(prop = Utils.check("checkable", nodeMap))) sb.append(String.format("%1s.setCheckable(%2s);\n", name, prop));
-        if (Utils.tryBoolean(prop = Utils.check("checked", nodeMap))) sb.append(String.format("%1s.setChecked(%2s);\n", name, prop));
-        if (Utils.tryBoolean(prop = Utils.check("pressed", nodeMap))) sb.append(String.format("%1s.setDown(%2s);\n", name, prop));
-        if (Utils.tryBoolean(prop = Utils.check("repeatable", nodeMap))) sb.append(String.format("%1s.setAutoRepeat(%2s);\n", name, prop));
-        if (Utils.tryBoolean(prop = Utils.check("exclusive", nodeMap))) sb.append(String.format("%1s.setAutoExclusive(%2s);\n", name, prop));
-        if (!(prop = Utils.check("text", nodeMap)).isEmpty()) sb.append(String.format("%1s.setText(%2s);\n", name, prop));
-        if (!(prop = Utils.check("short-cut", nodeMap)).isEmpty()) sb.append(String.format("%1s.setShortcut(%2s);\n", name, prop));
-        if (Utils.tryValue((prop = Utils.check("repeatable-delay", nodeMap)))) sb.append(String.format("%1s.setAutoRepeatDelay(%2s);\n", name, prop));
-        if (Utils.tryValue((prop = Utils.check("repeatable-interval", nodeMap)))) sb.append(String.format("%1s.setAutoRepeatInterval(%2s);\n", name, prop));
+        if (Utils.tryBoolean(prop = Utils.check("checkable", nodeMap))) sb.append(String.format("\t\t%1s.setCheckable(%2s);\n", name, prop));
+        if (Utils.tryBoolean(prop = Utils.check("checked", nodeMap))) sb.append(String.format("\t\t%1s.setChecked(%2s);\n", name, prop));
+        if (Utils.tryBoolean(prop = Utils.check("pressed", nodeMap))) sb.append(String.format("\t\t%1s.setDown(%2s);\n", name, prop));
+        if (Utils.tryBoolean(prop = Utils.check("repeatable", nodeMap))) sb.append(String.format("\t\t%1s.setAutoRepeat(%2s);\n", name, prop));
+        if (Utils.tryBoolean(prop = Utils.check("exclusive", nodeMap))) sb.append(String.format("\t\t%1s.setAutoExclusive(%2s);\n", name, prop));
+        if (!(prop = Utils.check("text", nodeMap)).isEmpty()) sb.append(String.format("\t\t%1s.setText(%2s);\n", name, prop));
+        if (!(prop = Utils.check("short-cut", nodeMap)).isEmpty()) sb.append(String.format("\t\t%1s.setShortcut(%2s);\n", name, prop));
+        if (Utils.tryValue((prop = Utils.check("repeatable-delay", nodeMap)))) sb.append(String.format("\t\t%1s.setAutoRepeatDelay(%2s);\n", name, prop));
+        if (Utils.tryValue((prop = Utils.check("repeatable-interval", nodeMap)))) sb.append(String.format("\t\t%1s.setAutoRepeatInterval(%2s);\n", name, prop));
         Widget(name, sb, nodeMap);
     }
 
@@ -171,7 +171,7 @@ public class InlineStyleParser {
         String prop;
         if(!(prop = Utils.check("margin", nodeMap)).isEmpty()) {
             String[] margins = prop.replace("px", "").split(" ");
-            sb.append(String.format("%1s.setContentsMargins(", name));
+            sb.append(String.format("\t\t%1s.setContentsMargins(", name));
             String v1 = "", v2 = "", v3 = "", v4 = "";
             try {
                 v1 = margins[0]; v2 = margins[1]; v3 = margins[2]; v4 = margins[3];
@@ -185,7 +185,7 @@ public class InlineStyleParser {
             }
         }
         if(!(prop = Utils.check("cursor", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setCursor(new QCursor(Qt.CursorShape.", name));
+            sb.append(String.format("\t\t%1s.setCursor(new QCursor(Qt.CursorShape.", name));
             switch (prop){
                 case "arrow": sb.append("ArrowCursor));\n"); break;
                 case "up-arrow": sb.append("UpArrowCursor));\n"); break;
@@ -212,10 +212,10 @@ public class InlineStyleParser {
                 case "bitmap": sb.append("BitmapCursor));\n"); break;
             }
         }
-        Utils.tryBoolean(name, "mouse-tracking", "%1s.setMouseTracking(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "visibility", "%1s.setHidden(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "update", "%1s.setUpdatesEnabled(%2s);\n", sb, nodeMap);
-        Utils.tryCheck(name, "tool-tip", "%1s.setToolTip(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "mouse-tracking", "\t\t%1s.setMouseTracking(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "visibility", "\t\t%1s.setHidden(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "update", "\t\t%1s.setUpdatesEnabled(%2s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "tool-tip", "\t\t%1s.setToolTip(%2s);\n", sb, nodeMap);
     }
 
     /*public void setStyle(Style style, NamedNodeMap nodeMap) {

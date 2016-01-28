@@ -11,8 +11,10 @@ public class EventParser {
 
     private boolean hasProps = false;
 
-    public void WidgetEvents(String file, String name, String component, StringBuilder sb, NamedNodeMap nodeMap){
-        sb.append(String.format("%s %s = new %s()", component, name, component));
+    public void Events(String file, String name, String component, String param, StringBuilder sb, NamedNodeMap nodeMap){
+        component = ComponentFind(component);
+        if(!param.isEmpty()) param = String.format("\"%s\"", param);
+        sb.append(String.format("\t\t%s %s = new %s(%s)", component, name, component, param));
         PropCheck(file, name, component, "when-action", sb, nodeMap);
         PropCheck(file, name, component, "when-closed", sb, nodeMap);
         PropCheck(file, name, component, "when-context-menu", sb, nodeMap);
@@ -42,7 +44,7 @@ public class EventParser {
         PropCheck(file, name, component, "when-change", sb, nodeMap);
         if(hasProps){
             hasProps = false;
-            sb.append("}");
+            sb.append("\t\t}");
         }
         sb.append(";\n");
     }
@@ -66,7 +68,7 @@ public class EventParser {
         event = event.replaceAll("-","_");
         String Method = name + "_" + event.replaceAll("when_", "");
         List<String> parameters = new ArrayList<>();
-        parameters.add(ComponentFind(component) + " " + name);
+        parameters.add(component + " " + name);
         for (String param : params){
             String[] parts = param.split(":");
             switch(parts[0]){
@@ -140,7 +142,7 @@ public class EventParser {
     }
 
     private void WriteClass(String name, StringBuilder sb){
-        sb.append(String.format("\ttry{\n\t\tClass<?> c = Class.forName(\"%s\");\n", name));
+        sb.append(String.format("\t\t\ttry{\n\t\t\t\tClass<?> c = Class.forName(\"%s\");\n", name));
     }
 
     private String[] getClasses(String... params){
@@ -153,14 +155,15 @@ public class EventParser {
     }
 
     private void WriteMethod(String name, StringBuilder sb, String... params){
-        sb.append(String.format("\t\tMethod method = c.getDeclaredMethod(\"%s\"", name));
+        params = getClasses(params);
+        sb.append(String.format("\t\t\t\tMethod method = c.getDeclaredMethod(\"%s\"", name));
         for(String Class : params) sb.append(String.format(", %s.class", Class));
         sb.append(");\n");
     }
 
     private void WriteParams(StringBuilder sb, String... params){
-        sb.append("\t\tmethod.invoke(c");
+        sb.append("\t\t\t\tmethod.invoke(c");
         for(String param : params) sb.append(String.format(", %s", param));
-        sb.append(");\n\t} catch ( ReflectiveOperationException e) {\n\t\te.printStackTrace();\n\t}\n");
+        sb.append(");\n\t\t\t} catch ( ReflectiveOperationException e) {\n\t\t\t\te.printStackTrace();\n\t\t\t}\n");
     }
 }

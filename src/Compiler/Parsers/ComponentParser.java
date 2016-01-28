@@ -20,10 +20,13 @@ import org.w3c.dom.NodeList;
 public class ComponentParser {
     private InlineStyleParser styles = new InlineStyleParser();
     private FunctionParser functions = new FunctionParser();
+    private EventParser events = new EventParser();
     private StringBuilder sb;
+    private String file;
 
-    public ComponentParser(String name, StringBuilder sb, Node node) {
+    public ComponentParser(String file, String name, StringBuilder sb, Node node) {
         this.sb = sb;
+        this.file = file;
         Window(name, "QMainWindow", node);
         nodeLoop(node);
     }
@@ -61,14 +64,14 @@ public class ComponentParser {
 
     private void WindowChild(String name, String componentType){
         switch (componentType){
-            case "layout" : sb.append(String.format("centerWidget.setLayout(%1s);\n", name)); break;
-            case "widget" : sb.append(String.format("%1s.setParent(centerWidget);\n", name)); break;
+            case "layout" : sb.append(String.format("\t\tcenterWidget.setLayout(%1s);\n", name)); break;
+            case "widget" : sb.append(String.format("\t\t%1s.setParent(centerWidget);\n", name)); break;
         }
     }
 
     private void GridChild(String name, String component, String child, NamedNodeMap nodeMap){
         Utils.capitalize(component);
-        sb.append(String.format("%1s.add%2s(%3s, ", name, component, child));
+        sb.append(String.format("\t\t%1s.add%2s(%3s, ", name, component, child));
         int row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
         int col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
         Utils.tryValue("row-span", "%2s, ", row, sb, nodeMap);
@@ -97,16 +100,16 @@ public class ComponentParser {
     private void Window(String app, String name, Node node){
         String prop;
         NamedNodeMap nodeMap = node.getAttributes();
-        sb.append(String.format("QMainWindow window = new QMainWindow(%1s);\n", app));
-        sb.append("QWidget centerWidget = new QWidget();\n");
-        sb.append("window.setCentralWidget(centerWidget);\n");
-        sb.append(String.format("%1s.setWindowTitle(tr(\"%2s\"));\n", name, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
-        Utils.tryBoolean(name, "dock-animation", "%1s.setAnimated(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "dock-nesting", "%1s.setDockNestingEnabled(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "document-mode", "%1s.setDocumentMode(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "unified-mac-title-toolbar", "%1s.setUnifiedTitleAndToolBarOnMac(%2s);\n", sb, nodeMap);
+        sb.append(String.format("\t\tQMainWindow window = new QMainWindow(%1s);\n", app));
+        sb.append("\t\tQWidget centerWidget = new QWidget();\n");
+        sb.append("\t\twindow.setCentralWidget(centerWidget);\n");
+        sb.append(String.format("\t\t%1s.setWindowTitle(tr(\"%2s\"));\n", name, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
+        Utils.tryBoolean(name, "dock-animation", "\t\t%1s.setAnimated(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "dock-nesting", "\t\t%1s.setDockNestingEnabled(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "document-mode", "\t\t%1s.setDocumentMode(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "unified-mac-title-toolbar", "\t\t%1s.setUnifiedTitleAndToolBarOnMac(%2s);\n", sb, nodeMap);
         if(!(prop = Utils.check("dock-option", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setDockOptions(DockOption.", name));
+            sb.append(String.format("\t\t%1s.setDockOptions(DockOption.", name));
             switch(prop){
                 case "animated-docks": sb.append("AnimatedDocks);\n"); break;
                 case "allow-nested-docks": sb.append("AllowNestedDocks);\n"); break;
@@ -116,14 +119,14 @@ public class ComponentParser {
             }
         }
         if(!(prop = Utils.check("tab-shape", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setTabShape(QTabWidget.TabShape.", name));
+            sb.append(String.format("\t\t%1s.setTabShape(QTabWidget.TabShape.", name));
             switch(prop){
                 case "rounded": sb.append("Rounded);\n"); break;
                 case "triangular": sb.append("Triangular);\n"); break;
             }
         }
         if(!(prop = Utils.check("tool-button-style", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setToolButtonStyle(Qt.ToolButtonStyle.", name));
+            sb.append(String.format("\t\t%1s.setToolButtonStyle(Qt.ToolButtonStyle.", name));
             switch(prop){
                 case "icon-only": sb.append("ToolButtonIconOnly);\n"); break;
                 case "text-only": sb.append("ToolButtonTextOnly);\n"); break;
@@ -132,8 +135,8 @@ public class ComponentParser {
                 case "follow-style": sb.append("ToolButtonFollowStyle);\n"); break;
             }
         }
-        functions.MakeFunc(name + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
-        functions.MakeFunc(name + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
+        functions.MakeFunc("\t\t" + name + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
+        functions.MakeFunc("\t\t" + name + ".toolButtonStyleChanged.connect(", Utils.check("on - tool - button - style - change", nodeMap), sb, nodeMap);
         functions.onWidgetFunctions(name, sb, nodeMap);
     }
 
@@ -144,9 +147,9 @@ public class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-        sb.append(String.format("QSlider %1s = new QSlider();\n", n));
+        events.Events(file, n, name, "", sb, nodeMap);
         if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setTickPosition(TickPosition.", n));
+            sb.append(String.format("\t\t%1s.setTickPosition(TickPosition.", n));
             switch(prop){
                 case "both": sb.append("TicksBothSides"); break;
                 case "above": case "left": sb.append("TicksAbove"); break;
@@ -155,7 +158,7 @@ public class ComponentParser {
             }
             sb.append(");\n");
         }
-        Utils.tryValue(n, "interval", "%1s.setTickInterval(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "interval", "\t\t%1s.setTickInterval(%2s);\n", sb, nodeMap);
         styles.AbstractSlider(n, sb, nodeMap);
         functions.onAbstractSliderFunctions(n, sb, nodeMap);
         addChild(layoutName, layout, "widget", n, nodeMap);
@@ -167,14 +170,14 @@ public class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-        sb.append(String.format("QLCDNumber %1s = new QLCDNumber();\n", n));
-        Utils.tryCapitalize(n, "segment-style", "%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
-        Utils.tryCapitalize(n, "mode", "%1s.setMode(QLCDNumber.Mode.%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(n, "small-decimal-point", "%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
-        Utils.tryValue(n, "digit-count", "%1s.setDigitCount(%2s);\n", sb, nodeMap);
-        Utils.tryValue(n, "value", "%1s.display(%2s);\n", sb, nodeMap);
+        events.Events(file, n, name, "", sb, nodeMap);
+        Utils.tryCapitalize(n, "segment-style", "\t\t%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
+        Utils.tryCapitalize(n, "mode", "\t\t%1s.setMode(QLCDNumber.Mode.%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "small-decimal-point", "\t\t%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "digit-count", "\t\t%1s.setDigitCount(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "value", "\t\t%1s.display(%2s);\n", sb, nodeMap);
         styles.Frame(n, sb, nodeMap);
-        functions.MakeFunc(n + ".overflow.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
         functions.onWidgetFunctions(n, sb, nodeMap);
         addChild(layoutName, layout, "widget", n, nodeMap);
     }
@@ -185,9 +188,9 @@ public class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-        sb.append(String.format("QPushButton %1s = new QPushButton(\"%2s\");\n", n, node.getTextContent()));
-        Utils.tryBoolean(n, "default", "%1s.setDefault(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(n, "flat", "%1s.setFlat(%2s);\n", sb, nodeMap);
+        events.Events(file, n, name, node.getTextContent(), sb, nodeMap);
+        Utils.tryBoolean(n, "default", "\t\t%1s.setDefault(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "flat", "\t\t%1s.setFlat(%2s);\n", sb, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
         addChild(layoutName, layout, "widget", n, nodeMap);
@@ -199,7 +202,7 @@ public class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-        sb.append(String.format("QRadioButton %1s = new QRadioButton();\n", n));
+        events.Events(file, n, name, "", sb, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
         addChild(layoutName, layout, "widget", n, nodeMap);
@@ -212,10 +215,10 @@ public class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-        sb.append(String.format("QCheckBox %1s = new QCheckBox();\n", n));
-        Utils.tryBoolean(n, "checkable", "%1s.setTristate(%2s);\n", sb, nodeMap);
+        events.Events(file, n, name, "", sb, nodeMap);
+        Utils.tryBoolean(n, "checkable", "\t\t%1s.setTristate(%2s);\n", sb, nodeMap);
         if(!(prop = Utils.check("check-state", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setCheckState(Qt.CheckState.", n));
+            sb.append(String.format("\t\t%1s.setCheckState(Qt.CheckState.", n));
             switch(prop){
                 case "unchecked": sb.append("Unchecked);\n"); break;
                 case "partially-checked": sb.append("PartiallyChecked);\n"); break;
@@ -223,7 +226,7 @@ public class ComponentParser {
             }
         }
         styles.AbstractButton(n, sb, nodeMap);
-        functions.MakeFunc(n + ".stateChanged.connect(", Utils.check("on-state-change", nodeMap), sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".stateChanged.connect(", Utils.check("on - state - change", nodeMap), sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
         addChild(layoutName, layout, "widget", n, nodeMap);
     }
@@ -234,9 +237,10 @@ public class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-        Utils.tryBoolean(n, "resize-grips-visible", "%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
+        events.Events(file, n, name, "", sb, nodeMap);
+        Utils.tryBoolean(n, "resize-grips-visible", "\t\t%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
         styles.AbstractItemView(n, sb, nodeMap);
-        functions.MakeFunc(n + ".updatePreviewWidget.connect(", "on-preview-update", sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".updatePreviewWidget.connect(", "on-preview-update", sb, nodeMap);
         functions.onAbstractItemViewFunctions(n, sb, nodeMap);
         addChild(layoutName, layout, "widget", n, nodeMap);
     }
@@ -247,7 +251,7 @@ public class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-        sb.append(String.format("QGridLayout %1s = new QGridLayout();\n", n));
+        events.Events(file, n, name, "", sb, nodeMap);
         addChild(layoutName, layout, "layout", n, nodeMap);
     }
 }

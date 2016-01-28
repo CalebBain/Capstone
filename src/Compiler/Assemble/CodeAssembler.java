@@ -12,17 +12,16 @@ public class CodeAssembler {
     public CodeAssembler() {
     }
 
-    public void assemble(String name, Node node){
+    public void assemble(String file, String name, Node node){
         StringBuilder sb = new StringBuilder();
-        sb.append("package GeneratedCode;\n");
         sb.append("import com.trolltech.qt.core.*;\n");
         sb.append("import com.trolltech.qt.gui.*;\n");
         sb.append("public class qt {\n");
-        sb.append("public void run() {\n\n");
-        sb.append(String.format("QApplication %1s = new QApplication(new String[0]);\n", name));
-        new ComponentParser(name, sb, node);
-        sb.append("\napp.exec();\n");
-        sb.append("}\n");
+        sb.append("\tpublic void run() {\n");
+        sb.append(String.format("\t\tQApplication %1s = new QApplication(new String[0]);\n", name));
+        new ComponentParser(file, name, sb, node);
+        sb.append("\t\tapp.exec();\n");
+        sb.append("\t}\n");
         sb.append("}");
         System.out.println(sb.toString());
         //write(sb, name);
