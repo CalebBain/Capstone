@@ -17,10 +17,11 @@ import org.w3c.dom.NodeList;
 *
 * */
 
-public class ComponentParser {
+public final class ComponentParser {
     private InlineStyleParser styles = new InlineStyleParser();
     private FunctionParser functions = new FunctionParser();
     private EventParser events = new EventParser();
+    private ChildParser children = new ChildParser();
     private StringBuilder sb;
     private String file;
 
@@ -53,78 +54,6 @@ public class ComponentParser {
                 component = "layout"; break;
         }
         return component;
-    }
-
-    private void addChild(String name, String layout, String component, String child, NamedNodeMap nodeMap){
-        switch (layout) {
-            case "window": WindowChild(child, component); break;
-            case "grid" : GridChild(name, component, child, nodeMap); break;
-            case "menubar" : MenubarChild(name, component, child, nodeMap); break;
-            case "menu" : MenuChild(name, component, child, nodeMap); break;
-        }
-    }
-
-    private void WindowChild(String name, String component){
-        switch (component){
-            case "layout" : sb.append(String.format("\t\tcenterWidget.setLayout(%s);\n", name)); break;
-            case "widget" : sb.append(String.format("\t\t%s.setParent(centerWidget);\n", name)); break;
-            case "menubar" : sb.append(String.format("\t\twindow.setMenuBar(%s);\n", name)); break;
-        }
-    }
-
-    private void GridChild(String name, String component, String child, NamedNodeMap nodeMap){
-        Utils.capitalize(component);
-        sb.append(String.format("\t\t%1s.add%2s(%3s, ", name, component, child));
-        int row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
-        int col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
-        Utils.tryValue("row-span", "%2s, ", row, sb, nodeMap);
-        Utils.tryValue("column-span", "%2s, ", col, sb, nodeMap);
-        sb.append("Qt.AlignmentFlag.");
-        switch(Utils.check("position", nodeMap)){
-            case "bottom": sb.append("AlignBottom);\n"); break;
-            case "center": sb.append("AlignCenter);\n"); break;
-            case "horizontal-center": sb.append("AlignHCenter);\n"); break;
-            case "justify": sb.append("AlignJustify);\n"); break;
-            case "left": sb.append("AlignLeft);\n"); break;
-            case "right": sb.append("AlignRight);\n"); break;
-            case "top": sb.append("AlignTop);\n"); break;
-            case "vertical-center": sb.append("AlignVCenter);\n"); break;
-            default: sb.append("AlignAbsolute);\n"); break;
-        }
-    }
-
-    private void MenubarChild(String name, String component, String child, NamedNodeMap nodeMap){
-        switch (component){
-            case "widget" :
-                Utils.tryBoolean(name, "menu-corner", "\t\t%s.setCornerWidget(%2s);\n", "left", "right", sb, nodeMap);
-                break;
-            case "menu" : sb.append(String.format("\t\t%s.addMenu(%s);\n", name, child)); break;
-            case "action" :
-                sb.append(String.format("\t\t%s.addAction(%s);\n", name, child));
-                Utils.tryBoolean(name, "default", child, "\t\t%s.setDefaultUp(%s);\n", sb, nodeMap);
-                Utils.tryBoolean(name, "active", child, "\t\t%s.setNativeMenuBar(%s);\n", sb, nodeMap);
-                break;
-            case "separator" : sb.append(String.format("\t\t%s.addSeparator();\n", name)); break;
-        }
-    }
-
-    private void MenuChild(String name, String component, String child, NamedNodeMap nodeMap) {
-        switch (component){
-            case "menu" : sb.append(String.format("\t\t%s.addMenu(%s);\n", name, child)); break;
-            case "action" :
-                sb.append(String.format("\t\t%s.addAction(%s);\n", name, child));
-                Utils.tryBoolean(name, "default", child, "\t\t%s.setDefaultUp(%s);\n", sb, nodeMap);
-                Utils.tryBoolean(name, "active", child, "\t\t%s.setNativeMenuBar(%s);\n", sb, nodeMap);
-                break;
-            case "separator" : sb.append(String.format("\t\t%s.addSeparator();\n", name)); break;
-        }
-    }
-
-    private void ColumnViewChild(String name, String component){
-        switch (component){
-            case "window" : case "grid" : break;
-            default: sb.append(String.format("ColumnView.setPreviewWidget((%1s);\n", name)); break;
-        }
     }
 
     private void Window(String app, String name, Node node){
@@ -191,7 +120,7 @@ public class ComponentParser {
         Utils.tryValue(n, "interval", "\t\t%1s.setTickInterval(%2s);\n", sb, nodeMap);
         styles.AbstractSlider(n, sb, nodeMap);
         functions.onAbstractSliderFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
+        children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
     private void Number(String name, Node node){
@@ -296,7 +225,7 @@ public class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-
+        Utils.tryCheck(name, "icon", "%s.setIcon", sb, nodeMap);
         styles.Widget(n, sb, nodeMap);
         functions.MakeFunc("\t\t" + n + ".aboutToHide.connect(", "on-hide", sb, nodeMap);
         functions.MakeFunc("\t\t" + n + ".aboutToShow.connect(", "on-show", sb, nodeMap);

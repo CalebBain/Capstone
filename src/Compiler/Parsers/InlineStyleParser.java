@@ -6,7 +6,7 @@ import org.w3c.dom.NamedNodeMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InlineStyleParser {
+public final class InlineStyleParser {
     private Map<String, Style> styles = new HashMap<>();
 
     public void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){

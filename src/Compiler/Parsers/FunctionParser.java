@@ -3,7 +3,7 @@ package Compiler.Parsers;
 import Compiler.Utils;
 import org.w3c.dom.NamedNodeMap;
 
-public class FunctionParser {
+public final class FunctionParser {
 
     public void MakeFunc(String name, String prop, StringBuilder sb, NamedNodeMap nodeMap){
         String[] callParts = new String[0];

@@ -5,7 +5,7 @@ import Compiler.Utils;
 
 import java.util.*;
 
-public class EventParser {
+public final class EventParser {
 
     private boolean hasProps = false;
 

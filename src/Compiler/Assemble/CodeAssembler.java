@@ -7,7 +7,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class CodeAssembler {
+public final class CodeAssembler {
 
     public CodeAssembler() {
     }
