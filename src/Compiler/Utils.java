@@ -10,13 +10,12 @@ import java.util.Map;
 public final class Utils {
 
     public static boolean tryValue(String value) {
-        boolean result = false;
         try {
             Integer.parseInt(value);
-            result = true;
+            return true;
         } catch (NumberFormatException ignored) {
+            return false;
         }
-        return result;
     }
 
     public static String setName(String name) {
@@ -37,36 +36,31 @@ public final class Utils {
     }
 
     public static boolean exists(String keyword, NamedNodeMap nodeMap){
-        boolean result;
         try {
             Node word = nodeMap.getNamedItem(keyword);
             word.getNodeValue();
-            result = true;
+            return true;
         } catch (NullPointerException ignored) {
-            result = false;
+            return false;
         }
-        return result;
     }
 
     public static String check(String keyword, NamedNodeMap nodeMap) {
-        String result = "";
         try {
             Node word = nodeMap.getNamedItem(keyword);
-            result = (word != null) ? word.getNodeValue() : "";
+            return (word != null) ? word.getNodeValue() : "";
         } catch (NullPointerException ignored) {
+            return "";
         }
-        return result;
     }
 
     public static boolean check(String keyword, String check, NamedNodeMap nodeMap) {
-        String result;
         try {
             Node word = nodeMap.getNamedItem(keyword);
-            result = (word != null) ? word.getNodeValue() : "";
+            return ((word != null) ? word.getNodeValue() : "").equals(check);
         } catch (NullPointerException e) {
-            result =  "";
+            return false;
         }
-        return result.equals(check);
     }
 
     public static void addAttribute(Style style, NamedNodeMap nodeMap, String attribute) {
@@ -83,15 +77,11 @@ public final class Utils {
     }
 
     public static boolean tryBoolean(String value, String v1, String v2){
-        boolean result = false;
-        if(value.equals(v1) || value.equals(v2)) result = true;
-        return result;
+        return (value.equals(v1) || value.equals(v2));
     }
 
     public static boolean tryBoolean(String value){
-        boolean result = false;
-        if(value.equals("true") || value.equals("false")) result = true;
-        return result;
+        return (value.equals("true") || value.equals("false"));
     }
 
     public static void tryCheck(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
@@ -114,10 +104,14 @@ public final class Utils {
         String p;
         int result = replacement;
         if (Utils.tryValue(p = Utils.check(prop, nodeMap))){
-
+            result = Integer.parseInt(p);
             sb.append(String.format(command, p));
         } else sb.append(String.format(command, replacement));
         return result;
+    }
+
+    public static void tryBoolean(String name, String prop, String child, String command, StringBuilder sb, NamedNodeMap nodeMap){
+        if (Utils.tryBoolean(Utils.check(prop, nodeMap))) sb.append(String.format(command, name, child));
     }
 
     public static void tryBoolean(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){

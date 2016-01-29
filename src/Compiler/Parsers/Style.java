@@ -100,8 +100,8 @@ public final class Style {
         for (String nameAttribute : nameAttributes) sb.append(":" + nameAttribute);
         sb.append("\n{\n");
         for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-            sb.append(attribute.getKey() + ":");
-            sb.append(attribute.getValue() + ";\n");
+            sb.append(String.format("%s:", attribute.getKey()));
+            sb.append(String.format("%s;\n", attribute.getValue()));
         }
         sb.append("}\n\n");
         return sb.toString();

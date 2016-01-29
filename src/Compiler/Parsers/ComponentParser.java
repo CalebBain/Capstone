@@ -35,14 +35,14 @@ public class ComponentParser {
         NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node n = nodeList.item(i);
-            boolean component = elementsSwitch(n.getNodeName(), n);
-            if (component) nodeLoop(n);
+            String component = elementsSwitch(n.getNodeName(), n);
+            if (component.equals("layout")) nodeLoop(n);
         }
         return sb.toString();
     }
 
-    public boolean elementsSwitch(String name, Node node){
-        boolean layout = false;
+    public String elementsSwitch(String name, Node node){
+        String component = "widget";
         switch (name) {
             case "check-box": CheckBox(name, node); break;
             case "radio": Radio(name, node); break;
@@ -50,22 +50,25 @@ public class ComponentParser {
             case "number": Number(name, node); break;
             case "slider": Slider(name, node); break;
             case "grid": Grid(name, node);
-                layout = true; break;
+                component = "layout"; break;
         }
-        return layout;
+        return component;
     }
 
     private void addChild(String name, String layout, String component, String child, NamedNodeMap nodeMap){
         switch (layout) {
             case "window": WindowChild(child, component); break;
             case "grid" : GridChild(name, component, child, nodeMap); break;
+            case "menubar" : MenubarChild(name, component, child, nodeMap); break;
+            case "menu" : MenuChild(name, component, child, nodeMap); break;
         }
     }
 
-    private void WindowChild(String name, String componentType){
-        switch (componentType){
-            case "layout" : sb.append(String.format("\t\tcenterWidget.setLayout(%1s);\n", name)); break;
-            case "widget" : sb.append(String.format("\t\t%1s.setParent(centerWidget);\n", name)); break;
+    private void WindowChild(String name, String component){
+        switch (component){
+            case "layout" : sb.append(String.format("\t\tcenterWidget.setLayout(%s);\n", name)); break;
+            case "widget" : sb.append(String.format("\t\t%s.setParent(centerWidget);\n", name)); break;
+            case "menubar" : sb.append(String.format("\t\twindow.setMenuBar(%s);\n", name)); break;
         }
     }
 
@@ -87,6 +90,33 @@ public class ComponentParser {
             case "top": sb.append("AlignTop);\n"); break;
             case "vertical-center": sb.append("AlignVCenter);\n"); break;
             default: sb.append("AlignAbsolute);\n"); break;
+        }
+    }
+
+    private void MenubarChild(String name, String component, String child, NamedNodeMap nodeMap){
+        switch (component){
+            case "widget" :
+                Utils.tryBoolean(name, "menu-corner", "\t\t%s.setCornerWidget(%2s);\n", "left", "right", sb, nodeMap);
+                break;
+            case "menu" : sb.append(String.format("\t\t%s.addMenu(%s);\n", name, child)); break;
+            case "action" :
+                sb.append(String.format("\t\t%s.addAction(%s);\n", name, child));
+                Utils.tryBoolean(name, "default", child, "\t\t%s.setDefaultUp(%s);\n", sb, nodeMap);
+                Utils.tryBoolean(name, "active", child, "\t\t%s.setNativeMenuBar(%s);\n", sb, nodeMap);
+                break;
+            case "separator" : sb.append(String.format("\t\t%s.addSeparator();\n", name)); break;
+        }
+    }
+
+    private void MenuChild(String name, String component, String child, NamedNodeMap nodeMap) {
+        switch (component){
+            case "menu" : sb.append(String.format("\t\t%s.addMenu(%s);\n", name, child)); break;
+            case "action" :
+                sb.append(String.format("\t\t%s.addAction(%s);\n", name, child));
+                Utils.tryBoolean(name, "default", child, "\t\t%s.setDefaultUp(%s);\n", sb, nodeMap);
+                Utils.tryBoolean(name, "active", child, "\t\t%s.setNativeMenuBar(%s);\n", sb, nodeMap);
+                break;
+            case "separator" : sb.append(String.format("\t\t%s.addSeparator();\n", name)); break;
         }
     }
 
@@ -225,6 +255,8 @@ public class ComponentParser {
                 case "checked": sb.append("Checked);\n"); break;
             }
         }
+        Utils.tryBoolean(n, "default", "\t\t%1s.setDefaultUp(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "native-menubar", "\t\t%1s.setNativeMenuBar(%2s);\n", sb, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
         functions.MakeFunc("\t\t" + n + ".stateChanged.connect(", Utils.check("on - state - change", nodeMap), sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
@@ -243,6 +275,35 @@ public class ComponentParser {
         functions.MakeFunc("\t\t" + n + ".updatePreviewWidget.connect(", "on-preview-update", sb, nodeMap);
         functions.onAbstractItemViewFunctions(n, sb, nodeMap);
         addChild(layoutName, layout, "widget", n, nodeMap);
+    }
+
+    private void MenuBar(String name, Node node){
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
+        NamedNodeMap nodeMap = node.getAttributes();
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        styles.Widget(n, sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".hovered.connect(", "on-hover", sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".triggered.connect(", "on-trigger", sb, nodeMap);
+        functions.onWidgetFunctions(n, sb, nodeMap);
+        addChild(layoutName, layout, "menubar", n, nodeMap);
+    }
+
+    private void Menu(String name, Node node){
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
+        NamedNodeMap nodeMap = node.getAttributes();
+        String n = Utils.tryEmpty("name", name, nodeMap);
+
+        styles.Widget(n, sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".aboutToHide.connect(", "on-hide", sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".aboutToShow.connect(", "on-show", sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".hovered.connect(", "on-hover", sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".triggered.connect(", "on-trigger", sb, nodeMap);
+        functions.onWidgetFunctions(n, sb, nodeMap);
+        addChild(layoutName, layout, "menubar", n, nodeMap);
     }
 
     private void Grid(String name, Node node) {
