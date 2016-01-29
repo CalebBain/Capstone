@@ -50,6 +50,10 @@ public final class ComponentParser {
             case "button": Button(name, node); break;
             case "number": Number(name, node); break;
             case "slider": Slider(name, node); break;
+            case "menubar": MenuBar(name, node); break;
+            case "menu": Menu(name, node); break;
+            case "action": Action(name, node); break;
+            case "separator": Separator(name, node); break;
             case "grid": Grid(name, node);
                 component = "layout"; break;
         }
@@ -138,7 +142,7 @@ public final class ComponentParser {
         styles.Frame(n, sb, nodeMap);
         functions.MakeFunc("\t\t" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
         functions.onWidgetFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
+        children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
     private void Button(String name, Node node){
@@ -152,7 +156,7 @@ public final class ComponentParser {
         Utils.tryBoolean(n, "flat", "\t\t%1s.setFlat(%2s);\n", sb, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
+        children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
     private void Radio(String name, Node node){
@@ -164,7 +168,7 @@ public final class ComponentParser {
         events.Events(file, n, name, "", sb, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
+        children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
     private void CheckBox(String name, Node node){
@@ -187,9 +191,9 @@ public final class ComponentParser {
         Utils.tryBoolean(n, "default", "\t\t%1s.setDefaultUp(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "native-menubar", "\t\t%1s.setNativeMenuBar(%2s);\n", sb, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".stateChanged.connect(", Utils.check("on - state - change", nodeMap), sb, nodeMap);
+        functions.MakeFunc(n + ".stateChanged", Utils.check("on-state-change", nodeMap), sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
+        children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
     private void ColumnView(String name, Node node){
@@ -201,9 +205,9 @@ public final class ComponentParser {
         events.Events(file, n, name, "", sb, nodeMap);
         Utils.tryBoolean(n, "resize-grips-visible", "\t\t%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
         styles.AbstractItemView(n, sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".updatePreviewWidget.connect(", "on-preview-update", sb, nodeMap);
+        functions.MakeFunc(n + ".updatePreviewWidget", "on-preview-update", sb, nodeMap);
         functions.onAbstractItemViewFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
+        children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
     private void MenuBar(String name, Node node){
@@ -213,10 +217,10 @@ public final class ComponentParser {
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
         styles.Widget(n, sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".hovered.connect(", "on-hover", sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".triggered.connect(", "on-trigger", sb, nodeMap);
+        functions.MakeFunc(n + ".hovered", "on-hover", sb, nodeMap);
+        functions.MakeFunc(n + ".triggered", "on-trigger", sb, nodeMap);
         functions.onWidgetFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "menubar", n, nodeMap);
+        children.addChild(layoutName, layout, "menubar", n, sb, nodeMap);
     }
 
     private void Menu(String name, Node node){
@@ -225,14 +229,34 @@ public final class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
-        Utils.tryCheck(name, "icon", "%s.setIcon", sb, nodeMap);
+        Utils.tryCheck(name, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "tear-off", "%s.setTearOffEnabled(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "title", "%s.setTitle(%s);\n", "menu", sb, nodeMap);
         styles.Widget(n, sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".aboutToHide.connect(", "on-hide", sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".aboutToShow.connect(", "on-show", sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".hovered.connect(", "on-hover", sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".triggered.connect(", "on-trigger", sb, nodeMap);
+        functions.MakeFunc(n + ".aboutToHide", "on-hide", sb, nodeMap);
+        functions.MakeFunc(n + ".aboutToShow", "on-show", sb, nodeMap);
+        functions.MakeFunc(n + ".hovered", "on-hover", sb, nodeMap);
+        functions.MakeFunc(n + ".triggered", "on-trigger", sb, nodeMap);
         functions.onWidgetFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "menubar", n, nodeMap);
+        children.addChild(layoutName, layout, "menu", n, sb, nodeMap);
+    }
+
+    private void Action(String name, Node node){
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
+        NamedNodeMap nodeMap = node.getAttributes();
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        children.addChild(layoutName, layout, "action", n, sb, nodeMap);
+    }
+
+    private void Separator(String name, Node node){
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
+        NamedNodeMap nodeMap = node.getAttributes();
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
     }
 
     private void Grid(String name, Node node) {
@@ -242,6 +266,6 @@ public final class ComponentParser {
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
         events.Events(file, n, name, "", sb, nodeMap);
-        addChild(layoutName, layout, "layout", n, nodeMap);
+        children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
     }
 }

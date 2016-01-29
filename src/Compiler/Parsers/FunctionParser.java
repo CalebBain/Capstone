@@ -10,42 +10,41 @@ public final class FunctionParser {
         String p;
         if (!(p = Utils.check(prop, nodeMap)).isEmpty()){
             if (!p.isEmpty()) callParts = p.split(":");
-            sb.append(name);
-            if(callParts.length == 1) sb.append(String.format("QApplication.instance(), %1s);\n", callParts[0]));
+            if(callParts.length == 1) sb.append(String.format("\t\t%s.connect(QApplication.instance(), %1s);\n", name, callParts[0]));
             else if(callParts.length == 2) sb.append(String.format("%1s, %2s);\n", callParts[0], callParts[1]));
         }
     }
 
     public void onAbstractSliderFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc("\t\t" + name + ".valueChanged.connect(", "on-value-change", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".sliderReleased.connect(", "on-release", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".sliderMoved.connect(", "on-move", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".sliderPressed.connect(", "on-press", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".actionTriggered.connect(", "on-action-trigger", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".actionTriggered.connect(", "on-range-change", sb, nodeMap);
+        MakeFunc(name + ".valueChanged", "on-value-change", sb, nodeMap);
+        MakeFunc(name + ".sliderReleased", "on-release", sb, nodeMap);
+        MakeFunc(name + ".sliderMoved", "on-move", sb, nodeMap);
+        MakeFunc(name + ".sliderPressed", "on-press", sb, nodeMap);
+        MakeFunc(name + ".actionTriggered", "on-action-trigger", sb, nodeMap);
+        MakeFunc(name + ".actionTriggered", "on-range-change", sb, nodeMap);
         onWidgetFunctions(name, sb, nodeMap);
     }
 
     public void onAbstractButtonFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc("\t\t" + name + ".clicked.connect(", "on-click", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".released.connect(", "on-release", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".pressed.connect(", "on-press", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".toggled.connect(", "on-toggle", sb, nodeMap);
+        MakeFunc(name + ".clicked", "on-click", sb, nodeMap);
+        MakeFunc(name + ".released", "on-release", sb, nodeMap);
+        MakeFunc(name + ".pressed", "on-press", sb, nodeMap);
+        MakeFunc(name + ".toggled", "on-toggle", sb, nodeMap);
         onWidgetFunctions(name, sb, nodeMap);
     }
 
     public void onAbstractItemViewFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc("\t\t" + name + ".clicked.connect(", "on-click", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".pressed.connect(", "on-press", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".doubleClicked.connect(", "on-double-click", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".activated.connect(", "on-activate", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".entered.connect(", "on-enter", sb, nodeMap);
-        MakeFunc("\t\t" + name + ".viewportEntered.connect(", "on-viewport-enter", sb, nodeMap);
+        MakeFunc(name + ".clicked", "on-click", sb, nodeMap);
+        MakeFunc(name + ".pressed", "on-press", sb, nodeMap);
+        MakeFunc(name + ".doubleClicked", "on-double-click", sb, nodeMap);
+        MakeFunc(name + ".activated", "on-activate", sb, nodeMap);
+        MakeFunc(name + ".entered", "on-enter", sb, nodeMap);
+        MakeFunc(name + ".viewportEntered", "on-viewport-enter", sb, nodeMap);
         onWidgetFunctions(name, sb, nodeMap);
     }
 
     public void onWidgetFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc("\t\t" + name + ".customContextMenuRequested.connect(", "on-custom-context-menu-request", sb, nodeMap);
+        MakeFunc(name + ".customContextMenuRequested", "on-custom-context-menu-request", sb, nodeMap);
     }
 
 

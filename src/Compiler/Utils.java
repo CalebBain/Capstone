@@ -86,7 +86,13 @@ public final class Utils {
 
     public static void tryCheck(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
         String p;
-        if (Utils.tryValue(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
+        if (!(p = Utils.check(prop, nodeMap)).isEmpty()) sb.append(String.format(command, name, p));
+    }
+
+    public static void tryCheck(String name, String prop, String command, String replacement, StringBuilder sb, NamedNodeMap nodeMap){
+        String p;
+        if (!(p = Utils.check(prop, nodeMap)).isEmpty()) sb.append(String.format(command, name, p));
+        else sb.append(String.format(command, name, replacement));
     }
 
     public static void tryValue(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){

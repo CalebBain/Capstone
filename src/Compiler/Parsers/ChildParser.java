@@ -69,7 +69,10 @@ public final class ChildParser {
                 Utils.tryBoolean(name, "default", child, "\t\t%s.setDefaultUp(%s);\n", sb, nodeMap);
                 Utils.tryBoolean(name, "active", child, "\t\t%s.setNativeMenuBar(%s);\n", sb, nodeMap);
                 break;
-            case "separator" : sb.append(String.format("\t\t%s.addSeparator();\n", name)); break;
+            case "separator" :
+                sb.append(String.format("\t\t%s.addSeparator();\n", name));
+                Utils.tryBoolean(name, "collapsible", child, "\t\t%s.setSeparatorsCollapsible(%s);\n", sb, nodeMap);
+                break;
         }
     }
 
