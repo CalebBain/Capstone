@@ -10,6 +10,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /* notes
 *   this is the second implantation of the code generator
 *
@@ -29,6 +34,7 @@ public final class ComponentParser {
     private ChildParser children = new ChildParser();
     private StringBuilder sb;
     private String file;
+    private Map<String, Style> stylesSheet = new HashMap<>();
 
     public ComponentParser(String file, String name, StringBuilder sb, Node node) {
         this.sb = sb;
@@ -290,6 +296,8 @@ public final class ComponentParser {
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QGridLayout");
+        stylesSheet.put((!n.isEmpty())? n: "grid", style);
         events.Events(file, n, name, "", sb, nodeMap);
         children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
     }
