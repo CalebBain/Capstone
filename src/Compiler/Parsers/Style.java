@@ -94,16 +94,15 @@ public final class Style {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(component);
-        if (special) sb.append("#" + name);
-
-        if (!subControl.isEmpty()) sb.append("::" + subControl);
-        for (String nameAttribute : nameAttributes) sb.append(":" + nameAttribute);
-        sb.append("\n{\n");
+        if (special) sb.append(String.format("#%s", name));
+        if (!subControl.isEmpty()) sb.append(String.format("::%s", subControl));
+        for (String nameAttribute : nameAttributes) sb.append(String.format(":%s", nameAttribute));
+        sb.append(" { ");
         for (Map.Entry<String, String> attribute : attributes.entrySet()) {
             sb.append(String.format("%s:", attribute.getKey()));
-            sb.append(String.format("%s;\n", attribute.getValue()));
+            sb.append(String.format("%s; ", attribute.getValue()));
         }
-        sb.append("}\n\n");
+        sb.append(" }\n");
         return sb.toString();
     }
 }

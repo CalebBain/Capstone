@@ -218,7 +218,7 @@ public final class InlineStyleParser {
         Utils.tryCheck(name, "tool-tip", "\t\t%1s.setToolTip(%2s);\n", sb, nodeMap);
     }
 
-    /*public void setStyle(Style style, NamedNodeMap nodeMap) {
+    public void setStyle(Style style, NamedNodeMap nodeMap) {
         String[] attributes = {"alt-background-color", "background", "background-color", "background-image", "image",
                 "background-repeat", "background-position", "background-attachment", "background-clip", "opacity",
                 "background-origin", "border", "border-top", "border-right", "border-bottom", "border-left", "color",
@@ -238,5 +238,5 @@ public final class InlineStyleParser {
         Utils.addAttribute(style, nodeMap, "icon", "file-icon");
         Utils.addAttribute(style, nodeMap, "dialogbuttons-have-icons", "dialogbuttonbox-buttons-have-icons");
         Utils.addAttribute(style, nodeMap, "selection-decoration", "show-decoration-selected");
-    }*/
+    }
 }

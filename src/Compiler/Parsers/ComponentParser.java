@@ -1,6 +1,11 @@
 package Compiler.Parsers;
 
 import Compiler.Utils;
+import com.trolltech.examples.tutorial.Widgets;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QGridLayout;
+import com.trolltech.qt.gui.QSlider;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -242,11 +247,31 @@ public final class ComponentParser {
     }
 
     private void Action(String name, Node node){
+        String prop;
         Node parent = node.getParentNode();
         String layout = parent.getNodeName();
         String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
         NamedNodeMap nodeMap = node.getAttributes();
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Utils.tryBoolean(name, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "icon-Text", "%s.setIconText(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "icon-visible", "%s.setIconVisibleMenu(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "is-separator", "%s.setSeparator(%s);\n", sb, nodeMap);
+        if(!(prop = Utils.check("shortcut-context", nodeMap)).isEmpty()){
+            sb.append(String.format("\t\t%1s.setShortcutContext(Qt.ShortcutContext.", n));
+            switch(prop){
+                case "widget": sb.append("WidgetShortcut);\n"); break;
+                case "Widget-children": sb.append("WidgetWithChildrenShortcut);\n"); break;
+                case "Window": sb.append("WindowShortcut);\n"); break;
+                case "Application": sb.append("ApplicationShortcut);\n"); break;
+            }
+        }
+        Utils.tryCheck(name, "status-tip", "%s.setStatusTip(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "text", "%s.setText(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "whats-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
         children.addChild(layoutName, layout, "action", n, sb, nodeMap);
     }
 
