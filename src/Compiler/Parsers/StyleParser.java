@@ -12,7 +12,7 @@ import java.util.Map;
 // (least to most important)
 //  1. External style sheet
 //  2. Internal style sheet (in the style section)
-//  3.Inline style (inside an JAML element)
+//  3. Inline style (inside an JAML element)
 
 public final class StyleParser {
 

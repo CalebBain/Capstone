@@ -1,18 +1,11 @@
 package Compiler.Parsers;
 
 import Compiler.Utils;
-import com.trolltech.examples.tutorial.Widgets;
-import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QAction;
-import com.trolltech.qt.gui.QGridLayout;
-import com.trolltech.qt.gui.QSlider;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /* notes
@@ -34,12 +27,14 @@ public final class ComponentParser {
     private ChildParser children = new ChildParser();
     private StringBuilder sb;
     private String file;
+    private Style style;
+    private String prop;
     private Map<String, Style> stylesSheet = new HashMap<>();
 
     public ComponentParser(String file, String name, StringBuilder sb, Node node) {
         this.sb = sb;
         this.file = file;
-        Window(name, "QMainWindow", node);
+        Window(name, "QMainWindow", node.getAttributes());
         nodeLoop(node);
     }
 
@@ -55,25 +50,27 @@ public final class ComponentParser {
 
     public String elementsSwitch(String name, Node node){
         String component = "widget";
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
+        NamedNodeMap nodeMap = node.getAttributes();
         switch (name) {
-            case "check-box": CheckBox(name, node); break;
-            case "radio": Radio(name, node); break;
-            case "button": Button(name, node); break;
-            case "number": Number(name, node); break;
-            case "slider": Slider(name, node); break;
-            case "menubar": MenuBar(name, node); break;
-            case "menu": Menu(name, node); break;
-            case "action": Action(name, node); break;
-            case "separator": Separator(name, node); break;
-            case "grid": Grid(name, node);
+            case "check-box": CheckBox(name, layout, layoutName, nodeMap); break;
+            case "radio": Radio(name, layout, layoutName, nodeMap); break;
+            case "button": Button(name, node.getTextContent(), layout, layoutName, nodeMap); break;
+            case "number": Number(name, layout, layoutName, nodeMap); break;
+            case "slider": Slider(name, layout, layoutName, nodeMap); break;
+            case "menubar": MenuBar(name, layout, layoutName, nodeMap); break;
+            case "menu": Menu(name, layout, layoutName, nodeMap); break;
+            case "action": Action(name, layout, layoutName, nodeMap); break;
+            case "separator": Separator(name, layout, layoutName, nodeMap); break;
+            case "grid": Grid(name, layout, layoutName, nodeMap);
                 component = "layout"; break;
         }
         return component;
     }
 
-    private void Window(String app, String name, Node node){
-        String prop;
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Window(String app, String name, NamedNodeMap nodeMap){
         sb.append(String.format("\t\tQMainWindow window = new QMainWindow(%1s);\n", app));
         sb.append("\t\tQWidget centerWidget = new QWidget();\n");
         sb.append("\t\twindow.setCentralWidget(centerWidget);\n");
@@ -114,12 +111,7 @@ public final class ComponentParser {
         functions.onWidgetFunctions(name, sb, nodeMap);
     }
 
-    private void Slider(String name, Node node){
-        String prop;
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Slider(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
         events.Events(file, n, name, "", sb, nodeMap);
         if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
@@ -138,11 +130,7 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
-    private void Number(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Number(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
         events.Events(file, n, name, "", sb, nodeMap);
         Utils.tryCapitalize(n, "segment-style", "\t\t%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
@@ -156,13 +144,9 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
-    private void Button(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Button(String name, String text, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
-        events.Events(file, n, name, node.getTextContent(), sb, nodeMap);
+        events.Events(file, n, name, text, sb, nodeMap);
         Utils.tryBoolean(n, "default", "\t\t%1s.setDefault(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "flat", "\t\t%1s.setFlat(%2s);\n", sb, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
@@ -170,11 +154,7 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
-    private void Radio(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Radio(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
         events.Events(file, n, name, "", sb, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
@@ -182,12 +162,7 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
-    private void CheckBox(String name, Node node){
-        String prop;
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void CheckBox(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
         events.Events(file, n, name, "", sb, nodeMap);
         Utils.tryBoolean(n, "checkable", "\t\t%1s.setTristate(%2s);\n", sb, nodeMap);
@@ -207,11 +182,7 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
-    private void ColumnView(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void ColumnView(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
         events.Events(file, n, name, "", sb, nodeMap);
         Utils.tryBoolean(n, "resize-grips-visible", "\t\t%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
@@ -221,11 +192,7 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
-    private void MenuBar(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void MenuBar(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
         styles.Widget(n, sb, nodeMap);
         functions.MakeFunc(n + ".hovered", "on-hover", sb, nodeMap);
@@ -234,11 +201,7 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "menubar", n, sb, nodeMap);
     }
 
-    private void Menu(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Menu(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
         Utils.tryCheck(name, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "tear-off", "%s.setTearOffEnabled(%s);\n", sb, nodeMap);
@@ -252,12 +215,7 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "menu", n, sb, nodeMap);
     }
 
-    private void Action(String name, Node node){
-        String prop;
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Action(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
         Utils.tryBoolean(name, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
@@ -281,23 +239,17 @@ public final class ComponentParser {
         children.addChild(layoutName, layout, "action", n, sb, nodeMap);
     }
 
-    private void Separator(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Separator(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        stylesSheet.put((!n.isEmpty())? n: "QGridLayout", (style = new Style(n, "QGridLayout")));
+        styles.setStyle(style, nodeMap);
         children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
     }
 
-    private void Grid(String name, Node node) {
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
+    private void Grid(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
-        Style style = new Style(n, "QGridLayout");
-        stylesSheet.put((!n.isEmpty())? n: "grid", style);
+        stylesSheet.put((!n.isEmpty())? n: "QGridLayout", (style = new Style(n, "QGridLayout")));
+        styles.setStyle(style, nodeMap);
         events.Events(file, n, name, "", sb, nodeMap);
         children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
     }
