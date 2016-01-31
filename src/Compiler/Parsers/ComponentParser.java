@@ -27,7 +27,6 @@ public final class ComponentParser {
     private ChildParser children = new ChildParser();
     private StringBuilder sb;
     private String file;
-    private Style style;
     private String prop;
     private Map<String, Style> stylesSheet = new HashMap<>();
 
@@ -36,6 +35,12 @@ public final class ComponentParser {
         this.file = file;
         Window(name, "QMainWindow", node.getAttributes());
         nodeLoop(node);
+    }
+
+    public String StyleSheet(){
+        StringBuilder sb = new StringBuilder();
+        for(Style style : stylesSheet.values()) sb.append(style.toString());
+        return sb.toString();
     }
 
     public String nodeLoop(Node node) {
@@ -60,9 +65,12 @@ public final class ComponentParser {
             case "button": Button(name, node.getTextContent(), layout, layoutName, nodeMap); break;
             case "number": Number(name, layout, layoutName, nodeMap); break;
             case "slider": Slider(name, layout, layoutName, nodeMap); break;
-            case "menubar": MenuBar(name, layout, layoutName, nodeMap); break;
-            case "menu": Menu(name, layout, layoutName, nodeMap); break;
-            case "action": Action(name, layout, layoutName, nodeMap); break;
+            case "menubar": MenuBar(name, layout, layoutName, nodeMap);
+                component = "layout"; break;
+            case "menu": Menu(name, layout, layoutName, nodeMap);
+                component = "layout"; break;
+            case "action": Action(name, layout, layoutName, nodeMap);
+                component = "layout"; break;
             case "separator": Separator(name, layout, layoutName, nodeMap); break;
             case "grid": Grid(name, layout, layoutName, nodeMap);
                 component = "layout"; break;
@@ -71,6 +79,10 @@ public final class ComponentParser {
     }
 
     private void Window(String app, String name, NamedNodeMap nodeMap){
+        String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QSlider");
+        stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
+        styles.setStyle(style, nodeMap);
         sb.append(String.format("\t\tQMainWindow window = new QMainWindow(%1s);\n", app));
         sb.append("\t\tQWidget centerWidget = new QWidget();\n");
         sb.append("\t\twindow.setCentralWidget(centerWidget);\n");
@@ -113,7 +125,11 @@ public final class ComponentParser {
 
     private void Slider(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QSlider");
         events.Events(file, n, name, "", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
+        styles.setStyle(style, nodeMap);
+        styles.AbstractSlider(n, sb, nodeMap);
         if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
             sb.append(String.format("\t\t%1s.setTickPosition(TickPosition.", n));
             switch(prop){
@@ -125,20 +141,22 @@ public final class ComponentParser {
             sb.append(");\n");
         }
         Utils.tryValue(n, "interval", "\t\t%1s.setTickInterval(%2s);\n", sb, nodeMap);
-        styles.AbstractSlider(n, sb, nodeMap);
         functions.onAbstractSliderFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
     private void Number(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QLCDNumber");
         events.Events(file, n, name, "", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QLCDNumber", style);
+        styles.setStyle(style, nodeMap);
+        styles.Frame(n, sb, nodeMap);
         Utils.tryCapitalize(n, "segment-style", "\t\t%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
         Utils.tryCapitalize(n, "mode", "\t\t%1s.setMode(QLCDNumber.Mode.%2s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "small-decimal-point", "\t\t%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
         Utils.tryValue(n, "digit-count", "\t\t%1s.setDigitCount(%2s);\n", sb, nodeMap);
         Utils.tryValue(n, "value", "\t\t%1s.display(%2s);\n", sb, nodeMap);
-        styles.Frame(n, sb, nodeMap);
         functions.MakeFunc("\t\t" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
         functions.onWidgetFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
@@ -146,17 +164,23 @@ public final class ComponentParser {
 
     private void Button(String name, String text, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QPushButton");
         events.Events(file, n, name, text, sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QPushButton", style);
+        styles.setStyle(style, nodeMap);
+        styles.AbstractButton(n, sb, nodeMap);
         Utils.tryBoolean(n, "default", "\t\t%1s.setDefault(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "flat", "\t\t%1s.setFlat(%2s);\n", sb, nodeMap);
-        styles.AbstractButton(n, sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
 
     private void Radio(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QRadioButton");
         events.Events(file, n, name, "", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QRadioButton", style);
+        styles.setStyle(style, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
@@ -164,7 +188,11 @@ public final class ComponentParser {
 
     private void CheckBox(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QCheckBox");
         events.Events(file, n, name, "", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QCheckBox", style);
+        styles.setStyle(style, nodeMap);
+        styles.AbstractButton(n, sb, nodeMap);
         Utils.tryBoolean(n, "checkable", "\t\t%1s.setTristate(%2s);\n", sb, nodeMap);
         if(!(prop = Utils.check("check-state", nodeMap)).isEmpty()){
             sb.append(String.format("\t\t%1s.setCheckState(Qt.CheckState.", n));
@@ -176,7 +204,6 @@ public final class ComponentParser {
         }
         Utils.tryBoolean(n, "default", "\t\t%1s.setDefaultUp(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "native-menubar", "\t\t%1s.setNativeMenuBar(%2s);\n", sb, nodeMap);
-        styles.AbstractButton(n, sb, nodeMap);
         functions.MakeFunc(n + ".stateChanged", Utils.check("on-state-change", nodeMap), sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
@@ -184,9 +211,12 @@ public final class ComponentParser {
 
     private void ColumnView(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QColumnView");
         events.Events(file, n, name, "", sb, nodeMap);
-        Utils.tryBoolean(n, "resize-grips-visible", "\t\t%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QColumnView", style);
+        styles.setStyle(style, nodeMap);
         styles.AbstractItemView(n, sb, nodeMap);
+        Utils.tryBoolean(n, "resize-grips-visible", "\t\t%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
         functions.MakeFunc(n + ".updatePreviewWidget", "on-preview-update", sb, nodeMap);
         functions.onAbstractItemViewFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
@@ -194,6 +224,10 @@ public final class ComponentParser {
 
     private void MenuBar(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QMenuBar");
+        events.Events(file, n, name, "", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty())? n: "QMenuBar", style);
+        styles.setStyle(style, nodeMap);
         styles.Widget(n, sb, nodeMap);
         functions.MakeFunc(n + ".hovered", "on-hover", sb, nodeMap);
         functions.MakeFunc(n + ".triggered", "on-trigger", sb, nodeMap);
@@ -203,9 +237,13 @@ public final class ComponentParser {
 
     private void Menu(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
-        Utils.tryCheck(name, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "tear-off", "%s.setTearOffEnabled(%s);\n", sb, nodeMap);
-        Utils.tryCheck(name, "title", "%s.setTitle(%s);\n", "menu", sb, nodeMap);
+        Style style = new Style(n, "QMenu");
+        events.Events(file, n, name, "", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty())? n: "QMenu", style);
+        styles.setStyle(style, nodeMap);
+        Utils.tryCheck(name, "icon", "\t\t%s.setIcon(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "tear-off", "\t\t%s.setTearOffEnabled(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "title", "\t\t%s.setTitle(\"%s\");\n", "menu", sb, nodeMap);
         styles.Widget(n, sb, nodeMap);
         functions.MakeFunc(n + ".aboutToHide", "on-hide", sb, nodeMap);
         functions.MakeFunc(n + ".aboutToShow", "on-show", sb, nodeMap);
@@ -217,6 +255,10 @@ public final class ComponentParser {
 
     private void Action(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
+        Style style = new Style(n, "QAction");
+        events.Events(file, n, name, "", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty())? n: "QAction", style);
+        styles.setStyle(style, nodeMap);
         Utils.tryBoolean(name, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
         Utils.tryCheck(name, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
@@ -241,16 +283,15 @@ public final class ComponentParser {
 
     private void Separator(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
-        stylesSheet.put((!n.isEmpty())? n: "QGridLayout", (style = new Style(n, "QGridLayout")));
-        styles.setStyle(style, nodeMap);
         children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
     }
 
     private void Grid(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, nodeMap);
-        stylesSheet.put((!n.isEmpty())? n: "QGridLayout", (style = new Style(n, "QGridLayout")));
-        styles.setStyle(style, nodeMap);
+        Style style = new Style(n, "QGridLayout");
         events.Events(file, n, name, "", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
+        styles.setStyle(style, nodeMap);
         children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
     }
 }

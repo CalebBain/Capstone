@@ -19,8 +19,10 @@ public final class CodeAssembler {
         sb.append("import java.lang.reflect.*;\n");
         sb.append("public class qt {\n");
         sb.append("\tpublic void run() {\n");
-        sb.append(String.format("\t\tQApplication %1s = new QApplication(new String[0]);\n", name));
-        new ComponentParser(file, name, sb, node);
+        sb.append(String.format("\t\tQApplication %s = new QApplication(new String[0]);\n", name));
+        ComponentParser parser = new ComponentParser(file, name, sb, node);
+        String styles = parser.StyleSheet();
+        if (!styles.isEmpty()) sb.append(String.format("\t\t%s.setStyleSheet(\"%s\");\n", name, styles));
         sb.append("\t\tapp.exec();\n");
         sb.append("\t}\n");
         sb.append("}");

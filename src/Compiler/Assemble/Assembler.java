@@ -22,12 +22,12 @@ public final class Assembler {
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
-            System.out.println(doc.getDocumentURI());
-            System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
+            //System.out.println(doc.getDocumentURI());
+            //System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
             if (doc.hasChildNodes()){
                 NodeList nodeList = doc.getChildNodes();
-                printNote(nodeList);
-                System.out.println("\n\n");
+                //printNote(nodeList);
+                //System.out.println("\n\n");
                 Node node = nodeList.item(0);
                 if (node instanceof Element && node.getNodeName().equals("jaml")) {
                     Element docElement = (Element) node;

@@ -28,6 +28,10 @@ public final class Utils {
             put("check-box", "QCheckBox");
             put("tri-state", "QTriState");
             put("menu-bar", "QMenuBar");
+            put("grid", "QGridLayout");
+            put("menubar", "QMenuBar");
+            put("menu", "QMenu");
+            put("action", "QAction");
         }};
         for (Map.Entry<String, String> entry : components.entrySet())
             if (name.startsWith(entry.getKey()))
@@ -127,7 +131,8 @@ public final class Utils {
 
     public static void tryBoolean(String name, String prop, String v1, String v2, String command, StringBuilder sb, NamedNodeMap nodeMap){
         String p;
-        if (Utils.tryBoolean(p = Utils.check(prop, nodeMap), v1, v2)) sb.append(String.format(command, name, p));
+        if (Utils.tryBoolean(p = Utils.check(prop, nodeMap), v1, v2))
+            sb.append(String.format(command, name, p));
     }
 
     public static void formatAppend(String command, StringBuilder sb, String... props){

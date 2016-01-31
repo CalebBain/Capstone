@@ -84,16 +84,18 @@ public final class Style {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(component);
-        if (!name.isEmpty()) sb.append(String.format("#%s", name));
-        if (!subControl.isEmpty()) sb.append(String.format("::%s", subControl));
-        for (String nameAttribute : nameAttributes) sb.append(String.format(":%s", nameAttribute));
-        sb.append(" { ");
-        for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-            sb.append(String.format("%s:", attribute.getKey()));
-            sb.append(String.format("%s; ", attribute.getValue()));
+        if (!attributes.isEmpty()) {
+            sb.append(String.format("\n\t\t\t%s", component));
+            if (!name.isEmpty()) sb.append(String.format("#%s", name));
+            if (!subControl.isEmpty()) sb.append(String.format("::%s", subControl));
+            for (String nameAttribute : nameAttributes) sb.append(String.format(":%s", nameAttribute));
+            sb.append(" { ");
+            for (Map.Entry<String, String> attribute : attributes.entrySet()) {
+                sb.append(String.format("%s:", attribute.getKey()));
+                sb.append(String.format("%s; ", attribute.getValue()));
+            }
+            sb.append(" }");
         }
-        sb.append(" }\n");
         return sb.toString();
     }
 }
