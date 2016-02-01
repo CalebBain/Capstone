@@ -21,7 +21,8 @@ public final class CodeAssembler {
         ComponentParser parser = new ComponentParser(file, name, sb, node);
         String styles = parser.StyleSheet();
         if (!styles.isEmpty()) sb.append(String.format("\t\t%s.setStyleSheet(\"%s\");\n", name, styles));
-        sb.append("\t\tapp.exec();\n");
+        sb.append("\t\twindow.show();\n");
+        sb.append(String.format("\t\t%s.exec();\n",name));
         sb.append("\t}\n");
         sb.append("}");
         System.out.println(sb.toString());

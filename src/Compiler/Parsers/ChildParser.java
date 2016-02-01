@@ -49,7 +49,7 @@ public final class ChildParser {
     public void MenubarChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         switch (component){
             case "widget" :
-                sb.append(String.format("\t\t%s.setCornerWidget(%s", name, component));
+                sb.append(String.format("\t\t%s.setCornerWidget(%s", name, child));
                 switch(Utils.check("corner", nodeMap)){
                     case "right": sb.append(", Qt.Corner.TopRightCorner"); break;
                     case "left": sb.append(", Qt.Corner.TopLeftCorner"); break;

@@ -36,9 +36,9 @@ public final class ComponentParser {
 
     public ComponentParser(String file, String name, StringBuilder sb, Node node) {
         this.sb = sb;
-        this.file = file;
-        functions = new FunctionParser(file);
-        Window(name, "QMainWindow", node.getAttributes());
+        this.file = file.replaceFirst("\\.jaml", "");
+        functions = new FunctionParser(this.file);
+        Window("QMainWindow", node.getAttributes());
         nodeLoop(node);
     }
 
@@ -83,12 +83,12 @@ public final class ComponentParser {
         return component;
     }
 
-    private void Window(String app, String name, NamedNodeMap nodeMap){
+    private void Window(String name, NamedNodeMap nodeMap){
         String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
-        Style style = new Style(n, "QSlider");
-        stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
+        Style style = new Style(n, "QMainWindow");
+        stylesSheet.put((!n.isEmpty()) ? n : "QMainWindow", style);
         styles.setStyle(style, nodeMap);
-        sb.append(String.format("\t\tQMainWindow window = new QMainWindow(%1s);\n", app));
+        sb.append(String.format("\t\tQMainWindow window = new QMainWindow();\n"));
         sb.append("\t\tQWidget centerWidget = new QWidget();\n");
         sb.append("\t\twindow.setCentralWidget(centerWidget);\n");
         sb.append(String.format("\t\t%1s.setWindowTitle(tr(\"%2s\"));\n", name, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
@@ -123,9 +123,9 @@ public final class ComponentParser {
                 case "follow-style": sb.append("ToolButtonFollowStyle);\n"); break;
             }
         }
-        functions.MakeFunc("\t\t" + name + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
-        functions.MakeFunc("\t\t" + name + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
-        functions.onWidgetFunctions(name, sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
+        functions.MakeFunc("\t\t" + n + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
+        functions.onWidgetFunctions(n, sb, nodeMap);
     }
 
     private void Slider(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
