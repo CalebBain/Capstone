@@ -32,10 +32,20 @@ public final class EventParser {
         put("when-mouse-wheel-moves", "wheelEvent");
     }};
 
+    public void Events(String file, String name, String component, StringBuilder sb, NamedNodeMap nodeMap){
+        component = Utils.setName(component);
+        sb.append(String.format("\t\t%s %s = new %s(this)", component, name, component));
+        callEvents(file, name, component, sb, nodeMap);
+    }
+
     public void Events(String file, String name, String component, String param, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
         if(!param.isEmpty()) param = String.format("\"%s\"", param);
         sb.append(String.format("\t\t%s %s = new %s(%s)", component, name, component, param));
+        callEvents(file, name, component, sb, nodeMap);
+    }
+
+    private void callEvents(String file, String name, String component, StringBuilder sb, NamedNodeMap nodeMap){
         for(String prop : events.keySet()) PropCheck(file, name, component, prop, sb, nodeMap);
         PropCheck(file, name, component, "when-mouse-is-released", sb, nodeMap);
         PropCheck(file, name, component, "when-mouse-is-pressed", sb, nodeMap);

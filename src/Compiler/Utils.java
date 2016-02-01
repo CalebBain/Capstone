@@ -150,6 +150,11 @@ public final class Utils {
         return (!(p = Utils.check(prop, nodeMap)).isEmpty()) ? p : replacement;
     }
 
+
+    public static void tryEmptyAppend(String name, String value, String command, StringBuilder sb){
+        if(!value.isEmpty()) sb.append(String.format(command, name, value));
+    }
+
     public static String tryEmpty(String prop, String replacement, List<String> namedComponents,
                                   List<String> comps, NamedNodeMap nodeMap){
         String p;

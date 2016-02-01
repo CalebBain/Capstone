@@ -8,9 +8,9 @@ import java.util.Map;
 
 public final class InlineStyleParser {
     private Map<String, Style> styles = new HashMap<>();
+    private String prop;
 
     public void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        String prop;
         Utils.tryBoolean(name, "alt-row-color", "\t\t%1s.setAlternatingRowColors(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "draggable", "\t\t%1s.setDragEnabled(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "auto-scroll", "\t\t%1s.setAutoScroll(%2s);\n", sb, nodeMap);
@@ -74,7 +74,6 @@ public final class InlineStyleParser {
     }
 
     public void AbstractScrollArea(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        String prop;
         if(!(prop = Utils.check("horizontal-scroll-bar-policy", nodeMap)).isEmpty()){
             sb.append(String.format("\t\t%1s.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.", name));
             switch (prop) {
@@ -95,7 +94,6 @@ public final class InlineStyleParser {
     }
 
     public void Frame(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        String prop;
         if(!(prop = Utils.check("shadow", nodeMap)).isEmpty()){
             sb.append(String.format("\t\t%1s.setFrameShadow(QFrame.Shadow.", name));
             switch (prop) {
@@ -138,14 +136,28 @@ public final class InlineStyleParser {
     public void AbstractSlider(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String[] range = Utils.check("range", nodeMap).split(" ");
         if (range.length > 1) sb.append(String.format("\t\t%1s.setRange(%2s, %3s);\n", name, range[0], range[1]));
-        Utils.tryBoolean(name, "orientation", "vertical", "horizontal", "\t\t%1s.setOrientation(%2s);\n", sb, nodeMap);
+        if(!(prop = Utils.check("orientation", nodeMap)).isEmpty()){
+            String value = "";
+            switch(prop){
+                case "vertical": value = "Vertical"; break;
+                case "horizontal": value = "Horizontal"; break;
+            }
+            Utils.tryEmptyAppend(name, value, "\t\t%s.setOrientation(Qt.Orientation.%s);\n", sb);
+        }
         Utils.tryValue(name, "min-value", "\t\t%1s.setMinimum(%2s);\n", sb, nodeMap);
         Utils.tryValue(name, "max-value", "\t\t%1s.setMaximum(%2s);\n", sb, nodeMap);
         Utils.tryValue(name, "value", "\t\t%1s.setValue(%2s);\n", sb, nodeMap);
         Utils.tryValue(name, "page-steps", "\t\t%1s.setPageStep(%2s);\n", sb, nodeMap);
         Utils.tryValue(name, "single-steps", "\t\t%1s.setSingleStep(%2s);\n", sb, nodeMap);
         Utils.tryValue(name, "slide-position", "\t\t%1s.setSliderPosition(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "invert-numbers", "\t\t%1s.setInvertedControls(%2s);\n", "horizontal", "vertical", sb, nodeMap);
+        if(!(prop = Utils.check("invert-numbers", nodeMap)).isEmpty()){
+            String value = "";
+            switch(prop){
+                case "vertical": value = "Vertical"; break;
+                case "horizontal": value = "Horizontal"; break;
+            }
+            Utils.tryEmptyAppend(name, value, "\t\t%s.setInvertedControls(Qt.Orientation.%s);\n", sb);
+        }
         Utils.tryBoolean(name, "invert-numbers", "\t\t%1s.setInvertedControls(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "invert-controls", "\t\t%1s.setInvertedAppearance(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "tracking", "\t\t%1s.setTracking(%2s);\n", sb, nodeMap);
@@ -154,21 +166,18 @@ public final class InlineStyleParser {
     }
 
     public void AbstractButton(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        String prop;
-        if (Utils.tryBoolean(prop = Utils.check("checkable", nodeMap))) sb.append(String.format("\t\t%1s.setCheckable(%2s);\n", name, prop));
-        if (Utils.tryBoolean(prop = Utils.check("checked", nodeMap))) sb.append(String.format("\t\t%1s.setChecked(%2s);\n", name, prop));
-        if (Utils.tryBoolean(prop = Utils.check("pressed", nodeMap))) sb.append(String.format("\t\t%1s.setDown(%2s);\n", name, prop));
-        if (Utils.tryBoolean(prop = Utils.check("repeatable", nodeMap))) sb.append(String.format("\t\t%1s.setAutoRepeat(%2s);\n", name, prop));
-        if (Utils.tryBoolean(prop = Utils.check("exclusive", nodeMap))) sb.append(String.format("\t\t%1s.setAutoExclusive(%2s);\n", name, prop));
-        if (!(prop = Utils.check("text", nodeMap)).isEmpty()) sb.append(String.format("\t\t%1s.setText(%2s);\n", name, prop));
-        if (!(prop = Utils.check("short-cut", nodeMap)).isEmpty()) sb.append(String.format("\t\t%1s.setShortcut(%2s);\n", name, prop));
-        if (Utils.tryValue((prop = Utils.check("repeatable-delay", nodeMap)))) sb.append(String.format("\t\t%1s.setAutoRepeatDelay(%2s);\n", name, prop));
-        if (Utils.tryValue((prop = Utils.check("repeatable-interval", nodeMap)))) sb.append(String.format("\t\t%1s.setAutoRepeatInterval(%2s);\n", name, prop));
+        Utils.tryBoolean(name, "checkable", "\t\t%s.setCheckable(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "checked", "\t\t%s.setChecked(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "pressed", "\t\t%s.setDown(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "repeatable", "\t\t%s.setAutoRepeat(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "exclusive", "\t\t%s.setAutoExclusive(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "text", "\t\t%s.setText(%s);\n", sb, nodeMap);
+        Utils.tryValue(name, "repeatable-delay", "\t\t%s.setAutoRepeatDelay(%s);\n", sb, nodeMap);
+        Utils.tryValue(name, "repeatable-interval", "\t\t%s.setAutoRepeatInterval(%s);\n", sb, nodeMap);
         Widget(name, sb, nodeMap);
     }
 
     public void Widget(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        String prop;
         if(!(prop = Utils.check("margin", nodeMap)).isEmpty()) {
             String[] margins = prop.replace("px", "").split(" ");
             sb.append(String.format("\t\t%1s.setContentsMargins(", name));
@@ -186,31 +195,33 @@ public final class InlineStyleParser {
         }
         if(!(prop = Utils.check("cursor", nodeMap)).isEmpty()){
             sb.append(String.format("\t\t%1s.setCursor(new QCursor(Qt.CursorShape.", name));
+            String value = "";
             switch (prop){
-                case "arrow": sb.append("ArrowCursor));\n"); break;
-                case "up-arrow": sb.append("UpArrowCursor));\n"); break;
-                case "cross": sb.append("CrossCursor));\n"); break;
-                case "wait": sb.append("WaitCursor));\n"); break;
-                case "vertical-beam": sb.append("IBeamCursor));\n"); break;
-                case "size-vertical": sb.append("SizeVerCursor));\n"); break;
-                case "size-horizontal": sb.append("SizeHorCursor));\n"); break;
-                case "size-major-diagonal": sb.append("SizeFDiagCursor));\n"); break;
-                case "size-minor-diagonal": sb.append("SizeBDiagCursor));\n"); break;
-                case "size-all": sb.append("SizeAllCursor));\n"); break;
-                case "blank": sb.append("BlankCursor));\n"); break;
-                case "vertical-split": sb.append("SplitVCursor));\n"); break;
-                case "horizontal-split": sb.append("SplitHCursor));\n"); break;
-                case "hand-pointer": sb.append("PointingHandCursor));\n"); break;
-                case "forbidden": sb.append("ForbiddenCursor));\n"); break;
-                case "open-hand": sb.append("OpenHandCursor));\n"); break;
-                case "closed-hand": sb.append("OpenHandCursor));\n"); break;
-                case "question-mark": sb.append("WhatsThisCursor));\n"); break;
-                case "busy": sb.append("BusyCursor));\n"); break;
-                case "drag-move": sb.append("DragMoveCursor));\n"); break;
-                case "drag-copy": sb.append("DragMoveCursor));\n"); break;
-                case "drag-link": sb.append("DragLinkCursor));\n"); break;
-                case "bitmap": sb.append("BitmapCursor));\n"); break;
+                case "arrow":               value = "ArrowCursor";          break;
+                case "up-arrow":            value = "UpArrowCursor";        break;
+                case "cross":               value = "CrossCursor";          break;
+                case "wait":                value = "WaitCursor";           break;
+                case "vertical-beam":       value = "IBeamCursor";          break;
+                case "size-vertical":       value = "SizeVerCursor";        break;
+                case "size-horizontal":     value = "SizeHorCursor";        break;
+                case "size-major-diagonal": value = "SizeFDragCursor";      break;
+                case "size-minor-diagonal": value = "SizeBDragCursor";      break;
+                case "size-all":            value = "SizeAllCursor";        break;
+                case "blank":               value = "BlankCursor";          break;
+                case "vertical-split":      value = "SplitVCursor";         break;
+                case "horizontal-split":    value = "SplitHCursor";         break;
+                case "hand-pointer":        value = "PointingHandCursor";   break;
+                case "forbidden":           value = "ForbiddenCursor";      break;
+                case "open-hand":           value = "OpenHandCursor";       break;
+                case "closed-hand":         value = "OpenHandCursor";       break;
+                case "question-mark":       value = "WhatsThisCursor";      break;
+                case "busy":                value = "BusyCursor";           break;
+                case "drag-move":           value = "DragMoveCursor";       break;
+                case "drag-copy":           value = "DragMoveCursor";       break;
+                case "drag-link":           value = "DragLinkCursor";       break;
+                case "bitmap":              value = "BitmapCursor";         break;
             }
+            Utils.tryEmptyAppend(name, value, "\t\t%s.setCursor(new QCursor(Qt.CursorShape.%s));\n", sb);
         }
         Utils.tryBoolean(name, "mouse-tracking", "\t\t%1s.setMouseTracking(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "visibility", "\t\t%1s.setHidden(%2s);\n", sb, nodeMap);

@@ -37,7 +37,7 @@ public final class ComponentParser {
     public ComponentParser(String file, String name, StringBuilder sb, Node node) {
         this.sb = sb;
         this.file = file.replaceFirst("\\.jaml", "");
-        functions = new FunctionParser(this.file);
+        functions = new FunctionParser();
         Window("QMainWindow", node.getAttributes());
         nodeLoop(node);
     }
@@ -136,7 +136,7 @@ public final class ComponentParser {
         styles.setStyle(style, nodeMap);
         styles.AbstractSlider(n, sb, nodeMap);
         if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setTickPosition(TickPosition.", n));
+            sb.append(String.format("\t\t%1s.setTickPosition(QSlider.TickPosition.", n));
             switch(prop){
                 case "both": sb.append("TicksBothSides"); break;
                 case "above": case "left": sb.append("TicksAbove"); break;
@@ -261,7 +261,7 @@ public final class ComponentParser {
     private void Action(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
         String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QAction");
-        events.Events(file, n, name, "", sb, nodeMap);
+        events.Events(file, n, name, sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
         styles.setStyle(style, nodeMap);
         Utils.tryBoolean(name, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
