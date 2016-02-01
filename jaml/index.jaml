@@ -1,44 +1,19 @@
 <jaml>
     <style link="">
-        window {
-            background-color: #1d1d1d;
-        }
-
-        button {
-            background-color: red;
-            position: relative;
-            right: 20px;
-            color: white;
-        }
-
-        button:hover {
-            background-color: yellow;
-            color: black;
-        }
-
-        button:selected {
-            color: red;
-        }
-
-        button:flat {
-            color: red;
-        }
-
-        button:flat:hover {
-            color: yellow;
-        }
-
-        slide:horizontal {
-            height: 30px;
-            width: 120px;
-        }
+        window { background-color: #1d1d1d; }
+        button { background-color: red; position: relative; right: 20px; color: white; }
+        button:hover { background-color: yellow; color: black; }
+        button:selected { color: red; }
+        button:flat { color: red; }
+        button:flat:hover { color: yellow; }
+        slide:horizontal { height: 30px; width: 120px; }
     </style>
     <window title="Hello World">
         <menubar>
             <button on-click="quit()">Quit</button>
-            <menu value="file" event="hover" priority="low-priority">
-                <action event="save()">save</action>
-                <action event="quit()">quit</action>
+            <menu value="file">
+                <action priority="low" shortcut="Ctrl+N:newFile()">save</action>
+                <action priority="high">quit</action>
             </menu>
         </menubar>
         <grid>

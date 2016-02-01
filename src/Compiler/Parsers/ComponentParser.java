@@ -5,7 +5,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /* notes
@@ -21,18 +23,21 @@ import java.util.Map;
 * */
 
 public final class ComponentParser {
-    private InlineStyleParser styles = new InlineStyleParser();
-    private FunctionParser functions = new FunctionParser();
-    private EventParser events = new EventParser();
-    private ChildParser children = new ChildParser();
+    private final InlineStyleParser styles = new InlineStyleParser();
+    private final EventParser events = new EventParser();
+    private final ChildParser children = new ChildParser();
+    private final FunctionParser functions;
+    private final String file;
     private StringBuilder sb;
-    private String file;
     private String prop;
     private Map<String, Style> stylesSheet = new HashMap<>();
+    private List<String> namedComponents = new ArrayList<>();
+    private List<String> components = new ArrayList<>();
 
     public ComponentParser(String file, String name, StringBuilder sb, Node node) {
         this.sb = sb;
         this.file = file;
+        functions = new FunctionParser(file);
         Window(name, "QMainWindow", node.getAttributes());
         nodeLoop(node);
     }
@@ -119,7 +124,7 @@ public final class ComponentParser {
             }
         }
         functions.MakeFunc("\t\t" + name + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
-        functions.MakeFunc("\t\t" + name + ".toolButtonStyleChanged.connect(", Utils.check("on - tool - button - style - change", nodeMap), sb, nodeMap);
+        functions.MakeFunc("\t\t" + name + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
         functions.onWidgetFunctions(name, sb, nodeMap);
     }
 
@@ -257,7 +262,7 @@ public final class ComponentParser {
         String n = Utils.tryEmpty("name", name, nodeMap);
         Style style = new Style(n, "QAction");
         events.Events(file, n, name, "", sb, nodeMap);
-        stylesSheet.put((!n.isEmpty())? n: "QAction", style);
+        stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
         styles.setStyle(style, nodeMap);
         Utils.tryBoolean(name, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
@@ -265,8 +270,37 @@ public final class ComponentParser {
         Utils.tryCheck(name, "icon-Text", "%s.setIconText(%s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "icon-visible", "%s.setIconVisibleMenu(%s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "is-separator", "%s.setSeparator(%s);\n", sb, nodeMap);
+        if(!(prop = Utils.check("menu-role", nodeMap)).isEmpty()){
+            sb.append(String.format("\t\t%s.setMenuRole(QAction.MenuRole.", n));
+            switch(prop){
+                case "none": sb.append("NoRole);\n"); break;
+                case "text-heuristic": sb.append("TextHeuristicRole);\n"); break;
+                case "application-specific": sb.append("ApplicationSpecificRole);\n"); break;
+                case "about-qt": sb.append("AboutQtRole);\n"); break;
+                case "about": sb.append("AboutRole);\n"); break;
+                case "preferences": sb.append("PreferencesRole);\n"); break;
+                case "quit": sb.append("QuitRole);\n"); break;
+            }
+        }
+        if(!(prop = Utils.check("priority", nodeMap)).isEmpty()){
+            sb.append(String.format("\t\t%s.setPriority(QAction.Priority.", n));
+            switch(prop){
+                case "high": sb.append("HighPriority);\n"); break;
+                case "normal": sb.append("NormalPriority);\n"); break;
+                case "low": sb.append("LowPriority);\n"); break;
+            }
+        }
+        if(!(prop = Utils.check("soft-key-role", nodeMap)).isEmpty()){
+            sb.append(String.format("\t\t%s.setSoftKeyRole(QAction.SoftKeyRole.", n));
+            switch(prop){
+                case "none": sb.append("NoSoftKey);\n"); break;
+                case "positive": sb.append("PositiveSoftKey);\n"); break;
+                case "negative": sb.append("NegativeSoftKey);\n"); break;
+                case "select": sb.append("SelectSoftKey);\n"); break;
+            }
+        }
         if(!(prop = Utils.check("shortcut-context", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setShortcutContext(Qt.ShortcutContext.", n));
+            sb.append(String.format("\t\t%s.setShortcutContext(Qt.ShortcutContext.", n));
             switch(prop){
                 case "widget": sb.append("WidgetShortcut);\n"); break;
                 case "Widget-children": sb.append("WidgetWithChildrenShortcut);\n"); break;

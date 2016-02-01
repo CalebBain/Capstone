@@ -5,12 +5,18 @@ import org.w3c.dom.NamedNodeMap;
 
 public final class FunctionParser {
 
+    private final String file;
+
+    public FunctionParser(String file) {
+        this.file = file;
+    }
+
     public void MakeFunc(String name, String prop, StringBuilder sb, NamedNodeMap nodeMap){
         String[] callParts = new String[0];
         String p;
         if (!(p = Utils.check(prop, nodeMap)).isEmpty()){
             if (!p.isEmpty()) callParts = p.split(":");
-            if(callParts.length == 1) sb.append(String.format("\t\t%s.connect(QApplication.instance(), \"%s\");\n", name, callParts[0]));
+            if(callParts.length == 1) sb.append(String.format("\t\t%s.connect(%s, \"%s\");\n", name, file, callParts[0]));
             else if(callParts.length == 2) sb.append(String.format("\t\t%s.connect(%s, \"%s\");\n", name, callParts[0], callParts[1]));
         }
     }

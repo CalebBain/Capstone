@@ -4,8 +4,6 @@ import Compiler.Parsers.ComponentParser;
 import org.w3c.dom.Node;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public final class CodeAssembler {
 
@@ -37,16 +35,6 @@ public final class CodeAssembler {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"))) {
             writer.write(sb.toString());
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void run(String name){
-        try {
-            Class<?> c = Class.forName(name);
-            Method method = c.getMethod("run");
-            method.invoke(c, null);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
