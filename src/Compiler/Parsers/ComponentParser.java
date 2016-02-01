@@ -88,16 +88,16 @@ public final class ComponentParser {
         Style style = new Style(n, "QMainWindow");
         stylesSheet.put((!n.isEmpty()) ? n : "QMainWindow", style);
         styles.setStyle(style, nodeMap);
-        sb.append(String.format("\t\tQMainWindow window = new QMainWindow();\n"));
-        sb.append("\t\tQWidget centerWidget = new QWidget();\n");
-        sb.append("\t\twindow.setCentralWidget(centerWidget);\n");
-        sb.append(String.format("\t\t%1s.setWindowTitle(tr(\"%2s\"));\n", name, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
-        Utils.tryBoolean(name, "dock-animation", "\t\t%1s.setAnimated(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "dock-nesting", "\t\t%1s.setDockNestingEnabled(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "document-mode", "\t\t%1s.setDocumentMode(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "unified-mac-title-toolbar", "\t\t%1s.setUnifiedTitleAndToolBarOnMac(%2s);\n", sb, nodeMap);
+        sb.append(String.format("QMainWindow window = new QMainWindow();\n"));
+        sb.append("QWidget centerWidget = new QWidget();\n");
+        sb.append("window.setCentralWidget(centerWidget);\n");
+        sb.append(String.format("%1s.setWindowTitle(tr(\"%2s\"));\n", name, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
+        Utils.tryBoolean(name, "dock-animation", "%1s.setAnimated(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "dock-nesting", "%1s.setDockNestingEnabled(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "document-mode", "%1s.setDocumentMode(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "unified-mac-title-toolbar", "%1s.setUnifiedTitleAndToolBarOnMac(%2s);\n", sb, nodeMap);
         if(!(prop = Utils.check("dock-option", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setDockOptions(DockOption.", name));
+            sb.append(String.format("%1s.setDockOptions(DockOption.", name));
             switch(prop){
                 case "animated-docks": sb.append("AnimatedDocks);\n"); break;
                 case "allow-nested-docks": sb.append("AllowNestedDocks);\n"); break;
@@ -107,14 +107,14 @@ public final class ComponentParser {
             }
         }
         if(!(prop = Utils.check("tab-shape", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setTabShape(QTabWidget.TabShape.", name));
+            sb.append(String.format("%1s.setTabShape(QTabWidget.TabShape.", name));
             switch(prop){
                 case "rounded": sb.append("Rounded);\n"); break;
                 case "triangular": sb.append("Triangular);\n"); break;
             }
         }
         if(!(prop = Utils.check("tool-button-style", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setToolButtonStyle(Qt.ToolButtonStyle.", name));
+            sb.append(String.format("%1s.setToolButtonStyle(Qt.ToolButtonStyle.", name));
             switch(prop){
                 case "icon-only": sb.append("ToolButtonIconOnly);\n"); break;
                 case "text-only": sb.append("ToolButtonTextOnly);\n"); break;
@@ -123,8 +123,8 @@ public final class ComponentParser {
                 case "follow-style": sb.append("ToolButtonFollowStyle);\n"); break;
             }
         }
-        functions.MakeFunc("\t\t" + n + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
+        functions.MakeFunc("" + n + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
+        functions.MakeFunc("" + n + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
         functions.onWidgetFunctions(n, sb, nodeMap);
     }
 
@@ -136,7 +136,7 @@ public final class ComponentParser {
         styles.setStyle(style, nodeMap);
         styles.AbstractSlider(n, sb, nodeMap);
         if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setTickPosition(QSlider.TickPosition.", n));
+            sb.append(String.format("%1s.setTickPosition(QSlider.TickPosition.", n));
             switch(prop){
                 case "both": sb.append("TicksBothSides"); break;
                 case "above": case "left": sb.append("TicksAbove"); break;
@@ -145,7 +145,7 @@ public final class ComponentParser {
             }
             sb.append(");\n");
         }
-        Utils.tryValue(n, "interval", "\t\t%1s.setTickInterval(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "interval", "%1s.setTickInterval(%2s);\n", sb, nodeMap);
         functions.onAbstractSliderFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
@@ -157,12 +157,12 @@ public final class ComponentParser {
         stylesSheet.put((!n.isEmpty()) ? n : "QLCDNumber", style);
         styles.setStyle(style, nodeMap);
         styles.Frame(n, sb, nodeMap);
-        Utils.tryCapitalize(n, "segment-style", "\t\t%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
-        Utils.tryCapitalize(n, "mode", "\t\t%1s.setMode(QLCDNumber.Mode.%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(n, "small-decimal-point", "\t\t%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
-        Utils.tryValue(n, "digit-count", "\t\t%1s.setDigitCount(%2s);\n", sb, nodeMap);
-        Utils.tryValue(n, "value", "\t\t%1s.display(%2s);\n", sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
+        Utils.tryCapitalize(n, "segment-style", "%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
+        Utils.tryCapitalize(n, "mode", "%1s.setMode(QLCDNumber.Mode.%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "small-decimal-point", "%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "digit-count", "%1s.setDigitCount(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "value", "%1s.display(%2s);\n", sb, nodeMap);
+        functions.MakeFunc("" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
         functions.onWidgetFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
@@ -174,8 +174,9 @@ public final class ComponentParser {
         stylesSheet.put((!n.isEmpty()) ? n : "QPushButton", style);
         styles.setStyle(style, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
-        Utils.tryBoolean(n, "default", "\t\t%1s.setDefault(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(n, "flat", "\t\t%1s.setFlat(%2s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "shortcut", "%s.setShortcut(new QKeySequence(tr(%s));\n", sb, nodeMap);
+        Utils.tryBoolean(n, "default", "%1s.setDefault(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "flat", "%1s.setFlat(%2s);\n", sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
     }
@@ -198,17 +199,17 @@ public final class ComponentParser {
         stylesSheet.put((!n.isEmpty()) ? n : "QCheckBox", style);
         styles.setStyle(style, nodeMap);
         styles.AbstractButton(n, sb, nodeMap);
-        Utils.tryBoolean(n, "checkable", "\t\t%1s.setTristate(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "checkable", "%1s.setTristate(%2s);\n", sb, nodeMap);
         if(!(prop = Utils.check("check-state", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setCheckState(Qt.CheckState.", n));
+            sb.append(String.format("%1s.setCheckState(Qt.CheckState.", n));
             switch(prop){
                 case "unchecked": sb.append("Unchecked);\n"); break;
                 case "partially-checked": sb.append("PartiallyChecked);\n"); break;
                 case "checked": sb.append("Checked);\n"); break;
             }
         }
-        Utils.tryBoolean(n, "default", "\t\t%1s.setDefaultUp(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(n, "native-menubar", "\t\t%1s.setNativeMenuBar(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "default", "%1s.setDefaultUp(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "native-menubar", "%1s.setNativeMenuBar(%2s);\n", sb, nodeMap);
         functions.MakeFunc(n + ".stateChanged", Utils.check("on-state-change", nodeMap), sb, nodeMap);
         functions.onAbstractButtonFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
@@ -221,7 +222,7 @@ public final class ComponentParser {
         stylesSheet.put((!n.isEmpty()) ? n : "QColumnView", style);
         styles.setStyle(style, nodeMap);
         styles.AbstractItemView(n, sb, nodeMap);
-        Utils.tryBoolean(n, "resize-grips-visible", "\t\t%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "resize-grips-visible", "%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
         functions.MakeFunc(n + ".updatePreviewWidget", "on-preview-update", sb, nodeMap);
         functions.onAbstractItemViewFunctions(n, sb, nodeMap);
         children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
@@ -246,9 +247,9 @@ public final class ComponentParser {
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty())? n: "QMenu", style);
         styles.setStyle(style, nodeMap);
-        Utils.tryCheck(name, "icon", "\t\t%s.setIcon(%s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "tear-off", "\t\t%s.setTearOffEnabled(%s);\n", sb, nodeMap);
-        Utils.tryCheck(name, "title", "\t\t%s.setTitle(\"%s\");\n", "menu", sb, nodeMap);
+        Utils.tryCheck(name, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "tear-off", "%s.setTearOffEnabled(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "title", "%s.setTitle(\"%s\");\n", "menu", sb, nodeMap);
         styles.Widget(n, sb, nodeMap);
         functions.MakeFunc(n + ".aboutToHide", "on-hide", sb, nodeMap);
         functions.MakeFunc(n + ".aboutToShow", "on-show", sb, nodeMap);
@@ -270,8 +271,9 @@ public final class ComponentParser {
         Utils.tryCheck(name, "icon-Text", "%s.setIconText(%s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "icon-visible", "%s.setIconVisibleMenu(%s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "is-separator", "%s.setSeparator(%s);\n", sb, nodeMap);
+        Utils.tryCheck(name, "shortcut", "%s.setShortcut(new QKeySequence(tr(%s));\n", sb, nodeMap);
         if(!(prop = Utils.check("menu-role", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%s.setMenuRole(QAction.MenuRole.", n));
+            sb.append(String.format("%s.setMenuRole(QAction.MenuRole.", n));
             switch(prop){
                 case "none": sb.append("NoRole);\n"); break;
                 case "text-heuristic": sb.append("TextHeuristicRole);\n"); break;
@@ -283,7 +285,7 @@ public final class ComponentParser {
             }
         }
         if(!(prop = Utils.check("priority", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%s.setPriority(QAction.Priority.", n));
+            sb.append(String.format("%s.setPriority(QAction.Priority.", n));
             switch(prop){
                 case "high": sb.append("HighPriority);\n"); break;
                 case "normal": sb.append("NormalPriority);\n"); break;
@@ -291,7 +293,7 @@ public final class ComponentParser {
             }
         }
         if(!(prop = Utils.check("soft-key-role", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%s.setSoftKeyRole(QAction.SoftKeyRole.", n));
+            sb.append(String.format("%s.setSoftKeyRole(QAction.SoftKeyRole.", n));
             switch(prop){
                 case "none": sb.append("NoSoftKey);\n"); break;
                 case "positive": sb.append("PositiveSoftKey);\n"); break;
@@ -300,7 +302,7 @@ public final class ComponentParser {
             }
         }
         if(!(prop = Utils.check("shortcut-context", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%s.setShortcutContext(Qt.ShortcutContext.", n));
+            sb.append(String.format("%s.setShortcutContext(Qt.ShortcutContext.", n));
             switch(prop){
                 case "widget": sb.append("WidgetShortcut);\n"); break;
                 case "Widget-children": sb.append("WidgetWithChildrenShortcut);\n"); break;
@@ -312,6 +314,7 @@ public final class ComponentParser {
         Utils.tryCheck(name, "text", "%s.setText(%s);\n", sb, nodeMap);
         Utils.tryCheck(name, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
         Utils.tryCheck(name, "whats-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
+        functions.MakeFunc(n + ".triggered", "method", sb, nodeMap);
         children.addChild(layoutName, layout, "action", n, sb, nodeMap);
     }
 

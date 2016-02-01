@@ -3,8 +3,6 @@ package Compiler;
 import Compiler.Parsers.Style;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,10 +81,6 @@ public final class Utils {
         if (!prop.isEmpty()) style.addAttribute(attributeName, prop);
     }
 
-    public static boolean tryBoolean(String value, String v1, String v2){
-        return (value.equals(v1) || value.equals(v2));
-    }
-
     public static boolean tryBoolean(String value){
         return (value.equals("true") || value.equals("false"));
     }
@@ -106,12 +100,6 @@ public final class Utils {
     public static void tryValue(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
         String p;
         if (Utils.tryValue(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
-    }
-
-    public static void tryValue(String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryValue(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, p));
-        else sb.append(String.format(command, p));
     }
 
     public static int tryValue(String prop, String command, int replacement, StringBuilder sb, NamedNodeMap nodeMap){
@@ -134,13 +122,6 @@ public final class Utils {
         if (Utils.tryBoolean(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
     }
 
-    public static void tryBoolean(String name, String prop, String v1, String v2, String command, StringBuilder sb,
-                                  NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryBoolean(p = Utils.check(prop, nodeMap), v1, v2))
-            sb.append(String.format(command, name, p));
-    }
-
     public static void formatAppend(String command, StringBuilder sb, String... props){
         sb.append(String.format(command, props));
     }
@@ -149,7 +130,6 @@ public final class Utils {
         String p;
         return (!(p = Utils.check(prop, nodeMap)).isEmpty()) ? p : replacement;
     }
-
 
     public static void tryEmptyAppend(String name, String value, String command, StringBuilder sb){
         if(!value.isEmpty()) sb.append(String.format(command, name, value));
