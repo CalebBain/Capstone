@@ -4,10 +4,27 @@ import Compiler.Parsers.Style;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class Utils {
+
+    private static Map<String, String> components = new HashMap<String, String>() {{
+        put("button", "QPushButton");
+        put("window", "QMainWindow");
+        put("number", "QLCDNumber");
+        put("radio", "QRadioButton");
+        put("slider", "QSlider");
+        put("check-box", "QCheckBox");
+        put("tri-state", "QTriState");
+        put("menu-bar", "QMenuBar");
+        put("grid", "QGridLayout");
+        put("menubar", "QMenuBar");
+        put("menu", "QMenu");
+        put("action", "QAction");
+    }};
 
     public static boolean tryValue(String value) {
         try {
@@ -19,20 +36,6 @@ public final class Utils {
     }
 
     public static String setName(String name) {
-        Map<String, String> components = new HashMap<String, String>() {{
-            put("button", "QPushButton");
-            put("window", "QMainWindow");
-            put("number", "QLCDNumber");
-            put("radio", "QRadioButton");
-            put("slider", "QSlider");
-            put("check-box", "QCheckBox");
-            put("tri-state", "QTriState");
-            put("menu-bar", "QMenuBar");
-            put("grid", "QGridLayout");
-            put("menubar", "QMenuBar");
-            put("menu", "QMenu");
-            put("action", "QAction");
-        }};
         for (Map.Entry<String, String> entry : components.entrySet())
             if (name.startsWith(entry.getKey()))
                 name = name.replaceFirst(entry.getKey(), entry.getValue());
@@ -93,7 +96,8 @@ public final class Utils {
         if (!(p = Utils.check(prop, nodeMap)).isEmpty()) sb.append(String.format(command, name, p));
     }
 
-    public static void tryCheck(String name, String prop, String command, String replacement, StringBuilder sb, NamedNodeMap nodeMap){
+    public static void tryCheck(String name, String prop, String command, String replacement, StringBuilder sb,
+                                NamedNodeMap nodeMap){
         String p;
         if (!(p = Utils.check(prop, nodeMap)).isEmpty()) sb.append(String.format(command, name, p));
         else sb.append(String.format(command, name, replacement));
@@ -120,7 +124,8 @@ public final class Utils {
         return result;
     }
 
-    public static void tryBoolean(String name, String prop, String child, String command, StringBuilder sb, NamedNodeMap nodeMap){
+    public static void tryBoolean(String name, String prop, String child, String command, StringBuilder sb,
+                                  NamedNodeMap nodeMap){
         if (Utils.tryBoolean(Utils.check(prop, nodeMap))) sb.append(String.format(command, name, child));
     }
 
@@ -129,7 +134,8 @@ public final class Utils {
         if (Utils.tryBoolean(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
     }
 
-    public static void tryBoolean(String name, String prop, String v1, String v2, String command, StringBuilder sb, NamedNodeMap nodeMap){
+    public static void tryBoolean(String name, String prop, String v1, String v2, String command, StringBuilder sb,
+                                  NamedNodeMap nodeMap){
         String p;
         if (Utils.tryBoolean(p = Utils.check(prop, nodeMap), v1, v2))
             sb.append(String.format(command, name, p));
@@ -144,7 +150,22 @@ public final class Utils {
         return (!(p = Utils.check(prop, nodeMap)).isEmpty()) ? p : replacement;
     }
 
-    public static void tryCapitalize(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
+    public static String tryEmpty(String prop, String replacement, List<String> namedComponents,
+                                  List<String> comps, NamedNodeMap nodeMap){
+        String p;
+        if((p = Utils.check(prop, nodeMap)).isEmpty()) p = replacement;
+        if(!components.containsKey(p)) namedComponents.add(p);
+        else if(!comps.contains(p)) comps.add(p);
+        else{
+            int count = 0;
+            for(String comp : comps) if(comp.startsWith(p)) count++;
+            p += count;
+        }
+        return p;
+    }
+
+    public static void tryCapitalize(String name, String prop, String command, StringBuilder sb,
+                                     NamedNodeMap nodeMap){
         String p;
         if(!(p = Utils.check(prop, nodeMap)).isEmpty()) formatAppend(command, sb, name, capitalize(p));
     }

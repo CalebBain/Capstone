@@ -84,7 +84,7 @@ public final class ComponentParser {
     }
 
     private void Window(String app, String name, NamedNodeMap nodeMap){
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QSlider");
         stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
         styles.setStyle(style, nodeMap);
@@ -129,7 +129,7 @@ public final class ComponentParser {
     }
 
     private void Slider(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QSlider");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
@@ -151,7 +151,7 @@ public final class ComponentParser {
     }
 
     private void Number(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QLCDNumber");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QLCDNumber", style);
@@ -168,7 +168,7 @@ public final class ComponentParser {
     }
 
     private void Button(String name, String text, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QPushButton");
         events.Events(file, n, name, text, sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QPushButton", style);
@@ -181,7 +181,7 @@ public final class ComponentParser {
     }
 
     private void Radio(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QRadioButton");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QRadioButton", style);
@@ -192,7 +192,7 @@ public final class ComponentParser {
     }
 
     private void CheckBox(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QCheckBox");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QCheckBox", style);
@@ -215,7 +215,7 @@ public final class ComponentParser {
     }
 
     private void ColumnView(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QColumnView");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QColumnView", style);
@@ -228,7 +228,7 @@ public final class ComponentParser {
     }
 
     private void MenuBar(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QMenuBar");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty())? n: "QMenuBar", style);
@@ -241,7 +241,7 @@ public final class ComponentParser {
     }
 
     private void Menu(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QMenu");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty())? n: "QMenu", style);
@@ -259,7 +259,7 @@ public final class ComponentParser {
     }
 
     private void Action(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QAction");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
@@ -316,12 +316,12 @@ public final class ComponentParser {
     }
 
     private void Separator(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
     }
 
     private void Grid(String name, String layout, String layoutName, NamedNodeMap nodeMap) {
-        String n = Utils.tryEmpty("name", name, nodeMap);
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
         Style style = new Style(n, "QGridLayout");
         events.Events(file, n, name, "", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
