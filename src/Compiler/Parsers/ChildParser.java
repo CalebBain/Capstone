@@ -19,15 +19,15 @@ public final class ChildParser {
 
     public void WindowChild(String name, StringBuilder sb, String component){
         switch (component){
-            case "layout" : sb.append(String.format("\t\tcenterWidget.setLayout(%s);\n", name)); break;
-            case "widget" : sb.append(String.format("\t\t%s.setParent(centerWidget);\n", name)); break;
-            case "menubar" : sb.append(String.format("\t\twindow.setMenuBar(%s);\n", name)); break;
+            case "layout" : sb.append(String.format("centerWidget.setLayout(%s);\n", name)); break;
+            case "widget" : sb.append(String.format("%s.setParent(centerWidget);\n", name)); break;
+            case "menubar" : sb.append(String.format("window.setMenuBar(%s);\n", name)); break;
         }
     }
 
     public void GridChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         Utils.capitalize(component);
-        sb.append(String.format("\t\t%1s.add%2s(%3s, ", name, component, child));
+        sb.append(String.format("%1s.add%2s(%3s, ", name, component, child));
         int row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
         int col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
         Utils.tryValue("row-span", "%2s, ", row, sb, nodeMap);
@@ -49,34 +49,34 @@ public final class ChildParser {
     public void MenubarChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         switch (component){
             case "widget" :
-                sb.append(String.format("\t\t%s.setCornerWidget(%s", name, child));
+                sb.append(String.format("%s.setCornerWidget(%s", name, child));
                 switch(Utils.check("corner", nodeMap)){
                     case "right": sb.append(", Qt.Corner.TopRightCorner"); break;
                     case "left": sb.append(", Qt.Corner.TopLeftCorner"); break;
                 }
                 sb.append(");\n");
                 break;
-            case "menu" : sb.append(String.format("\t\t%s.addMenu(%s);\n", name, child)); break;
+            case "menu" : sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
             case "action" :
-                sb.append(String.format("\t\t%s.addAction(%s);\n", name, child));
-                Utils.tryBoolean(name, "default", child, "\t\t%s.setDefaultUp(%s);\n", sb, nodeMap);
-                Utils.tryBoolean(name, "active", child, "\t\t%s.setNativeMenuBar(%s);\n", sb, nodeMap);
+                sb.append(String.format("%s.addAction(%s);\n", name, child));
+                Utils.tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
+                Utils.tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
                 break;
-            case "separator" : sb.append(String.format("\t\t%s.addSeparator();\n", name)); break;
+            case "separator" : sb.append(String.format("%s.addSeparator();\n", name)); break;
         }
     }
 
     public void MenuChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap) {
         switch (component){
-            case "menu" : sb.append(String.format("\t\t%s.addMenu(%s);\n", name, child)); break;
+            case "menu" : sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
             case "action" :
-                sb.append(String.format("\t\t%s.addAction(%s);\n", name, child));
-                Utils.tryBoolean(name, "default", child, "\t\t%s.setDefaultUp(%s);\n", sb, nodeMap);
-                Utils.tryBoolean(name, "active", child, "\t\t%s.setNativeMenuBar(%s);\n", sb, nodeMap);
+                sb.append(String.format("%s.addAction(%s);\n", name, child));
+                Utils.tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
+                Utils.tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
                 break;
             case "separator" :
-                sb.append(String.format("\t\t%s.addSeparator();\n", name));
-                Utils.tryBoolean(name, "collapsible", child, "\t\t%s.setSeparatorsCollapsible(%s);\n", sb, nodeMap);
+                sb.append(String.format("%s.addSeparator();\n", name));
+                Utils.tryBoolean(name, "collapsible", child, "%s.setSeparatorsCollapsible(%s);\n", sb, nodeMap);
                 break;
         }
     }

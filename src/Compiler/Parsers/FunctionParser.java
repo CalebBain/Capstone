@@ -10,8 +10,8 @@ public final class FunctionParser {
         String p;
         if (!(p = Utils.check(prop, nodeMap)).isEmpty()){
             if (!p.isEmpty()) callParts = p.split(":");
-            if(callParts.length == 1) sb.append(String.format("\t\t%s.connect(this, \"%s\");\n", name, callParts[0]));
-            else if(callParts.length == 2) sb.append(String.format("\t\t%s.connect(%s, \"%s\");\n", name, callParts[0], callParts[1]));
+            if(callParts.length == 1) sb.append(String.format("%s.connect(this, \"%s\");\n", name, callParts[0]));
+            else if(callParts.length == 2) sb.append(String.format("%s.connect(%s, \"%s\");\n", name, callParts[0], callParts[1]));
         }
     }
 

@@ -34,14 +34,14 @@ public final class EventParser {
 
     public void Events(String file, String name, String component, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
-        sb.append(String.format("\t\t%s %s = new %s(this)", component, name, component));
+        sb.append(String.format("%s %s = new %s(this)", component, name, component));
         callEvents(file, name, component, sb, nodeMap);
     }
 
     public void Events(String file, String name, String component, String param, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
         if(!param.isEmpty()) param = String.format("\"%s\"", param);
-        sb.append(String.format("\t\t%s %s = new %s(%s)", component, name, component, param));
+        sb.append(String.format("%s %s = new %s(%s)", component, name, component, param));
         callEvents(file, name, component, sb, nodeMap);
     }
 
@@ -56,7 +56,7 @@ public final class EventParser {
         PropCheck(file, name, component, "when-change", sb, nodeMap);
         if(hasProps){
             hasProps = false;
-            sb.append("\t\t}");
+            sb.append("}");
         }
         sb.append(";\n");
     }
@@ -104,30 +104,30 @@ public final class EventParser {
             else result = Event;
         }else {
             switch (event){
-                case "when-mouse-is-released": result = (prop) ? "QMouseEvent event" : "mouseReleaseEvent"; break;
-                case "when-mouse-is-pressed": result = (prop) ? "QMouseEvent event" : "mousePressEvent"; break;
-                case "when-mouse-moves": result = (prop) ? "QMouseEvent event" : "mouseMoveEvent"; break;
-                case "when-double-clicked": result = (prop) ? "QMouseEvent event" : "mouseDoubleClickEvent"; break;
-                case "when-left": result = (prop) ? "QEvent event" : "leaveEvent"; break;
-                case "when-entered": result = (prop) ? "QEvent event" : "enterEvent"; break;
-                case "when-change": result = (prop) ? "QEvent event" : "changeEvent"; break;
+                case "when-mouse-is-released": result = (prop) ? "QMouseEvent" : "mouseReleaseEvent"; break;
+                case "when-mouse-is-pressed": result = (prop) ? "QMouseEvent" : "mousePressEvent"; break;
+                case "when-mouse-moves": result = (prop) ? "QMouseEvent" : "mouseMoveEvent"; break;
+                case "when-double-clicked": result = (prop) ? "QMouseEvent" : "mouseDoubleClickEvent"; break;
+                case "when-left": result = (prop) ? "QEvent" : "leaveEvent"; break;
+                case "when-entered": result = (prop) ? "QEvent" : "enterEvent"; break;
+                case "when-change": result = (prop) ? "QEvent" : "changeEvent"; break;
             }
         }
         return result;
     }
 
     private void Write(String[] Params, StringBuilder sb){
-        String[] yourArray = Arrays.copyOfRange(Params, 2, Params.length);
-        sb.append(String.format("\t\t\t@Override\n" +
-                    "\t\t\tprotected void %s(%s) {\n", EventFind(Params[0], false), EventFind(Params[0], true)));
+        String[] yourArray = Arrays.copyOfRange(Params, 3, Params.length);
+        String prop = EventFind(Params[0], true);
+        sb.append(String.format("@Override\nprotected void %s(%s event) {\n", EventFind(Params[0], false), prop));
         WriteClass(Params[1], sb);
-        WriteMethod(Params[2], sb, yourArray);
+        WriteMethod(Params[2], prop, sb, yourArray);
         WriteParams(sb, yourArray);
-        sb.append("\t\t\t}\n");
+        sb.append("}\n");
     }
 
     private void WriteClass(String name, StringBuilder sb){
-        sb.append(String.format("\t\t\t\ttry{\n\t\t\t\t\tClass<?> c = Class.forName(\"%s\");\n", name));
+        sb.append(String.format("try{\nClass<?> c = Class.forName(\"%s\");\n", name));
     }
 
     private String[] getClasses(String... params){
@@ -139,19 +139,19 @@ public final class EventParser {
         return result;
     }
 
-    private void WriteMethod(String name, StringBuilder sb, String... params){
+    private void WriteMethod(String name, String event, StringBuilder sb, String... params){
         params = getClasses(params);
-        sb.append(String.format("\t\t\t\t\tMethod method = c.getDeclaredMethod(\"%s\"", name));
+        sb.append(String.format("Method method = c.getDeclaredMethod(\"%s\"", name));
         for(String Class : params) sb.append(String.format(", %s.class", Class));
-        sb.append(");\n");
+        sb.append(String.format(", %s.class);\n", event));
     }
 
     private void WriteParams(StringBuilder sb, String... params){
-        sb.append("\t\t\t\t\tmethod.invoke(c, this");
+        sb.append("method.invoke(c, this");
         for(String param : params) sb.append(String.format(", %s", param));
         sb.append(", event);\n" +
-                "\t\t\t\t} catch ( ReflectiveOperationException e) {\n" +
-                "\t\t\t\t\te.printStackTrace();\n" +
-                "\t\t\t\t}\n");
+                "} catch ( ReflectiveOperationException e) {\n" +
+                "e.printStackTrace();\n" +
+                "}\n");
     }
 }
