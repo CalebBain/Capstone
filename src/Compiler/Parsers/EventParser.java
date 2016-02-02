@@ -117,41 +117,9 @@ public final class EventParser {
     }
 
     private void Write(String[] Params, StringBuilder sb){
-        String[] yourArray = Arrays.copyOfRange(Params, 3, Params.length);
-        String prop = EventFind(Params[0], true);
-        sb.append(String.format("@Override\nprotected void %s(%s event) {\n", EventFind(Params[0], false), prop));
-        WriteClass(Params[1], sb);
-        WriteMethod(Params[2], prop, sb, yourArray);
-        WriteParams(sb, yourArray);
+        sb.append(String.format("protected void %s(%s event) {\n",
+                EventFind(Params[0], false), EventFind(Params[0], true)));
+        sb.append(String.format("new %s().%s(this, event);\n", Params[1], Params[2]));
         sb.append("}\n");
-    }
-
-    private void WriteClass(String name, StringBuilder sb){
-        sb.append(String.format("try{\nClass<?> c = Class.forName(\"%s\");\n", name));
-    }
-
-    private String[] getClasses(String... params){
-        String[] result = new String[params.length];
-        for (int i = 0; i < params.length; i++){
-            String[] param = params[i].split(" ");
-            result[i] = param[0];
-        }
-        return result;
-    }
-
-    private void WriteMethod(String name, String event, StringBuilder sb, String... params){
-        params = getClasses(params);
-        sb.append(String.format("Method method = c.getDeclaredMethod(\"%s\"", name));
-        for(String Class : params) sb.append(String.format(", %s.class", Class));
-        sb.append(String.format(", %s.class);\n", event));
-    }
-
-    private void WriteParams(StringBuilder sb, String... params){
-        sb.append("method.invoke(c, this");
-        for(String param : params) sb.append(String.format(", %s", param));
-        sb.append(", event);\n" +
-                "} catch ( ReflectiveOperationException e) {\n" +
-                "e.printStackTrace();\n" +
-                "}\n");
     }
 }
