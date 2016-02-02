@@ -32,28 +32,44 @@ public final class EventParser {
         put("when-mouse-wheel-moves", "wheelEvent");
     }};
 
-    public void Events(String file, String name, String component, StringBuilder sb, NamedNodeMap nodeMap){
+    public boolean Events(String file, String name, String component, String methods, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
         sb.append(String.format("%s %s = new %s(this)", component, name, component));
-        callEvents(file, name, component, sb, nodeMap);
+        try{
+            if(!methods.isEmpty()){
+                hasProps = true;
+                sb.append(String.format("{\n%s", methods));
+            }
+        }catch (NullPointerException ignored){
+        }
+        callEvents(file, name, sb, nodeMap);
+        return hasProps;
     }
 
-    public void Events(String file, String name, String component, String param, StringBuilder sb, NamedNodeMap nodeMap){
+    public boolean Events(String file, String name, String component, String param, String methods, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
         if(!param.isEmpty()) param = String.format("\"%s\"", param);
         sb.append(String.format("%s %s = new %s(%s)", component, name, component, param));
-        callEvents(file, name, component, sb, nodeMap);
+        try{
+            if(!methods.isEmpty()){
+                hasProps = true;
+                sb.append(String.format("{\n%s", methods));
+            }
+        }catch (NullPointerException ignored){
+        }
+        callEvents(file, name, sb, nodeMap);
+        return hasProps;
     }
 
-    private void callEvents(String file, String name, String component, StringBuilder sb, NamedNodeMap nodeMap){
-        for(String prop : events.keySet()) PropCheck(file, name, component, prop, sb, nodeMap);
-        PropCheck(file, name, component, "when-mouse-is-released", sb, nodeMap);
-        PropCheck(file, name, component, "when-mouse-is-pressed", sb, nodeMap);
-        PropCheck(file, name, component, "when-mouse-moves", sb, nodeMap);
-        PropCheck(file, name, component, "when-double-clicked", sb, nodeMap);
-        PropCheck(file, name, component, "when-left", sb, nodeMap);
-        PropCheck(file, name, component, "when-entered", sb, nodeMap);
-        PropCheck(file, name, component, "when-change", sb, nodeMap);
+    private void callEvents(String file, String name, StringBuilder sb, NamedNodeMap nodeMap){
+        for(String prop : events.keySet()) PropCheck(file, name, prop, sb, nodeMap);
+        PropCheck(file, name, "when-mouse-is-released", sb, nodeMap);
+        PropCheck(file, name, "when-mouse-is-pressed", sb, nodeMap);
+        PropCheck(file, name, "when-mouse-moves", sb, nodeMap);
+        PropCheck(file, name, "when-double-clicked", sb, nodeMap);
+        PropCheck(file, name, "when-left", sb, nodeMap);
+        PropCheck(file, name, "when-entered", sb, nodeMap);
+        PropCheck(file, name, "when-change", sb, nodeMap);
         if(hasProps){
             hasProps = false;
             sb.append("}");
@@ -61,19 +77,19 @@ public final class EventParser {
         sb.append(";\n");
     }
 
-    private void PropCheck(String file, String name, String component, String command, StringBuilder sb, NamedNodeMap nodeMap){
+    private void PropCheck(String file, String name, String command, StringBuilder sb, NamedNodeMap nodeMap){
         if(Utils.exists(command, nodeMap)){
             String[] props = Utils.check(command, nodeMap).split(" ");
             if(!hasProps) {
                 hasProps = true;
                 sb.append("{\n");
             }
-            String[] array = ParamSwitch(file, name, component, command, props);
+            String[] array = ParamSwitch(file, name, command, props);
             Write(array, sb);
         }
     }
 
-    private String[] ParamSwitch(String file, String name, String component, String event, String... params){
+    private String[] ParamSwitch(String file, String name, String event, String... params){
         String Class = file.replaceAll(".jaml", "");
         name = name.replaceAll("-","_");
         String Event = event;
@@ -96,7 +112,7 @@ public final class EventParser {
         return result;
     }
 
-    private String EventFind(String event, boolean prop){
+    private String EventFind(String event, boolean prop, boolean complete){
         String result = "";
         if(events.containsKey(event)){
             String Event = events.get(event);
@@ -113,12 +129,13 @@ public final class EventParser {
                 case "when-change": result = (prop) ? "QEvent" : "changeEvent"; break;
             }
         }
+        if(complete) result += " event";
         return result;
     }
 
     private void Write(String[] Params, StringBuilder sb){
-        sb.append(String.format("protected void %s(%s event) {\n",
-                EventFind(Params[0], false), EventFind(Params[0], true)));
+        sb.append(String.format("protected void %s(%s) {\n",
+                EventFind(Params[0], false, false), EventFind(Params[0], true, true)));
         sb.append(String.format("new %s().%s(this, event);\n", Params[1], Params[2]));
         sb.append("}\n");
     }

@@ -27,7 +27,7 @@ public final class ChildParser {
 
     public void GridChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         Utils.capitalize(component);
-        sb.append(String.format("%1s.add%2s(%3s, ", name, component, child));
+        sb.append(String.format("%s.add%s(%s, ", name, Utils.capitalize(component), child));
         int row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
         int col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
         Utils.tryValue("row-span", "%2s, ", row, sb, nodeMap);

@@ -8,8 +8,11 @@
         button:flat:hover { color: yellow; }
         slide:horizontal { height: 30px; width: 120px; }
     </style-->
+    <methods>
+        <method name="newFile" call="generate" class="GeneratedCode.FileFuncs" owner="window" />
+        <!--params="int num"-->
+    </methods>
     <window title="Hello World">
-        <method name="newFile" call="generate" class="FileFuncs" />
         <menubar>
             <button on-click="quit()">Quit</button>
             <menu value="file">
@@ -19,9 +22,10 @@
         </menubar>
         <grid>
             <number name="lcd" row="1" mode="dec"/>
-            <slider class="slide" row="2" range="0 99" value="0" tick-position="above" orientation="horizontal"
-                    on-value-change="lcd:display(int)" when-mouse-is-pressed="class:FileFuncs method:generate"/>
-            <button row="4">push me!</button>
+            <slider class="slide" row="2" range="0 99" value="0" tick-position="above"
+                    orientation="horizontal" on-value-change="lcd:display(int)"
+                    />
+            <button row="4" when-mouse-is-pressed="class:GeneratedCode.FileFuncs method:generate">push me!</button>
             <!--when-mouse-is-pressed="class:thing method:name"-->
         </grid>
     </window>
