@@ -32,9 +32,10 @@ public final class EventParser {
         put("when-mouse-wheel-moves", "wheelEvent");
     }};
 
-    public boolean Events(String file, String name, String component, String methods, StringBuilder sb, NamedNodeMap nodeMap){
+    public boolean ActionEvents(String file, String name, String component, String param, String methods, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
-        sb.append(String.format("%s %s = new %s(this)", component, name, component));
+        if(!param.isEmpty()) param = String.format("\"%s\"", param);
+        sb.append(String.format("%s %s = new %s(%s, this)", component, name, component, param));
         try{
             if(!methods.isEmpty()){
                 hasProps = true;

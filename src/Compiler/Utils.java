@@ -145,6 +145,7 @@ public final class Utils {
             int count = 0;
             for(String comp : comps) if(comp.startsWith(p)) count++;
             p += count;
+            comps.add(p);
         }
         return p;
     }

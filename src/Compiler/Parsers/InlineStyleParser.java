@@ -1,6 +1,7 @@
 package Compiler.Parsers;
 
 import Compiler.Utils;
+import com.trolltech.examples.tutorial.Widgets;
 import org.w3c.dom.NamedNodeMap;
 
 import java.util.HashMap;
@@ -9,6 +10,14 @@ import java.util.Map;
 public final class InlineStyleParser {
     private Map<String, Style> styles = new HashMap<>();
     private String prop;
+
+    public void ColumnView(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QColumnView");
+        Utils.tryBoolean(n, "resize-grips-visible", "%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QColumnView", style);
+        setStyle(style, nodeMap);
+        AbstractItemView(n, sb, nodeMap);
+    }
 
     public void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){
         Utils.tryBoolean(name, "alt-row-color", "%1s.setAlternatingRowColors(%2s);\n", sb, nodeMap);
@@ -93,6 +102,18 @@ public final class InlineStyleParser {
         Frame(name, sb, nodeMap);
     }
 
+    public void LCDNumber(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QLCDNumber");
+        Utils.tryCapitalize(n, "segment-style", "%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
+        Utils.tryCapitalize(n, "mode", "%1s.setMode(QLCDNumber.Mode.%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "small-decimal-point", "%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "digit-count", "%1s.setDigitCount(%2s);\n", sb, nodeMap);
+        Utils.tryValue(n, "value", "%1s.display(%2s);\n", sb, nodeMap);
+        setStyle(style, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QLCDNumber", style);
+        Frame(n, sb, nodeMap);
+    }
+
     public void Frame(String name, StringBuilder sb, NamedNodeMap nodeMap){
         if(!(prop = Utils.check("shadow", nodeMap)).isEmpty()){
             sb.append(String.format("%1s.setFrameShadow(QFrame.Shadow.", name));
@@ -133,6 +154,24 @@ public final class InlineStyleParser {
         Widget(name, sb, nodeMap);
     }
 
+    public void Slider(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QSlider");
+        if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
+            sb.append(String.format("%1s.setTickPosition(QSlider.TickPosition.", n));
+            switch(prop){
+                case "both": sb.append("TicksBothSides"); break;
+                case "above": case "left": sb.append("TicksAbove"); break;
+                case "below": case "right": sb.append("TicksBelow"); break;
+                default: sb.append("NoTicks"); break;
+            }
+            sb.append(");\n");
+        }
+        Utils.tryValue(n, "interval", "%1s.setTickInterval(%2s);\n", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
+        setStyle(style, nodeMap);
+        AbstractSlider(n, sb, nodeMap);
+    }
+
     public void AbstractSlider(String name, StringBuilder sb, NamedNodeMap nodeMap){
         String[] range = Utils.check("range", nodeMap).split(" ");
         if (range.length > 1) sb.append(String.format("%1s.setRange(%2s, %3s);\n", name, range[0], range[1]));
@@ -163,6 +202,41 @@ public final class InlineStyleParser {
         Utils.tryBoolean(name, "tracking", "%1s.setTracking(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "slide-down-tracking", "%1s.setSliderPosition(%2s);\n", sb, nodeMap);
         Widget(name, sb, nodeMap);
+    }
+
+    public void PushButton(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QPushButton");
+        Utils.tryCheck(n, "shortcut", "%s.setShortcut(new QKeySequence(tr(%s));\n", sb, nodeMap);
+        Utils.tryBoolean(n, "default", "%1s.setDefault(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "flat", "%1s.setFlat(%2s);\n", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QPushButton", style);
+        setStyle(style, nodeMap);
+        AbstractButton(n, sb, nodeMap);
+    }
+
+    public void RadioButton(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QRadioButton");
+        stylesSheet.put((!n.isEmpty()) ? n : "QRadioButton", style);
+        setStyle(style, nodeMap);
+        AbstractButton(n, sb, nodeMap);
+    }
+
+    public void CheckBox(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QCheckBox");
+        Utils.tryBoolean(n, "checkable", "%1s.setTristate(%2s);\n", sb, nodeMap);
+        if(!(prop = Utils.check("check-state", nodeMap)).isEmpty()){
+            sb.append(String.format("%1s.setCheckState(Qt.CheckState.", n));
+            switch(prop){
+                case "unchecked": sb.append("Unchecked);\n"); break;
+                case "partially-checked": sb.append("PartiallyChecked);\n"); break;
+                case "checked": sb.append("Checked);\n"); break;
+            }
+        }
+        Utils.tryBoolean(n, "default", "%1s.setDefaultUp(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "native-menubar", "%1s.setNativeMenuBar(%2s);\n", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QCheckBox", style);
+        setStyle(style, nodeMap);
+        AbstractButton(n, sb, nodeMap);
     }
 
     public void AbstractButton(String name, StringBuilder sb, NamedNodeMap nodeMap){
@@ -203,6 +277,64 @@ public final class InlineStyleParser {
         put("bitmap", "BitmapCursor");
     }};
 
+    public void MainWindow(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QMainWindow");
+        sb.append("QWidget centerWidget = new QWidget();\n");
+        sb.append(String.format("%s.setCentralWidget(centerWidget);\n", n));
+        sb.append(String.format("%s.setWindowTitle(tr(\"%s\"));\n", n, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
+        Utils.tryBoolean(n, "dock-animation", "%s.setAnimated(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "dock-nesting", "%s.setDockNestingEnabled(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "document-mode", "%s.setDocumentMode(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "unified-mac-title-toolbar", "%1s.setUnifiedTitleAndToolBarOnMac(%2s);\n", sb, nodeMap);
+        if(!(prop = Utils.check("dock-option", nodeMap)).isEmpty()){
+            sb.append(String.format("%s.setDockOptions(DockOption.", n));
+            switch(prop){
+                case "animated-docks": sb.append("AnimatedDocks);\n"); break;
+                case "allow-nested-docks": sb.append("AllowNestedDocks);\n"); break;
+                case "allow-tabbed-docks": sb.append("AllowTabbedDocks);\n"); break;
+                case "force-tabbed-docks": sb.append("ForceTabbedDocks);\n"); break;
+                case "vertical-tabs": sb.append("VerticalTabs);\n"); break;
+            }
+        }
+        if(!(prop = Utils.check("tab-shape", nodeMap)).isEmpty()){
+            sb.append(String.format("%s.setTabShape(QTabWidget.TabShape.", n));
+            switch(prop){
+                case "rounded": sb.append("Rounded);\n"); break;
+                case "triangular": sb.append("Triangular);\n"); break;
+            }
+        }
+        if(!(prop = Utils.check("tool-button-style", nodeMap)).isEmpty()){
+            sb.append(String.format("%s.setToolButtonStyle(Qt.ToolButtonStyle.", n));
+            switch(prop){
+                case "icon-only": sb.append("ToolButtonIconOnly);\n"); break;
+                case "text-only": sb.append("ToolButtonTextOnly);\n"); break;
+                case "text-beside-icon": sb.append("ToolButtonTextBesideIcon);\n"); break;
+                case "text-under-icon": sb.append("ToolButtonTextUnderIcon);\n"); break;
+                case "follow-style": sb.append("ToolButtonFollowStyle);\n"); break;
+            }
+        }
+        setStyle(style, nodeMap);
+        stylesSheet.put(n, style);
+        Widget(n, sb, nodeMap);
+    }
+
+    public void MenuBar(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QMenuBar");
+        setStyle(style, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QMenuBar", style);
+        Widget(n, sb, nodeMap);
+    }
+
+    public void Menu(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QMenu");
+        Utils.tryCheck(n, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "tear-off", "%s.setTearOffEnabled(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "title", "%s.setTitle(\"%s\");\n", "menu", sb, nodeMap);
+        setStyle(style, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QMenu", style);
+        Widget(n, sb, nodeMap);
+    }
+
     public void Widget(String name, StringBuilder sb, NamedNodeMap nodeMap){
         if(!(prop = Utils.check("margin", nodeMap)).isEmpty()) {
             String[] margins = prop.replaceAll("px", "").split(" ");
@@ -224,6 +356,61 @@ public final class InlineStyleParser {
         Utils.tryBoolean(name, "visibility", "%1s.setHidden(%2s);\n", sb, nodeMap);
         Utils.tryBoolean(name, "update", "%1s.setUpdatesEnabled(%2s);\n", sb, nodeMap);
         Utils.tryCheck(name, "tool-tip", "%1s.setToolTip(%2s);\n", sb, nodeMap);
+    }
+
+    public void Action(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QAction");
+        Utils.tryBoolean(n, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "icon-Text", "%s.setIconText(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "icon-visible", "%s.setIconVisibleMenu(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "is-separator", "%s.setSeparator(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "shortcut", "%s.setShortcut(new QKeySequence(tr(\"%s\")));\n", sb, nodeMap);
+        if(!(prop = Utils.check("menu-role", nodeMap)).isEmpty()){
+            sb.append(String.format("%s.setMenuRole(QAction.MenuRole.", n));
+            switch(prop){
+                case "none": sb.append("NoRole);\n"); break;
+                case "text-heuristic": sb.append("TextHeuristicRole);\n"); break;
+                case "application-specific": sb.append("ApplicationSpecificRole);\n"); break;
+                case "about-qt": sb.append("AboutQtRole);\n"); break;
+                case "about": sb.append("AboutRole);\n"); break;
+                case "preferences": sb.append("PreferencesRole);\n"); break;
+                case "quit": sb.append("QuitRole);\n"); break;
+            }
+        }
+        if(!(prop = Utils.check("priority", nodeMap)).isEmpty()){
+            sb.append(String.format("%s.setPriority(QAction.Priority.", n));
+            switch(prop){
+                case "high": sb.append("HighPriority);\n"); break;
+                case "normal": sb.append("NormalPriority);\n"); break;
+                case "low": sb.append("LowPriority);\n"); break;
+            }
+        }
+        if(!(prop = Utils.check("soft-key-role", nodeMap)).isEmpty()){
+            sb.append(String.format("%s.setSoftKeyRole(QAction.SoftKeyRole.", n));
+            switch(prop){
+                case "none": sb.append("NoSoftKey);\n"); break;
+                case "positive": sb.append("PositiveSoftKey);\n"); break;
+                case "negative": sb.append("NegativeSoftKey);\n"); break;
+                case "select": sb.append("SelectSoftKey);\n"); break;
+            }
+        }
+        if(!(prop = Utils.check("shortcut-context", nodeMap)).isEmpty()){
+            sb.append(String.format("%s.setShortcutContext(Qt.ShortcutContext.", n));
+            switch(prop){
+                case "widget": sb.append("WidgetShortcut);\n"); break;
+                case "Widget-children": sb.append("WidgetWithChildrenShortcut);\n"); break;
+                case "Window": sb.append("WindowShortcut);\n"); break;
+                case "Application": sb.append("ApplicationShortcut);\n"); break;
+            }
+        }
+        Utils.tryCheck(n, "status-tip", "%s.setStatusTip(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "text", "%s.setText(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "whats-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
+        setStyle(style, nodeMap);
     }
 
     public void setStyle(Style style, NamedNodeMap nodeMap) {
