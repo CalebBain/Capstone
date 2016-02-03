@@ -3,9 +3,6 @@ package Compiler.Parsers;
 import org.w3c.dom.NamedNodeMap;
 import Compiler.Utils;
 
-/**
- * Created by Caleb Bain on 1/29/2016.
- */
 public final class ChildParser {
 
     public void addChild(String name, String layout, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){

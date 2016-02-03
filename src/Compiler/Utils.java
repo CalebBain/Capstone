@@ -143,7 +143,9 @@ public final class Utils {
         else if(!comps.contains(p)) comps.add(p);
         else{
             int count = 0;
-            for(String comp : comps) if(comp.startsWith(p)) count++;
+            for(String comp : comps)
+                if(comp.startsWith(p))
+                    count++;
             p += count;
             comps.add(p);
         }

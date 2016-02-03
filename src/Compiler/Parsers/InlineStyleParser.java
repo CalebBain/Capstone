@@ -406,7 +406,6 @@ public final class InlineStyleParser {
             }
         }
         Utils.tryCheck(n, "status-tip", "%s.setStatusTip(%s);\n", sb, nodeMap);
-        Utils.tryCheck(n, "text", "%s.setText(%s);\n", sb, nodeMap);
         Utils.tryCheck(n, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
         Utils.tryCheck(n, "whats-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);

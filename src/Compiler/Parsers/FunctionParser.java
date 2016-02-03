@@ -5,7 +5,7 @@ import org.w3c.dom.NamedNodeMap;
 
 public final class FunctionParser {
 
-    public void MakeFunc(String name, String prop, StringBuilder sb, NamedNodeMap nodeMap){
+    private void MakeFunc(String name, String prop, StringBuilder sb, NamedNodeMap nodeMap){
         String[] callParts = new String[0];
         String p;
         if (!(p = Utils.check(prop, nodeMap)).isEmpty()){
@@ -67,9 +67,23 @@ public final class FunctionParser {
         onWidgetFunctions(n, sb, nodeMap);
     }
 
+    public void WindowFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc(n + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
+        onWidgetFunctions(n, sb, nodeMap);
+    }
+
+    public void NumberFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc("" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
+        onWidgetFunctions(n, sb, nodeMap);
+    }
+
     public void onWidgetFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".customContextMenuRequested", "on-custom-context-menu-request", sb, nodeMap);
     }
 
+    public void ActionFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc(n + ".triggered", "method", sb, nodeMap);
+    }
 
 }
