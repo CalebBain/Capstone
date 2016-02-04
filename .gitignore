@@ -6,4 +6,4 @@ out/*
 /*class
 
 jaml/*
-src/GeneratedCode/*
+GeneratedCode/*
