@@ -5,6 +5,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /* notes
 *   this is the second implantation of the code generator
 *
@@ -17,241 +22,147 @@ import org.w3c.dom.NodeList;
 *
 * */
 
-public class ComponentParser {
-    private InlineStyleParser styles = new InlineStyleParser();
-    private FunctionParser functions = new FunctionParser();
-    private EventParser events = new EventParser();
+public final class ComponentParser {
+    private final InlineStyleParser styles = new InlineStyleParser();
+    private final EventParser events = new EventParser();
+    private final ChildParser children = new ChildParser();
+    private Map<String, Style> stylesSheet = new HashMap<>();
+    private List<String> namedComponents = new ArrayList<>();
+    private List<String> components = new ArrayList<>();
+    private Map<String, String> methodCalls;
+    private final FunctionParser functions;
+    private final String file;
     private StringBuilder sb;
-    private String file;
 
-    public ComponentParser(String file, String name, StringBuilder sb, Node node) {
+    public ComponentParser(String file, Map<String, String> methodCalls, StringBuilder sb, Node node) {
         this.sb = sb;
-        this.file = file;
-        Window(name, "QMainWindow", node);
-        nodeLoop(node);
+        this.methodCalls = methodCalls;
+        this.file = file.replaceFirst("\\.jaml", "");
+        functions = new FunctionParser();
+        NamedNodeMap nodeMap = node.getAttributes();
+        String name = "window";
+        String methods = methodCalls.get("window");
+        sb.append(String.format("QMainWindow %s = new QMainWindow()", name));
+        try{
+            if (!methods.isEmpty()) sb.append(String.format("{\n%s\n};\n", methods));
+        }catch (NullPointerException ignored){
+        }
+        styles.MainWindow(name, stylesSheet, sb, nodeMap);
+        functions.WindowFunctions(name, sb, nodeMap);
+        nodeLoop("window", node);
     }
 
-    public String nodeLoop(Node node) {
+    public String StyleSheet(){
+        StringBuilder sb = new StringBuilder();
+        for(Style style : stylesSheet.values()) sb.append(style.toString());
+        return sb.toString();
+    }
+
+    public String nodeLoop(String layoutName, Node node) {
         NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node n = nodeList.item(i);
-            boolean component = elementsSwitch(n.getNodeName(), n);
-            if (component) nodeLoop(n);
+            String component =  elementsSwitch(n.getNodeName(), layoutName, n);
+            String[] parts = component.split(":");
+            if (parts[0].equals("layout")) nodeLoop(parts[1], n);
         }
         return sb.toString();
     }
 
-    public boolean elementsSwitch(String name, Node node){
-        boolean layout = false;
+    public String elementsSwitch(String name, String layoutName, Node node){
+        String component = "";
+        Node parent = node.getParentNode();
+        String layout = parent.getNodeName();
+        NamedNodeMap nodeMap = node.getAttributes();
+        String methods = methodCalls.get(name);
+        String n;
         switch (name) {
-            case "check-box": CheckBox(name, node); break;
-            case "radio": Radio(name, node); break;
-            case "button": Button(name, node); break;
-            case "number": Number(name, node); break;
-            case "slider": Slider(name, node); break;
-            case "grid": Grid(name, node);
-                layout = true; break;
+            case "check-box":
+                n  = methodName(name, methods, "", nodeMap);
+                styles.CheckBox(n, stylesSheet, sb, nodeMap);
+                functions.CheckBoxFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "radio":
+                n  = methodName(name, methods, "", nodeMap);
+                styles.RadioButton(n, stylesSheet, sb, nodeMap);
+                functions.onAbstractButtonFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "number":
+                n  = methodName(name, methods, "", nodeMap);
+                styles.LCDNumber(n, stylesSheet, sb, nodeMap);
+                functions.NumberFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "slider":
+                n  = methodName(name, methods, "", nodeMap);
+                styles.Slider(n, stylesSheet, sb, nodeMap);
+                functions.onAbstractSliderFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "grid":
+                n  = methodName(name, methods, "", nodeMap);
+                Style style = new Style(n, "QGridLayout");
+                stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
+                styles.setStyle(style, nodeMap);
+                children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "menubar":
+                n = "menubar";
+                events.Events(file, n, name, "", methods, sb, nodeMap);
+                styles.MenuBar(n, stylesSheet, sb, nodeMap);
+                functions.MenuBarFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "menubar", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "menu":
+                n  = methodName(name, methods, "", nodeMap);
+                styles.Menu(n, stylesSheet, sb, nodeMap);
+                functions.MenuFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "menu", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            /*case "column-view":
+                name = name.replaceAll("-", "_");
+                n = methodName(name, methods, "", nodeMap);
+                styles.ColumnView(n, stylesSheet, sb, nodeMap);
+                functions.ColumnViewFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;*/
+            case "list":
+                n = methodName(name, methods, "", nodeMap);
+                styles.List(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "button":
+                n = methodName(name, methods, node.getTextContent(), nodeMap);
+                styles.PushButton(n, stylesSheet, sb, nodeMap);
+                functions.onAbstractButtonFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "action":
+                n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
+                String text = Utils.tryEmpty("text", "", nodeMap);
+                events.ActionEvents(file, n, name, text, methods, sb, nodeMap);
+                styles.Action(n, stylesSheet, sb, nodeMap);
+                functions.ActionFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "action", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "separator":
+                n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
+                children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
+                break;
+
         }
-        return layout;
+        return component;
     }
 
-    private void addChild(String name, String layout, String component, String child, NamedNodeMap nodeMap){
-        switch (layout) {
-            case "window": WindowChild(child, component); break;
-            case "grid" : GridChild(name, component, child, nodeMap); break;
-        }
-    }
-
-    private void WindowChild(String name, String componentType){
-        switch (componentType){
-            case "layout" : sb.append(String.format("\t\tcenterWidget.setLayout(%1s);\n", name)); break;
-            case "widget" : sb.append(String.format("\t\t%1s.setParent(centerWidget);\n", name)); break;
-        }
-    }
-
-    private void GridChild(String name, String component, String child, NamedNodeMap nodeMap){
-        Utils.capitalize(component);
-        sb.append(String.format("\t\t%1s.add%2s(%3s, ", name, component, child));
-        int row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
-        int col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
-        Utils.tryValue("row-span", "%2s, ", row, sb, nodeMap);
-        Utils.tryValue("column-span", "%2s, ", col, sb, nodeMap);
-        sb.append("Qt.AlignmentFlag.");
-        switch(Utils.check("position", nodeMap)){
-            case "bottom": sb.append("AlignBottom);\n"); break;
-            case "center": sb.append("AlignCenter);\n"); break;
-            case "horizontal-center": sb.append("AlignHCenter);\n"); break;
-            case "justify": sb.append("AlignJustify);\n"); break;
-            case "left": sb.append("AlignLeft);\n"); break;
-            case "right": sb.append("AlignRight);\n"); break;
-            case "top": sb.append("AlignTop);\n"); break;
-            case "vertical-center": sb.append("AlignVCenter);\n"); break;
-            default: sb.append("AlignAbsolute);\n"); break;
-        }
-    }
-
-    private void ColumnViewChild(String name, String component){
-        switch (component){
-            case "window" : case "grid" : break;
-            default: sb.append(String.format("ColumnView.setPreviewWidget((%1s);\n", name)); break;
-        }
-    }
-
-    private void Window(String app, String name, Node node){
-        String prop;
-        NamedNodeMap nodeMap = node.getAttributes();
-        sb.append(String.format("\t\tQMainWindow window = new QMainWindow(%1s);\n", app));
-        sb.append("\t\tQWidget centerWidget = new QWidget();\n");
-        sb.append("\t\twindow.setCentralWidget(centerWidget);\n");
-        sb.append(String.format("\t\t%1s.setWindowTitle(tr(\"%2s\"));\n", name, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
-        Utils.tryBoolean(name, "dock-animation", "\t\t%1s.setAnimated(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "dock-nesting", "\t\t%1s.setDockNestingEnabled(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "document-mode", "\t\t%1s.setDocumentMode(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "unified-mac-title-toolbar", "\t\t%1s.setUnifiedTitleAndToolBarOnMac(%2s);\n", sb, nodeMap);
-        if(!(prop = Utils.check("dock-option", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setDockOptions(DockOption.", name));
-            switch(prop){
-                case "animated-docks": sb.append("AnimatedDocks);\n"); break;
-                case "allow-nested-docks": sb.append("AllowNestedDocks);\n"); break;
-                case "allow-tabbed-docks": sb.append("AllowTabbedDocks);\n"); break;
-                case "force-tabbed-docks": sb.append("ForceTabbedDocks);\n"); break;
-                case "vertical-tabs": sb.append("VerticalTabs);\n"); break;
-            }
-        }
-        if(!(prop = Utils.check("tab-shape", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setTabShape(QTabWidget.TabShape.", name));
-            switch(prop){
-                case "rounded": sb.append("Rounded);\n"); break;
-                case "triangular": sb.append("Triangular);\n"); break;
-            }
-        }
-        if(!(prop = Utils.check("tool-button-style", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setToolButtonStyle(Qt.ToolButtonStyle.", name));
-            switch(prop){
-                case "icon-only": sb.append("ToolButtonIconOnly);\n"); break;
-                case "text-only": sb.append("ToolButtonTextOnly);\n"); break;
-                case "text-beside-icon": sb.append("ToolButtonTextBesideIcon);\n"); break;
-                case "text-under-icon": sb.append("ToolButtonTextUnderIcon);\n"); break;
-                case "follow-style": sb.append("ToolButtonFollowStyle);\n"); break;
-            }
-        }
-        functions.MakeFunc("\t\t" + name + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
-        functions.MakeFunc("\t\t" + name + ".toolButtonStyleChanged.connect(", Utils.check("on - tool - button - style - change", nodeMap), sb, nodeMap);
-        functions.onWidgetFunctions(name, sb, nodeMap);
-    }
-
-    private void Slider(String name, Node node){
-        String prop;
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
-        String n = Utils.tryEmpty("name", name, nodeMap);
-        events.Events(file, n, name, "", sb, nodeMap);
-        if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setTickPosition(TickPosition.", n));
-            switch(prop){
-                case "both": sb.append("TicksBothSides"); break;
-                case "above": case "left": sb.append("TicksAbove"); break;
-                case "below": case "right": sb.append("TicksBelow"); break;
-                default: sb.append("NoTicks"); break;
-            }
-            sb.append(");\n");
-        }
-        Utils.tryValue(n, "interval", "\t\t%1s.setTickInterval(%2s);\n", sb, nodeMap);
-        styles.AbstractSlider(n, sb, nodeMap);
-        functions.onAbstractSliderFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
-    }
-
-    private void Number(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
-        String n = Utils.tryEmpty("name", name, nodeMap);
-        events.Events(file, n, name, "", sb, nodeMap);
-        Utils.tryCapitalize(n, "segment-style", "\t\t%1s.setSegmentStyle(QLCDNumber.SegmentStyle.%2s);\n", sb, nodeMap);
-        Utils.tryCapitalize(n, "mode", "\t\t%1s.setMode(QLCDNumber.Mode.%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(n, "small-decimal-point", "\t\t%1s.setSmallDecimalPoint(%2s);\n", sb, nodeMap);
-        Utils.tryValue(n, "digit-count", "\t\t%1s.setDigitCount(%2s);\n", sb, nodeMap);
-        Utils.tryValue(n, "value", "\t\t%1s.display(%2s);\n", sb, nodeMap);
-        styles.Frame(n, sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
-        functions.onWidgetFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
-    }
-
-    private void Button(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
-        String n = Utils.tryEmpty("name", name, nodeMap);
-        events.Events(file, n, name, node.getTextContent(), sb, nodeMap);
-        Utils.tryBoolean(n, "default", "\t\t%1s.setDefault(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(n, "flat", "\t\t%1s.setFlat(%2s);\n", sb, nodeMap);
-        styles.AbstractButton(n, sb, nodeMap);
-        functions.onAbstractButtonFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
-    }
-
-    private void Radio(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
-        String n = Utils.tryEmpty("name", name, nodeMap);
-        events.Events(file, n, name, "", sb, nodeMap);
-        styles.AbstractButton(n, sb, nodeMap);
-        functions.onAbstractButtonFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
-    }
-
-    private void CheckBox(String name, Node node){
-        String prop;
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
-        String n = Utils.tryEmpty("name", name, nodeMap);
-        events.Events(file, n, name, "", sb, nodeMap);
-        Utils.tryBoolean(n, "checkable", "\t\t%1s.setTristate(%2s);\n", sb, nodeMap);
-        if(!(prop = Utils.check("check-state", nodeMap)).isEmpty()){
-            sb.append(String.format("\t\t%1s.setCheckState(Qt.CheckState.", n));
-            switch(prop){
-                case "unchecked": sb.append("Unchecked);\n"); break;
-                case "partially-checked": sb.append("PartiallyChecked);\n"); break;
-                case "checked": sb.append("Checked);\n"); break;
-            }
-        }
-        styles.AbstractButton(n, sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".stateChanged.connect(", Utils.check("on - state - change", nodeMap), sb, nodeMap);
-        functions.onAbstractButtonFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
-    }
-
-    private void ColumnView(String name, Node node){
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
-        String n = Utils.tryEmpty("name", name, nodeMap);
-        events.Events(file, n, name, "", sb, nodeMap);
-        Utils.tryBoolean(n, "resize-grips-visible", "\t\t%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
-        styles.AbstractItemView(n, sb, nodeMap);
-        functions.MakeFunc("\t\t" + n + ".updatePreviewWidget.connect(", "on-preview-update", sb, nodeMap);
-        functions.onAbstractItemViewFunctions(n, sb, nodeMap);
-        addChild(layoutName, layout, "widget", n, nodeMap);
-    }
-
-    private void Grid(String name, Node node) {
-        Node parent = node.getParentNode();
-        String layout = parent.getNodeName();
-        String layoutName = Utils.tryEmpty("name", layout, parent.getAttributes());
-        NamedNodeMap nodeMap = node.getAttributes();
-        String n = Utils.tryEmpty("name", name, nodeMap);
-        events.Events(file, n, name, "", sb, nodeMap);
-        addChild(layoutName, layout, "layout", n, nodeMap);
+    private String methodName(String name, String methods, String text, NamedNodeMap nodeMap){
+        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
+        events.Events(file, n, name, text, methods, sb, nodeMap);
+        return n;
     }
 }

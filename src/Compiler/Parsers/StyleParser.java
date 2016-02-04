@@ -12,7 +12,7 @@ import java.util.Map;
 // (least to most important)
 //  1. External style sheet
 //  2. Internal style sheet (in the style section)
-//  3.Inline style (inside an JAML element)
+//  3. Inline style (inside an JAML element)
 
 public final class StyleParser {
 
@@ -46,9 +46,9 @@ public final class StyleParser {
                 String[] parts = command.split(" ?\\{ ?");
                 String[] names = parts[0].split(", ");
                 for (String name : names) {
-                    Style style = new Style(name, name.startsWith("."));
+                    Style style = new Style(name);
                     style.setAttributes(parts[1]);
-                    tokens.put(style.getFullName(), style);
+                    tokens.put(name.replaceAll("\\.", ""), style);
                 }
             }
         }

@@ -1,5 +1,6 @@
 package Compiler.Assemble;
 
+import Compiler.Parsers.SlotParser;
 import Compiler.Parsers.StyleParser;
 import Compiler.Parsers.Style;
 import org.w3c.dom.*;
@@ -22,20 +23,23 @@ public final class Assembler {
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
-            System.out.println(doc.getDocumentURI());
-            System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
+            //System.out.println(doc.getDocumentURI());
+            //System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
             if (doc.hasChildNodes()){
                 NodeList nodeList = doc.getChildNodes();
-                printNote(nodeList);
-                System.out.println("\n\n");
+                //printNote(nodeList);
+                //System.out.println("\n\n");
                 Node node = nodeList.item(0);
                 if (node instanceof Element && node.getNodeName().equals("jaml")) {
                     Element docElement = (Element) node;
-                    Node style = docElement.getElementsByTagName("style").item(0);
-                    Map<String, Style> styles;
-                    if (style != null) styles = new StyleParser().Parse(style);
+                    //Node style = docElement.getElementsByTagName("style").item(0);
+                    //Map<String, Style> styles;
+                    //if (style != null) styles = new StyleParser().Parse(style);
+                    Node methods = docElement.getElementsByTagName("methods").item(0);
+                    Map<String, String> methodCalls = new HashMap<>();
+                    if (methods != null) methodCalls = new SlotParser().Parse(methods);
                     Node window = docElement.getElementsByTagName("window").item(0);
-                    if (window != null) new CodeAssembler().assemble(fXmlFile.getName(), "index", window);
+                    if (window != null) new CodeAssembler().assemble(fXmlFile.getName(), "index", methodCalls, window);
                 }
             }
         } catch (Exception e) {

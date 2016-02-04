@@ -3,50 +3,68 @@ package Compiler;
 import Compiler.Parsers.Style;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class Utils {
 
+    private static Map<String, String> components = new HashMap<String, String>() {{
+        put("button", "QPushButton");
+        put("window", "QMainWindow");
+        put("number", "QLCDNumber");
+        put("radio", "QRadioButton");
+        put("slider", "QSlider");
+        put("check-box", "QCheckBox");
+        put("tri-state", "QTriState");
+        put("menu-bar", "QMenuBar");
+        put("grid", "QGridLayout");
+        put("menubar", "QMenuBar");
+        put("menu", "QMenu");
+        put("action", "QAction");
+        put("list", "QListWidget");
+    }};
+
     public static boolean tryValue(String value) {
-        boolean result = false;
         try {
             Integer.parseInt(value);
-            result = true;
+            return true;
         } catch (NumberFormatException ignored) {
+            return false;
         }
-        return result;
+    }
+
+    public static String setName(String name) {
+        String comp = components.get(name.replaceAll("\\d", ""));
+        return (comp == null) ? name : comp;
     }
 
     public static boolean exists(String keyword, NamedNodeMap nodeMap){
-        boolean result;
         try {
             Node word = nodeMap.getNamedItem(keyword);
             word.getNodeValue();
-            result = true;
+            return true;
         } catch (NullPointerException ignored) {
-            result = false;
+            return false;
         }
-        return result;
     }
 
     public static String check(String keyword, NamedNodeMap nodeMap) {
-        String result = "";
         try {
             Node word = nodeMap.getNamedItem(keyword);
-            result = (word != null) ? word.getNodeValue() : "";
+            return (word != null) ? word.getNodeValue() : "";
         } catch (NullPointerException ignored) {
+            return "";
         }
-        return result;
     }
 
     public static boolean check(String keyword, String check, NamedNodeMap nodeMap) {
-        String result;
         try {
             Node word = nodeMap.getNamedItem(keyword);
-            result = (word != null) ? word.getNodeValue() : "";
+            return ((word != null) ? word.getNodeValue() : "").equals(check);
         } catch (NullPointerException e) {
-            result =  "";
+            return false;
         }
-        return result.equals(check);
     }
 
     public static void addAttribute(Style style, NamedNodeMap nodeMap, String attribute) {
@@ -62,21 +80,20 @@ public final class Utils {
         if (!prop.isEmpty()) style.addAttribute(attributeName, prop);
     }
 
-    public static boolean tryBoolean(String value, String v1, String v2){
-        boolean result = false;
-        if(value.equals(v1) || value.equals(v2)) result = true;
-        return result;
-    }
-
     public static boolean tryBoolean(String value){
-        boolean result = false;
-        if(value.equals("true") || value.equals("false")) result = true;
-        return result;
+        return (value.equals("true") || value.equals("false"));
     }
 
     public static void tryCheck(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
         String p;
-        if (Utils.tryValue(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
+        if (!(p = Utils.check(prop, nodeMap)).isEmpty()) sb.append(String.format(command, name, p));
+    }
+
+    public static void tryCheck(String name, String prop, String command, String replacement, StringBuilder sb,
+                                NamedNodeMap nodeMap){
+        String p;
+        if (!(p = Utils.check(prop, nodeMap)).isEmpty()) sb.append(String.format(command, name, p));
+        else sb.append(String.format(command, name, replacement));
     }
 
     public static void tryValue(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
@@ -84,30 +101,24 @@ public final class Utils {
         if (Utils.tryValue(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
     }
 
-    public static void tryValue(String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryValue(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, p));
-        else sb.append(String.format(command, p));
-    }
-
     public static int tryValue(String prop, String command, int replacement, StringBuilder sb, NamedNodeMap nodeMap){
         String p;
         int result = replacement;
         if (Utils.tryValue(p = Utils.check(prop, nodeMap))){
-
+            result = Integer.parseInt(p);
             sb.append(String.format(command, p));
         } else sb.append(String.format(command, replacement));
         return result;
     }
 
+    public static void tryBoolean(String name, String prop, String child, String command, StringBuilder sb,
+                                  NamedNodeMap nodeMap){
+        if (Utils.tryBoolean(Utils.check(prop, nodeMap))) sb.append(String.format(command, name, child));
+    }
+
     public static void tryBoolean(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
         String p;
         if (Utils.tryBoolean(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
-    }
-
-    public static void tryBoolean(String name, String prop, String v1, String v2, String command, StringBuilder sb, NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryBoolean(p = Utils.check(prop, nodeMap), v1, v2)) sb.append(String.format(command, name, p));
     }
 
     public static void formatAppend(String command, StringBuilder sb, String... props){
@@ -119,7 +130,29 @@ public final class Utils {
         return (!(p = Utils.check(prop, nodeMap)).isEmpty()) ? p : replacement;
     }
 
-    public static void tryCapitalize(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
+    public static void tryEmptyAppend(String name, String value, String command, StringBuilder sb){
+        if(!value.isEmpty()) sb.append(String.format(command, name, value));
+    }
+
+    public static String tryEmpty(String prop, String replacement, List<String> namedComponents,
+                                  List<String> comps, NamedNodeMap nodeMap){
+        String p;
+        if((p = Utils.check(prop, nodeMap)).isEmpty()) p = replacement;
+        if(!components.containsKey(p)) namedComponents.add(p);
+        else if(!comps.contains(p)) comps.add(p);
+        else{
+            int count = 0;
+            for(String comp : comps)
+                if(comp.startsWith(p))
+                    count++;
+            p += count;
+            comps.add(p);
+        }
+        return p;
+    }
+
+    public static void tryCapitalize(String name, String prop, String command, StringBuilder sb,
+                                     NamedNodeMap nodeMap){
         String p;
         if(!(p = Utils.check(prop, nodeMap)).isEmpty()) formatAppend(command, sb, name, capitalize(p));
     }
