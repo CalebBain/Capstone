@@ -125,9 +125,17 @@ public final class ComponentParser {
                 component = "layout:" + n;
                 break;
             /*case "column-view":
+                name = name.replaceAll("-", "_");
+                n = methodName(name, methods, "", nodeMap);
+                styles.ColumnView(n, stylesSheet, sb, nodeMap);
                 functions.ColumnViewFunctions(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;*/
+            case "list":
+                n = methodName(name, methods, "", nodeMap);
+                styles.List(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
             case "button":
                 n = methodName(name, methods, node.getTextContent(), nodeMap);
                 styles.PushButton(n, stylesSheet, sb, nodeMap);

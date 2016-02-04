@@ -22,6 +22,7 @@ public final class Utils {
         put("menubar", "QMenuBar");
         put("menu", "QMenu");
         put("action", "QAction");
+        put("list", "QListWidget");
     }};
 
     public static boolean tryValue(String value) {
@@ -34,10 +35,8 @@ public final class Utils {
     }
 
     public static String setName(String name) {
-        for (Map.Entry<String, String> entry : components.entrySet())
-            if (name.startsWith(entry.getKey()))
-                name = name.replaceFirst(entry.getKey(), entry.getValue());
-        return name;
+        String comp = components.get(name.replaceAll("\\d", ""));
+        return (comp == null) ? name : comp;
     }
 
     public static boolean exists(String keyword, NamedNodeMap nodeMap){

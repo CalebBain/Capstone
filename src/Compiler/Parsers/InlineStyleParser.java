@@ -2,6 +2,9 @@ package Compiler.Parsers;
 
 import Compiler.Utils;
 import com.trolltech.examples.tutorial.Widgets;
+import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.gui.QListView;
+import com.trolltech.qt.gui.QListWidget;
 import org.w3c.dom.NamedNodeMap;
 
 import java.util.HashMap;
@@ -11,23 +14,88 @@ public final class InlineStyleParser {
     private Map<String, Style> styles = new HashMap<>();
     private String prop;
 
-    public void ColumnView(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+    /*public void ColumnView(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QColumnView");
         Utils.tryBoolean(n, "resize-grips-visible", "%1s.setResizeGripsVisible(%2s);\n", sb, nodeMap);
         stylesSheet.put((!n.isEmpty()) ? n : "QColumnView", style);
         setStyle(style, nodeMap);
         AbstractItemView(n, sb, nodeMap);
+    }*/
+
+    public void List(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QListWidget");
+        Utils.tryBoolean(n, "sorting", "%s.setSortingEnabled(%s);\n", sb, nodeMap);
+        stylesSheet.put((!n.isEmpty()) ? n : "QListView", style);
+        setStyle(style, nodeMap);
+        ListView(n, sb, nodeMap);
+    }
+
+    public void ListView(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        Utils.tryValue(n, "batch-size", "%s.setBatchSize(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "model-column", "%s.setModelColumn(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "spacing", "%s.setSpacing(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "selection-rectangle-visible", "%s.setSelectionRectVisible(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "uniform-sizes", "%s.setUniformItemSizes(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "word-wrap", "%s.setWordWrap(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "wrapping", "%s.setWrapping(%s);\n", sb, nodeMap);
+        if (!(prop = Utils.check("movement", nodeMap)).isEmpty()){
+            String value = "";
+            switch (prop) {
+                case "static": value = "Static"; break;
+                case "free": value = "Free"; break;
+                case "snap": value = "Snap"; break;
+            }
+            if(!value.isEmpty()) sb.append(String.format("%s.setMovement(QListView.Movement.%s);\n", n, value));
+        }
+        if (!(prop = Utils.check("layout-mode", nodeMap)).isEmpty()){
+            String value = "";
+            switch (prop) {
+                case "single-pass": value = "SinglePass"; break;
+                case "batched": value = "Batched"; break;
+            }
+            if(!value.isEmpty()) sb.append(String.format("%s.setLayoutMode(QListView.LayoutMode.%s);\n", n, value));
+        }
+        if (!(prop = Utils.check("orientation", nodeMap)).isEmpty()){
+            String value = "";
+            switch (prop) {
+                case "horizontal": value = "LeftToRight"; break;
+                case "vertical": value = "TopToBottom"; break;
+            }
+            if(!value.isEmpty()) sb.append(String.format("%s.setFlow(QListView.Flow.%s);\n", n, value));
+        }
+        if (!(prop = Utils.check("view-mode", nodeMap)).isEmpty()){
+            String value = "";
+            switch (prop) {
+                case "list": value = "ListMode"; break;
+                case "icon": value = "IconMode"; break;
+            }
+            if(!value.isEmpty()) sb.append(String.format("%s.setViewMode(QListView.ViewMode.%s);\n", n, value));
+        }
+        if (!(prop = Utils.check("resize-mode", nodeMap)).isEmpty()){
+            String value = "";
+            switch (prop) {
+                case "adjust": value = "Adjust"; break;
+                case "fixed": value = "Fixed"; break;
+            }
+            if(!value.isEmpty()) sb.append(String.format("%s.setResizeMode(QListView.ResizeMode.%s);\n", n, value));
+        }
+        if (!(prop = Utils.check("grid-size", nodeMap)).isEmpty()){
+            String[] parts = prop.split(" ");
+            String value = parts[0] + ", " + parts[1];
+            sb.append(String.format("%s.setGridSize(new QSize(%s);\n", n, value));
+        }
+        AbstractItemView(n, sb, nodeMap);
     }
 
     public void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        Utils.tryBoolean(name, "alt-row-color", "%1s.setAlternatingRowColors(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "draggable", "%1s.setDragEnabled(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "auto-scroll", "%1s.setAutoScroll(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "drop-indicator", "%1s.setDropIndicatorShown(%2s);\n", sb, nodeMap);
-        Utils.tryBoolean(name, "tab-key-navigation", "%1s.TabKeyNavigation(%2s);\n", sb, nodeMap);
-        Utils.tryValue(name, "auto-scroll-margin", "%1s.setAutoScrollMargin(%2s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "alt-row-color", "%s.setAlternatingRowColors(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "draggable", "%s.setDragEnabled(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "auto-scroll", "%s.setAutoScroll(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "drop-indicator", "%s.setDropIndicatorShown(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(name, "tab-key-navigation", "%s.TabKeyNavigation(%s);\n", sb, nodeMap);
+        Utils.tryValue(name, "auto-scroll-margin", "%s.setAutoScrollMargin(%s);\n", sb, nodeMap);
         if (!(prop = Utils.check("drag-drop-mode", nodeMap)).isEmpty()){
-            sb.append(String.format("%1s.setDragDropMode(QAbstractItemView.DragDropMode.", name));
+            sb.append(String.format("%s.setDragDropMode(QAbstractItemView.DragDropMode.", name));
             switch (prop) {
                 case "no-drag-drop": sb.append("NoDragDrop);\n"); break;
                 case "drop-only": sb.append("DropOnly);\n"); break;
