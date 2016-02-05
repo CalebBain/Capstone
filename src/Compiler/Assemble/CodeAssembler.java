@@ -30,7 +30,8 @@ public final class CodeAssembler {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             JavaFileObject qtCode = new InMemoryJavaFileObject("GeneratedCode.qt", Code);
             Iterable<? extends JavaFileObject> files = Arrays.asList(qtCode);
-            JavaCompiler.CompilationTask task = compiler.getTask(null, null, null, null, null, files);
+            final Iterable<String> options = Arrays.asList("-d", "out/production/JAML/GeneratedCode/");
+            JavaCompiler.CompilationTask task = compiler.getTask(null, null, null, options, null, files);
             if(task.call()){
                 writer.println(Code);
                 Class<?> c = Class.forName("GeneratedCode.qt");

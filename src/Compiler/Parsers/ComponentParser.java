@@ -44,9 +44,10 @@ public final class ComponentParser {
         String methods = methodCalls.get("window");
         sb.append(String.format("QMainWindow %s = new QMainWindow()", name));
         try{
-            if (!methods.isEmpty()) sb.append(String.format("{\n%s\n};\n", methods));
+            if (!methods.isEmpty()) sb.append(String.format("{\n%s\n}", methods));
         }catch (NullPointerException ignored){
         }
+        sb.append(";\n");
         styles.MainWindow(name, stylesSheet, sb, nodeMap);
         functions.WindowFunctions(name, sb, nodeMap);
         nodeLoop("window", node);
@@ -144,7 +145,7 @@ public final class ComponentParser {
                 break;
             case "action":
                 n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
-                String text = Utils.tryEmpty("text", "", nodeMap);
+                String text = Utils.tryEmpty("text", "action", nodeMap);
                 events.ActionEvents(file, n, name, text, methods, sb, nodeMap);
                 styles.Action(n, stylesSheet, sb, nodeMap);
                 functions.ActionFunctions(n, sb, nodeMap);
