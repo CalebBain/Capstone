@@ -5,10 +5,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /* notes
 *   this is the second implantation of the code generator
@@ -55,7 +52,13 @@ public final class ComponentParser {
 
     public String StyleSheet(){
         StringBuilder sb = new StringBuilder();
-        for(Style style : stylesSheet.values()) sb.append(style.toString());
+        Collection<Style> temp = stylesSheet.values();
+        Style[] styles = temp.toArray(new Style[temp.size()]);
+        for(int i = 0; i < styles.length;){
+            sb.append(styles[i].toString());
+            if(++i < styles.length) sb.append("\\n\"+\n");
+        }
+
         return sb.toString();
     }
 
@@ -78,6 +81,12 @@ public final class ComponentParser {
         String methods = methodCalls.get(name);
         String n;
         switch (name) {
+            case "label":
+                n  = methodName(name, methods, "", nodeMap);
+                //styles.CheckBox(n, stylesSheet, sb, nodeMap);
+                //functions.CheckBoxFunctions(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "layout:" + n, n, sb, nodeMap);
+                break;
             case "check-box":
                 n  = methodName(name, methods, "", nodeMap);
                 styles.CheckBox(n, stylesSheet, sb, nodeMap);
@@ -105,7 +114,7 @@ public final class ComponentParser {
             case "grid":
                 n  = methodName(name, methods, "", nodeMap);
                 Style style = new Style(n, "QGridLayout");
-                stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
+                if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
                 styles.setStyle(style, nodeMap);
                 children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
                 component = "layout:" + n;
@@ -125,13 +134,6 @@ public final class ComponentParser {
                 children.addChild(layoutName, layout, "menu", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
-            /*case "column-view":
-                name = name.replaceAll("-", "_");
-                n = methodName(name, methods, "", nodeMap);
-                styles.ColumnView(n, stylesSheet, sb, nodeMap);
-                functions.ColumnViewFunctions(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                break;*/
             case "list":
                 n = methodName(name, methods, "", nodeMap);
                 styles.List(n, stylesSheet, sb, nodeMap);

@@ -21,7 +21,7 @@ public final class CodeAssembler {
         sb.append("public void run() {\n");
         ComponentParser parser = new ComponentParser(file, methodCalls, sb, node);
         String styles = parser.StyleSheet();
-        if (!styles.isEmpty()) sb.append(String.format("%s.setStyleSheet(\"%s\");\n", name, styles));
+        if (!styles.isEmpty()) sb.append(String.format("this.setStyleSheet(\"%s\");\n", styles));
         sb.append("window.show();\n");
         sb.append("this.exec();\n}\n}");
         try(PrintWriter writer = new PrintWriter("src/GeneratedCode/qt.java", "UTF-8")) {

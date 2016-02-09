@@ -20,6 +20,7 @@ public final class Utils {
         put("menu-bar", "QMenuBar");
         put("grid", "QGridLayout");
         put("menubar", "QMenuBar");
+        put("label", "QLabel");
         put("menu", "QMenu");
         put("action", "QAction");
         put("list", "QListWidget");

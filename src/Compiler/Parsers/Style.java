@@ -44,6 +44,10 @@ public final class Style {
         } else this.name = name;
     }
 
+    public boolean isEmpty(){
+        return attributes.isEmpty();
+    }
+
     public void addAll(Style style) {
         this.attributes.putAll(style.getAttributes());
     }
@@ -85,8 +89,8 @@ public final class Style {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (!attributes.isEmpty()) {
-            sb.append(String.format("\n\t\t\t%s", component));
-            if (!name.isEmpty()) sb.append(String.format("#%s", name));
+            sb.append(String.format("%s", component));
+            if (!name.isEmpty() && !name.equals(component)) sb.append(String.format("#%s", name));
             if (!subControl.isEmpty()) sb.append(String.format("::%s", subControl));
             for (String nameAttribute : nameAttributes) sb.append(String.format(":%s", nameAttribute));
             sb.append(" { ");
