@@ -76,7 +76,7 @@ public final class ComponentParser {
                 component = "layout:" + n;
                 break;
             case "label":
-                n  = methodName(name, methods, "", nodeMap);
+                n  = methodName(name, methods, node.getTextContent(), nodeMap);
                 styles.Label(n, stylesSheet, sb, nodeMap);
                 functions.Label(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
@@ -152,7 +152,13 @@ public final class ComponentParser {
                 n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
                 children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
                 break;
-
+            case "splitter":
+                n = methodName(name, methods, "", nodeMap);
+                styles.Splitter(n, stylesSheet, sb, nodeMap);
+                functions.Splitter(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
         }
         return component;
     }

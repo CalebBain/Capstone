@@ -225,6 +225,24 @@ public final class InlineStyleParser {
         Frame(n, sb, nodeMap);
     }
 
+    public void Splitter(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
+        Style style = new Style(n, "QSplitter");
+        Utils.setName(n, sb);
+        if(!(prop = Utils.check("orientation", nodeMap)).isEmpty()){
+            switch(prop){
+                case "vertical": value = "Vertical"; break;
+                case "horizontal": value = "Horizontal"; break;
+            }
+            Utils.tryEmptyAppend(n, value, "%s.setOrientation(Qt.Orientation.%s);\n", sb);
+        }
+        Utils.tryBoolean(n, "resizeable", "%s.setOpaqueResize(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "handle-width", "%s.setHandleWidth(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "rubber-band", "%s.setRubberBand(%s);\n", sb, nodeMap);
+        setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QLCDNumber", style);
+        Frame(n, sb, nodeMap);
+    }
+
     public void Frame(String n, StringBuilder sb, NamedNodeMap nodeMap){
         if(!(prop = Utils.check("shadow", nodeMap)).isEmpty()){
             switch (prop) {

@@ -87,4 +87,8 @@ public final class FunctionParser {
         MakeFunc(n + ".triggered", "method", sb, nodeMap);
     }
 
+    public void Splitter(String n, StringBuilder sb, NamedNodeMap nodeMap) {
+        MakeFunc("" + n + ".splitterMoved.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        Widget(n, sb, nodeMap);
+    }
 }

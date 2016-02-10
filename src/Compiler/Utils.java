@@ -25,6 +25,7 @@ public final class Utils {
         put("action", "QAction");
         put("list", "QListWidget");
         put("section", "QWidget");
+        put("splitter", "QSplitter");
     }};
 
     public static boolean tryDouble(String value) {
