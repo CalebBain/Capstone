@@ -113,9 +113,8 @@ public final class ComponentParser {
                 break;
             case "grid":
                 n  = methodName(name, methods, "", nodeMap);
-                Style style = new Style(n, "QGridLayout");
-                if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
-                styles.setStyle(style, nodeMap);
+                styles.Grid(n, stylesSheet, sb, nodeMap);
+                functions.WidgetFunctions(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;

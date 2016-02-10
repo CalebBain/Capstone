@@ -22,7 +22,7 @@ public final class FunctionParser {
         MakeFunc(name + ".sliderPressed", "on-press", sb, nodeMap);
         MakeFunc(name + ".actionTriggered", "on-action-trigger", sb, nodeMap);
         MakeFunc(name + ".actionTriggered", "on-range-change", sb, nodeMap);
-        onWidgetFunctions(name, sb, nodeMap);
+        WidgetFunctions(name, sb, nodeMap);
     }
 
     public void CheckBoxFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
@@ -35,12 +35,7 @@ public final class FunctionParser {
         MakeFunc(name + ".released", "on-release", sb, nodeMap);
         MakeFunc(name + ".pressed", "on-press", sb, nodeMap);
         MakeFunc(name + ".toggled", "on-toggle", sb, nodeMap);
-        onWidgetFunctions(name, sb, nodeMap);
-    }
-
-    public void ColumnViewFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(n + ".updatePreviewWidget", "on-preview-update", sb, nodeMap);
-        onAbstractItemViewFunctions(n, sb, nodeMap);
+        WidgetFunctions(name, sb, nodeMap);
     }
 
     public void onAbstractItemViewFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
@@ -50,13 +45,13 @@ public final class FunctionParser {
         MakeFunc(name + ".activated", "on-activate", sb, nodeMap);
         MakeFunc(name + ".entered", "on-enter", sb, nodeMap);
         MakeFunc(name + ".viewportEntered", "on-viewport-enter", sb, nodeMap);
-        onWidgetFunctions(name, sb, nodeMap);
+        WidgetFunctions(name, sb, nodeMap);
     }
 
     public void MenuBarFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".hovered", "on-hover", sb, nodeMap);
         MakeFunc(n + ".triggered", "on-trigger", sb, nodeMap);
-        onWidgetFunctions(n, sb, nodeMap);
+        WidgetFunctions(n, sb, nodeMap);
     }
 
     public void MenuFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
@@ -64,21 +59,21 @@ public final class FunctionParser {
         MakeFunc(n + ".aboutToShow", "on-show", sb, nodeMap);
         MakeFunc(n + ".hovered", "on-hover", sb, nodeMap);
         MakeFunc(n + ".triggered", "on-trigger", sb, nodeMap);
-        onWidgetFunctions(n, sb, nodeMap);
+        WidgetFunctions(n, sb, nodeMap);
     }
 
     public void WindowFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
         MakeFunc(n + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
-        onWidgetFunctions(n, sb, nodeMap);
+        WidgetFunctions(n, sb, nodeMap);
     }
 
     public void NumberFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc("" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
-        onWidgetFunctions(n, sb, nodeMap);
+        WidgetFunctions(n, sb, nodeMap);
     }
 
-    public void onWidgetFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
+    public void WidgetFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".customContextMenuRequested", "on-custom-context-menu-request", sb, nodeMap);
     }
 
