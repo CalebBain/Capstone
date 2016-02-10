@@ -14,6 +14,13 @@ final class ChildParser {
             case "label" : LabelChild(name, component, child, sb); break;
             case "section" : WidgetChild(name, component, child, sb); break;
             case "splitter" : SplitChild(name, component, child, sb); break;
+            case "List" : ListChild(name, component, child, sb); break;
+        }
+    }
+
+    private void ListChild(String name, String component, String child, StringBuilder sb) {
+        switch (component){
+            case "item" : sb.append(String.format("%s.addItem(%s);\n", name, child)); break;
         }
     }
 

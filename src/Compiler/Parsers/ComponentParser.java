@@ -131,7 +131,9 @@ public final class ComponentParser {
             case "list":
                 n = methodName(name, methods, "", nodeMap);
                 styles.List(n, stylesSheet, sb, nodeMap);
+                functions.list(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
                 break;
             case "button":
                 n = methodName(name, methods, node.getTextContent(), nodeMap);

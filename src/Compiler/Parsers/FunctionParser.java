@@ -15,6 +15,40 @@ public final class FunctionParser {
         }
     }
 
+    public void list(String n, StringBuilder sb, NamedNodeMap nodeMap) {
+        MakeFunc(n + ".currentItemChanged", "on-current-item-change", sb, nodeMap);
+        MakeFunc(n + ".currentRowChanged", "on-current-row-change", sb, nodeMap);
+        MakeFunc(n + ".currentTextChanged", "on-current-text-change", sb, nodeMap);
+        MakeFunc(n + ".itemActivated", "on-active-item", sb, nodeMap);
+        MakeFunc(n + ".itemChanged", "on-item-change", sb, nodeMap);
+        MakeFunc(n + ".itemClicked", "on-item-click", sb, nodeMap);
+        MakeFunc(n + ".itemDoubleClicked", "on-item-double-click", sb, nodeMap);
+        MakeFunc(n + ".itemEntered", "on-item-enter", sb, nodeMap);
+        MakeFunc(n + ".itemPressed", "on-item-press", sb, nodeMap);
+        MakeFunc(n + ".itemSelectionChanged", "on-item-selection-change", sb, nodeMap);
+        ListView(n, sb, nodeMap);
+    }
+
+    private void ListView(String n, StringBuilder sb, NamedNodeMap nodeMap) {
+        MakeFunc(n + ".indexesMoved", Utils.check("on-index-move", nodeMap), sb, nodeMap);
+        AbstractItemView(n, sb, nodeMap);
+    }
+
+    protected void CheckBox(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc(n + ".stateChanged", Utils.check("on-state-change", nodeMap), sb, nodeMap);
+        AbstractItemView(n, sb, nodeMap);
+    }
+
+    protected void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc(name + ".clicked", "on-click", sb, nodeMap);
+        MakeFunc(name + ".pressed", "on-press", sb, nodeMap);
+        MakeFunc(name + ".doubleClicked", "on-double-click", sb, nodeMap);
+        MakeFunc(name + ".activated", "on-activate", sb, nodeMap);
+        MakeFunc(name + ".entered", "on-enter", sb, nodeMap);
+        MakeFunc(name + ".viewportEntered", "on-viewport-enter", sb, nodeMap);
+        Widget(name, sb, nodeMap);
+    }
+
     protected void AbstractSlider(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".valueChanged", "on-value-change", sb, nodeMap);
         MakeFunc(name + ".sliderReleased", "on-release", sb, nodeMap);
@@ -25,26 +59,11 @@ public final class FunctionParser {
         Widget(name, sb, nodeMap);
     }
 
-    protected void CheckBox(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(n + ".stateChanged", Utils.check("on-state-change", nodeMap), sb, nodeMap);
-        AbstractItemView(n, sb, nodeMap);
-    }
-
     protected void AbstractButton(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".clicked", "on-click", sb, nodeMap);
         MakeFunc(name + ".released", "on-release", sb, nodeMap);
         MakeFunc(name + ".pressed", "on-press", sb, nodeMap);
         MakeFunc(name + ".toggled", "on-toggle", sb, nodeMap);
-        Widget(name, sb, nodeMap);
-    }
-
-    protected void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(name + ".clicked", "on-click", sb, nodeMap);
-        MakeFunc(name + ".pressed", "on-press", sb, nodeMap);
-        MakeFunc(name + ".doubleClicked", "on-double-click", sb, nodeMap);
-        MakeFunc(name + ".activated", "on-activate", sb, nodeMap);
-        MakeFunc(name + ".entered", "on-enter", sb, nodeMap);
-        MakeFunc(name + ".viewportEntered", "on-viewport-enter", sb, nodeMap);
         Widget(name, sb, nodeMap);
     }
 
@@ -69,13 +88,18 @@ public final class FunctionParser {
     }
 
     protected void Number(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc("" + n + ".overflow.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".overflow.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
         Widget(n, sb, nodeMap);
     }
 
     protected void Label(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc("" + n + ".linkActivated.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
-        MakeFunc("" + n + ".linkHovered.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".linkActivated.connect(", Utils.check("on-active", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".linkHovered.connect(", Utils.check("on-hover", nodeMap), sb, nodeMap);
+        Widget(n, sb, nodeMap);
+    }
+
+    public void Splitter(String n, StringBuilder sb, NamedNodeMap nodeMap) {
+        MakeFunc(n + ".splitterMoved.connect(", Utils.check("on-move", nodeMap), sb, nodeMap);
         Widget(n, sb, nodeMap);
     }
 
@@ -85,10 +109,5 @@ public final class FunctionParser {
 
     protected void Action(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".triggered", "method", sb, nodeMap);
-    }
-
-    public void Splitter(String n, StringBuilder sb, NamedNodeMap nodeMap) {
-        MakeFunc("" + n + ".splitterMoved.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
-        Widget(n, sb, nodeMap);
     }
 }
