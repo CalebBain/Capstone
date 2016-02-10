@@ -14,6 +14,7 @@ public final class InlineStyleParser {
 
     public void List(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QListWidget");
+        Utils.setName(n, sb);
         Utils.tryBoolean(n, "sorting", "%s.setSortingEnabled(%s);\n", sb, nodeMap);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QListView", style);
         setStyle(style, nodeMap);
@@ -159,6 +160,7 @@ public final class InlineStyleParser {
 
     public void LCDNumber(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QLCDNumber");
+        Utils.setName(n, sb);
         Utils.tryCapitalize(n, "segment-style", "%s.setSegmentStyle(QLCDNumber.SegmentStyle.%s);\n", sb, nodeMap);
         Utils.tryCapitalize(n, "mode", "%s.setMode(QLCDNumber.Mode.%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "small-decimal-point", "%s.setSmallDecimalPoint(%s);\n", sb, nodeMap);
@@ -171,6 +173,7 @@ public final class InlineStyleParser {
 
     public void Label(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QLabel");
+        Utils.setName(n, sb);
         if (!(prop = Utils.check("align", nodeMap)).isEmpty()){
             switch (prop) {
                 case "left": value = "AlignLeft"; break;
@@ -264,6 +267,7 @@ public final class InlineStyleParser {
 
     public void Slider(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QSlider");
+        Utils.setName(n, sb);
         if(!(prop = Utils.check("tick-position", nodeMap)).isEmpty()){
             sb.append(String.format("%s.setTickPosition(QSlider.TickPosition.", n));
             switch(prop){
@@ -312,6 +316,7 @@ public final class InlineStyleParser {
 
     public void PushButton(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QPushButton");
+        Utils.setName(n, sb);
         Utils.tryCheck(n, "shortcut", "%s.setShortcut(new QKeySequence(tr(%s));\n", sb, nodeMap);
         Utils.tryBoolean(n, "default", "%s.setDefault(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "flat", "%s.setFlat(%s);\n", sb, nodeMap);
@@ -322,6 +327,7 @@ public final class InlineStyleParser {
 
     public void RadioButton(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QRadioButton");
+        Utils.setName(n, sb);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QRadioButton", style);
         setStyle(style, nodeMap);
         AbstractButton(n, sb, nodeMap);
@@ -329,6 +335,7 @@ public final class InlineStyleParser {
 
     public void CheckBox(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QCheckBox");
+        Utils.setName(n, sb);
         if(!(prop = Utils.check("check-state", nodeMap)).isEmpty()){
             switch(prop){
                 case "unchecked": value = "Unchecked"; break;
@@ -426,6 +433,7 @@ public final class InlineStyleParser {
 
     public void MenuBar(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QMenuBar");
+        Utils.setName(n, sb);
         setStyle(style, nodeMap);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QMenuBar", style);
         Widget(n, sb, nodeMap);
@@ -433,6 +441,7 @@ public final class InlineStyleParser {
 
     public void Menu(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QMenu");
+        Utils.setName(n, sb);
         Utils.tryCheck(n, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
         Utils.tryCheck(n, "title", "%s.setTitle(\"%s\");\n", "menu", sb, nodeMap);
         Utils.tryBoolean(n, "tear-off", "%s.setTearOffEnabled(%s);\n", sb, nodeMap);
@@ -441,23 +450,12 @@ public final class InlineStyleParser {
         Widget(n, sb, nodeMap);
     }
 
-    public void Grid(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
-        Style style = new Style(n, "QGridLayout");
-        new QGridLayout().setOriginCorner(Qt.Corner.BottomRightCorner);
-        if(!(prop = Utils.check("tool-button-style", nodeMap)).isEmpty()){
-            switch(prop){
-                case "bottom-right": value = "BottomRightCorner"; break;
-                case "bottom-left": value = "BottomLeftCorner"; break;
-                case "top-right": value = "TopRightCorner"; break;
-                case "top-left": value = "TopLeftCorner"; break;
-            }
-            Utils.tryEmptyAppend(n, value, "%s.setToolButtonStyle(Qt.ToolButtonStyle.%s);\n", sb);
-        }
-        Utils.tryValue(n, "spacing", "%s.setSpacing(%s);\n", sb, nodeMap);
-        Utils.tryValue(n, "row-spacing", "%s.setVerticalSpacing(%s);\n", sb, nodeMap);
-        Utils.tryValue(n, "column-spacing", "%s.setHorizontalSpacing(%s);\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
+    public void Section(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QWidget");
+        Utils.setName(n, sb);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
+        Widget(n, sb, nodeMap);
     }
 
     public void Widget(String n, StringBuilder sb, NamedNodeMap nodeMap){
@@ -481,6 +479,25 @@ public final class InlineStyleParser {
         Utils.tryBoolean(n, "mouse-tracking", "%s.setMouseTracking(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "visibility", "%s.setHidden(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "update", "%s.setUpdatesEnabled(%s);\n", sb, nodeMap);
+    }
+
+    public void Grid(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QGridLayout");
+        new QGridLayout().setOriginCorner(Qt.Corner.BottomRightCorner);
+        if(!(prop = Utils.check("tool-button-style", nodeMap)).isEmpty()){
+            switch(prop){
+                case "bottom-right": value = "BottomRightCorner"; break;
+                case "bottom-left": value = "BottomLeftCorner"; break;
+                case "top-right": value = "TopRightCorner"; break;
+                case "top-left": value = "TopLeftCorner"; break;
+            }
+            Utils.tryEmptyAppend(n, value, "%s.setToolButtonStyle(Qt.ToolButtonStyle.%s);\n", sb);
+        }
+        Utils.tryValue(n, "spacing", "%s.setSpacing(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "row-spacing", "%s.setVerticalSpacing(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "column-spacing", "%s.setHorizontalSpacing(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
+        setStyle(style, nodeMap);
     }
 
     public void Action(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){

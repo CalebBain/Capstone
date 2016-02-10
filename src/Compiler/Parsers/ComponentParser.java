@@ -70,8 +70,8 @@ public final class ComponentParser {
         switch (name) {
             case "section":
                 n  = methodName(name, methods, "", nodeMap);
-                styles.Label(n, stylesSheet, sb, nodeMap);
-                functions.Label(n, sb, nodeMap);
+                styles.Section(n, stylesSheet, sb, nodeMap);
+                functions.Widget(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;

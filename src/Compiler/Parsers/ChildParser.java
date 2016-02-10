@@ -12,6 +12,14 @@ final class ChildParser {
             case "menubar" : MenubarChild(name, component, child, sb, nodeMap); break;
             case "menu" : MenuChild(name, component, child, sb, nodeMap); break;
             case "label" : LabelChild(name, component, child, sb); break;
+            case "section" : WidgetChild(name, component, child, sb); break;
+        }
+    }
+
+    private void WidgetChild(String name, String component, String child, StringBuilder sb){
+        switch (component){
+            case "layout" : sb.append(String.format("%s.setLayout(%s);\n", name, child)); break;
+            case "widget" : sb.append(String.format("%s.setParent(%s);\n", name, child)); break;
         }
     }
 

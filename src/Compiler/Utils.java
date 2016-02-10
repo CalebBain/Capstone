@@ -9,7 +9,7 @@ import java.util.Map;
 
 public final class Utils {
 
-    private static Map<String, String> components = new HashMap<String, String>() {{
+    public static Map<String, String> components = new HashMap<String, String>() {{
         put("button", "QPushButton");
         put("window", "QMainWindow");
         put("number", "QLCDNumber");
@@ -135,6 +135,11 @@ public final class Utils {
 
     public static void tryEmptyAppend(String name, String value, String command, StringBuilder sb){
         if(!value.isEmpty()) sb.append(String.format(command, name, value));
+    }
+
+    public static void setName(String n, StringBuilder sb){
+        if(!components.containsKey(n.replaceAll("\\d", "")))
+            sb.append(String.format("%s.setObjectName(\"%s\");\n", n, n));
     }
 
     public static String tryEmpty(String prop, String replacement, List<String> namedComponents, List<String> comps, NamedNodeMap nodeMap){
