@@ -12,12 +12,12 @@ import java.util.Map;
 public final class Assembler {
     public static void main(String[] args) {
         Assembler a = new Assembler();
-        a.input();
+        a.input(args[0]);
     }
 
-    public void input() {
+    private void input(String file) {
         try {
-            File fXmlFile = new File("jaml/index.jaml");
+            File fXmlFile = new File(file);
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
@@ -37,7 +37,7 @@ public final class Assembler {
                     Map<String, String> methodCalls = new HashMap<>();
                     if (methods != null) methodCalls = new SlotParser().Parse(methods);
                     Node window = docElement.getElementsByTagName("window").item(0);
-                    if (window != null) new CodeAssembler().assemble(fXmlFile.getName(), "index", methodCalls, window);
+                    if (window != null) new CodeAssembler().assemble(fXmlFile.getName(), methodCalls, window);
                 }
             }
         } catch (Exception e) {

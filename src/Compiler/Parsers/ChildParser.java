@@ -3,19 +3,19 @@ package Compiler.Parsers;
 import org.w3c.dom.NamedNodeMap;
 import Compiler.Utils;
 
-public final class ChildParser {
+final class ChildParser {
 
-    public void addChild(String name, String layout, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void addChild(String name, String layout, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         switch (layout) {
             case "window": WindowChild(child, component, sb); break;
             case "grid" : GridChild(name, component, child, sb, nodeMap); break;
             case "menubar" : MenubarChild(name, component, child, sb, nodeMap); break;
-            case "menu" : MenuChild(name, component, child, sb , nodeMap); break;
+            case "menu" : MenuChild(name, component, child, sb, nodeMap); break;
             case "label" : LabelChild(name, component, child, sb); break;
         }
     }
 
-    public void LabelChild(String name, String component, String child, StringBuilder sb){
+    private void LabelChild(String name, String component, String child, StringBuilder sb){
         switch (component){
             case "widget" : sb.append(String.format("%s.setBuddy(%s);\n", name, child)); break;
             case "movie" : sb.append(String.format("%s.setMovie(%s);\n", name, child)); break;
@@ -24,7 +24,7 @@ public final class ChildParser {
         }
     }
 
-    public void WindowChild(String name, String component, StringBuilder sb){
+    private void WindowChild(String name, String component, StringBuilder sb){
         switch (component){
             case "layout" : sb.append(String.format("centerWidget.setLayout(%s);\n", name)); break;
             case "widget" : sb.append(String.format("%s.setParent(centerWidget);\n", name)); break;
@@ -32,7 +32,7 @@ public final class ChildParser {
         }
     }
 
-    public void GridChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+    private void GridChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         Utils.capitalize(component);
         sb.append(String.format("%s.add%s(%s, ", name, Utils.capitalize(component), child));
         Number row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
@@ -53,7 +53,7 @@ public final class ChildParser {
         }
     }
 
-    public void MenubarChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+    private void MenubarChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         switch (component){
             case "widget" :
                 sb.append(String.format("%s.setCornerWidget(%s", name, child));
@@ -63,7 +63,8 @@ public final class ChildParser {
                 }
                 sb.append(");\n");
                 break;
-            case "menu" : sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
+            case "menu" :
+                sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
             case "action" :
                 sb.append(String.format("%s.addAction(%s);\n", name, child));
                 Utils.tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
@@ -73,7 +74,7 @@ public final class ChildParser {
         }
     }
 
-    public void MenuChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap) {
+    private void MenuChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap) {
         switch (component){
             case "menu" : sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
             case "action" :
@@ -85,13 +86,6 @@ public final class ChildParser {
                 sb.append(String.format("%s.addSeparator();\n", name));
                 Utils.tryBoolean(name, "collapsible", child, "%s.setSeparatorsCollapsible(%s);\n", sb, nodeMap);
                 break;
-        }
-    }
-
-    public void ColumnViewChild(String name, String component, StringBuilder sb){
-        switch (component){
-            case "window" : case "grid" : break;
-            default: sb.append(String.format("ColumnView.setPreviewWidget((%1s);\n", name)); break;
         }
     }
 }

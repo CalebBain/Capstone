@@ -44,12 +44,12 @@ public final class ComponentParser {
         Style[] styles = temp.toArray(new Style[temp.size()]);
         for(int i = 0; i < styles.length;){
             sb.append(styles[i].toString());
-            if(++i < styles.length) sb.append("\\n\"+\n");
+            if(++i < styles.length) sb.append("\\n\"+\n\"");
         }
         return sb.toString();
     }
 
-    public String nodeLoop(String layoutName, Node node) {
+    private String nodeLoop(String layoutName, Node node) {
         NodeList nodeList = node.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node n = nodeList.item(i);
@@ -60,7 +60,7 @@ public final class ComponentParser {
         return sb.toString();
     }
 
-    public String elementsSwitch(String name, String layoutName, Node node){
+    private String elementsSwitch(String name, String layoutName, Node node){
         String component = "";
         Node parent = node.getParentNode();
         String layout = parent.getNodeName();
@@ -68,6 +68,13 @@ public final class ComponentParser {
         String methods = methodCalls.get(name);
         String n;
         switch (name) {
+            case "section":
+                n  = methodName(name, methods, "", nodeMap);
+                styles.Label(n, stylesSheet, sb, nodeMap);
+                functions.Label(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
             case "label":
                 n  = methodName(name, methods, "", nodeMap);
                 styles.Label(n, stylesSheet, sb, nodeMap);

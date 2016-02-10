@@ -98,7 +98,7 @@ public final class Style {
                 sb.append(String.format("%s:", attribute.getKey()));
                 sb.append(String.format("%s; ", attribute.getValue()));
             }
-            sb.append(" }");
+            sb.append("}");
         }
         return sb.toString();
     }

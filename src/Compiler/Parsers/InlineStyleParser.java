@@ -2,7 +2,7 @@ package Compiler.Parsers;
 
 import Compiler.Utils;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QGridLayout;
 import org.w3c.dom.NamedNodeMap;
 
 import java.util.HashMap;
@@ -443,6 +443,19 @@ public final class InlineStyleParser {
 
     public void Grid(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QGridLayout");
+        new QGridLayout().setOriginCorner(Qt.Corner.BottomRightCorner);
+        if(!(prop = Utils.check("tool-button-style", nodeMap)).isEmpty()){
+            switch(prop){
+                case "bottom-right": value = "BottomRightCorner"; break;
+                case "bottom-left": value = "BottomLeftCorner"; break;
+                case "top-right": value = "TopRightCorner"; break;
+                case "top-left": value = "TopLeftCorner"; break;
+            }
+            Utils.tryEmptyAppend(n, value, "%s.setToolButtonStyle(Qt.ToolButtonStyle.%s);\n", sb);
+        }
+        Utils.tryValue(n, "spacing", "%s.setSpacing(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "row-spacing", "%s.setVerticalSpacing(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "column-spacing", "%s.setHorizontalSpacing(%s);\n", sb, nodeMap);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
         setStyle(style, nodeMap);
     }

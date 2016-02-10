@@ -24,6 +24,7 @@ public final class Utils {
         put("menu", "QMenu");
         put("action", "QAction");
         put("list", "QListWidget");
+        put("section", "QWidget");
     }};
 
     public static boolean tryDouble(String value) {
@@ -68,15 +69,6 @@ public final class Utils {
         }
     }
 
-    public static boolean check(String keyword, String check, NamedNodeMap nodeMap) {
-        try {
-            Node word = nodeMap.getNamedItem(keyword);
-            return ((word != null) ? word.getNodeValue() : "").equals(check);
-        } catch (NullPointerException e) {
-            return false;
-        }
-    }
-
     public static void addAttribute(Style style, NamedNodeMap nodeMap, String attribute) {
         String prop = check(attribute, nodeMap);
         try {
@@ -109,14 +101,6 @@ public final class Utils {
         String p;
         if (Utils.tryInteger(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
         else if(Utils.tryDouble(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
-    }
-
-    public static void tryValue(String name, String prop, String command, String command1, String command2, StringBuilder sb, NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryInteger(p = Utils.check(prop, nodeMap))) sb.append(String.format(command1, name, p));
-        else if(Utils.tryDouble(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
-        else sb.append(String.format(command2, name, p));
-
     }
 
     public static Number tryValue(String prop, String command, Number replacement, StringBuilder sb, NamedNodeMap nodeMap){
