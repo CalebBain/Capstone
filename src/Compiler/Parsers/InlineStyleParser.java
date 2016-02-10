@@ -1,8 +1,12 @@
 package Compiler.Parsers;
 
 import Compiler.Utils;
+import com.trolltech.qt.QNativePointer;
 import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QBrush;
 import com.trolltech.qt.gui.QGridLayout;
+import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QListWidgetItem;
 import org.w3c.dom.NamedNodeMap;
 
 import java.util.HashMap;
@@ -501,7 +505,7 @@ public final class InlineStyleParser {
 
     public void Grid(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QGridLayout");
-        new QGridLayout().setOriginCorner(Qt.Corner.BottomRightCorner);
+        Utils.setName(n, sb);
         if(!(prop = Utils.check("tool-button-style", nodeMap)).isEmpty()){
             switch(prop){
                 case "bottom-right": value = "BottomRightCorner"; break;
@@ -514,6 +518,70 @@ public final class InlineStyleParser {
         Utils.tryValue(n, "spacing", "%s.setSpacing(%s);\n", sb, nodeMap);
         Utils.tryValue(n, "row-spacing", "%s.setVerticalSpacing(%s);\n", sb, nodeMap);
         Utils.tryValue(n, "column-spacing", "%s.setHorizontalSpacing(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
+        setStyle(style, nodeMap);
+    }
+
+    public void Item(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
+        Style style = new Style(n, "QListWidgetItem");
+        Utils.setName(n, sb);
+        boolean hasFlags = false;
+        if(!(prop = Utils.check("selectable", nodeMap)).isEmpty()) {
+            sb.append(String.format("%s.setFlags(Qt.ItemFlag.ItemIsSelectable", n));
+            hasFlags = true;
+        }
+        if(!(prop = Utils.check("editable", nodeMap)).isEmpty()) {
+            if(!hasFlags) sb.append(String.format("%s.setFlags(Qt.ItemFlag.ItemIsEditable", n));
+            else sb.append(", Qt.ItemFlag.ItemIsEditable");
+            hasFlags = true;
+        }
+        if(!(prop = Utils.check("draggable", nodeMap)).isEmpty()) {
+            if(!hasFlags) sb.append(String.format("%s.setFlags(Qt.ItemFlag.ItemIsDragEnabled", n));
+            else sb.append(", Qt.ItemFlag.ItemIsEditable");
+            hasFlags = true;
+        }
+        if(!(prop = Utils.check("droppable", nodeMap)).isEmpty()) {
+            if(!hasFlags) sb.append(String.format("%s.setFlags(Qt.ItemFlag.ItemIsDropEnabled", n));
+            else sb.append(", Qt.ItemFlag.ItemIsDropEnabled");
+            hasFlags = true;
+        }
+        if(!(prop = Utils.check("checkable", nodeMap)).isEmpty()) {
+            if(!hasFlags) sb.append(String.format("%s.setFlags(Qt.ItemFlag.ItemIsCheckable", n));
+            else sb.append(", Qt.ItemFlag.ItemIsCheckable");
+            hasFlags = true;
+        }
+        if(!(prop = Utils.check("checked", nodeMap)).isEmpty()) {
+            if(!hasFlags) sb.append(String.format("%s.setFlags(Qt.ItemFlag.ItemIsEnabled", n));
+            else sb.append(", Qt.ItemFlag.ItemIsEnabled");
+            hasFlags = true;
+        }
+        if(!(prop = Utils.check("tri-state", nodeMap)).isEmpty()) {
+            if(!hasFlags) sb.append(String.format("%s.setFlags(Qt.ItemFlag.ItemIsTristate", n));
+            else sb.append(", Qt.ItemFlag.ItemIsTristate");
+            hasFlags = true;
+        }
+        if(hasFlags) sb.append("\");\n");
+        if (!(prop = Utils.check("align", nodeMap)).isEmpty()){
+            switch (prop) {
+                case "left": value = "1"; break;
+                case "right": value = "2"; break;
+                case "horizontal-center": value = "4"; break;
+                case "justify": value = "8"; break;
+                case "absolute": value = "10"; break;
+                case "top": value = "20"; break;
+                case "bottom": value = "40"; break;
+                case "vertical-center": value = "80"; break;
+                case "center": value = "84"; break;
+            }
+            Utils.tryEmptyAppend(n, value, "%s.setTextAlignment(%s);\n",sb);
+        }
+        Utils.tryBoolean(n, "hidden", "%s.setHidden(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "selected", "%s.setSelected(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "status-tip", "%s.setStatusTip(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "text", "%s.setText(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "icon", "%s.setIcon(new QIcon(\"%s\"));\n", sb, nodeMap);
+        Utils.tryCheck(n, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "what-is-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
         setStyle(style, nodeMap);
     }
@@ -562,8 +630,8 @@ public final class InlineStyleParser {
         Utils.tryCheck(n, "shortcut", "%s.setShortcut(new QKeySequence(tr(\"%s\")));\n", sb, nodeMap);
         Utils.tryCheck(n, "status-tip", "%s.setStatusTip(%s);\n", sb, nodeMap);
         Utils.tryCheck(n, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
-        Utils.tryCheck(n, "whats-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
-        Utils.tryCheck(n, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "what-is-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "icon", "%s.setIcon(new QIcon(\"%s\"));\n", sb, nodeMap);
         Utils.tryCheck(n, "icon-Text", "%s.setIconText(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);

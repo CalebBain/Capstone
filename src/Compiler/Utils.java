@@ -26,6 +26,7 @@ public final class Utils {
         put("list", "QListWidget");
         put("section", "QWidget");
         put("splitter", "QSplitter");
+        put("item", "QListWidgetItem");
     }};
 
     public static boolean tryDouble(String value) {
