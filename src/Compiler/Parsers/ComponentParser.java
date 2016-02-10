@@ -7,18 +7,6 @@ import org.w3c.dom.NodeList;
 
 import java.util.*;
 
-/* notes
-*   this is the second implantation of the code generator
-*
-*   the first one relied on the component classes and that interpreted the jaml
-*
-*   this one compiles the code into a java qt code and runs it
-*       I chose to move to this because it was
-*
-*
-*
-* */
-
 public final class ComponentParser {
     private final InlineStyleParser styles = new InlineStyleParser();
     private final EventParser events = new EventParser();
@@ -46,7 +34,7 @@ public final class ComponentParser {
         }
         sb.append(";\n");
         styles.MainWindow(name, stylesSheet, sb, nodeMap);
-        functions.WindowFunctions(name, sb, nodeMap);
+        functions.Window(name, sb, nodeMap);
         nodeLoop("window", node);
     }
 
@@ -58,7 +46,6 @@ public final class ComponentParser {
             sb.append(styles[i].toString());
             if(++i < styles.length) sb.append("\\n\"+\n");
         }
-
         return sb.toString();
     }
 
@@ -83,38 +70,39 @@ public final class ComponentParser {
         switch (name) {
             case "label":
                 n  = methodName(name, methods, "", nodeMap);
-                //styles.CheckBox(n, stylesSheet, sb, nodeMap);
-                //functions.CheckBoxFunctions(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "layout:" + n, n, sb, nodeMap);
+                styles.Label(n, stylesSheet, sb, nodeMap);
+                functions.Label(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
                 break;
             case "check-box":
                 n  = methodName(name, methods, "", nodeMap);
                 styles.CheckBox(n, stylesSheet, sb, nodeMap);
-                functions.CheckBoxFunctions(n, sb, nodeMap);
+                functions.CheckBox(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
             case "radio":
                 n  = methodName(name, methods, "", nodeMap);
                 styles.RadioButton(n, stylesSheet, sb, nodeMap);
-                functions.onAbstractButtonFunctions(n, sb, nodeMap);
+                functions.AbstractButton(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
             case "number":
                 n  = methodName(name, methods, "", nodeMap);
                 styles.LCDNumber(n, stylesSheet, sb, nodeMap);
-                functions.NumberFunctions(n, sb, nodeMap);
+                functions.Number(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
             case "slider":
                 n  = methodName(name, methods, "", nodeMap);
                 styles.Slider(n, stylesSheet, sb, nodeMap);
-                functions.onAbstractSliderFunctions(n, sb, nodeMap);
+                functions.AbstractSlider(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
             case "grid":
                 n  = methodName(name, methods, "", nodeMap);
                 styles.Grid(n, stylesSheet, sb, nodeMap);
-                functions.WidgetFunctions(n, sb, nodeMap);
+                functions.Widget(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
@@ -122,14 +110,14 @@ public final class ComponentParser {
                 n = "menubar";
                 events.Events(file, n, name, "", methods, sb, nodeMap);
                 styles.MenuBar(n, stylesSheet, sb, nodeMap);
-                functions.MenuBarFunctions(n, sb, nodeMap);
+                functions.MenuBar(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "menubar", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
             case "menu":
                 n  = methodName(name, methods, "", nodeMap);
                 styles.Menu(n, stylesSheet, sb, nodeMap);
-                functions.MenuFunctions(n, sb, nodeMap);
+                functions.Menu(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "menu", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
@@ -141,7 +129,7 @@ public final class ComponentParser {
             case "button":
                 n = methodName(name, methods, node.getTextContent(), nodeMap);
                 styles.PushButton(n, stylesSheet, sb, nodeMap);
-                functions.onAbstractButtonFunctions(n, sb, nodeMap);
+                functions.AbstractButton(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
             case "action":
@@ -149,7 +137,7 @@ public final class ComponentParser {
                 String text = Utils.tryEmpty("text", "action", nodeMap);
                 events.ActionEvents(file, n, name, text, methods, sb, nodeMap);
                 styles.Action(n, stylesSheet, sb, nodeMap);
-                functions.ActionFunctions(n, sb, nodeMap);
+                functions.Action(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "action", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;

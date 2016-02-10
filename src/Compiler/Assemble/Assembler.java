@@ -1,8 +1,6 @@
 package Compiler.Assemble;
 
 import Compiler.Parsers.SlotParser;
-import Compiler.Parsers.StyleParser;
-import Compiler.Parsers.Style;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;

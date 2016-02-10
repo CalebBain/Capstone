@@ -7,14 +7,24 @@ public final class ChildParser {
 
     public void addChild(String name, String layout, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         switch (layout) {
-            case "window": WindowChild(child, sb, component); break;
+            case "window": WindowChild(child, component, sb); break;
             case "grid" : GridChild(name, component, child, sb, nodeMap); break;
             case "menubar" : MenubarChild(name, component, child, sb, nodeMap); break;
-            case "menu" : MenuChild(name, component, child,sb , nodeMap); break;
+            case "menu" : MenuChild(name, component, child, sb , nodeMap); break;
+            case "label" : LabelChild(name, component, child, sb); break;
         }
     }
 
-    public void WindowChild(String name, StringBuilder sb, String component){
+    public void LabelChild(String name, String component, String child, StringBuilder sb){
+        switch (component){
+            case "widget" : sb.append(String.format("%s.setBuddy(%s);\n", name, child)); break;
+            case "movie" : sb.append(String.format("%s.setMovie(%s);\n", name, child)); break;
+            case "picture" : sb.append(String.format("%s.setPicture(%s);\n", name, child)); break;
+            case "drawing" : sb.append(String.format("%s.setPixmap(%s);\n", name, child)); break;
+        }
+    }
+
+    public void WindowChild(String name, String component, StringBuilder sb){
         switch (component){
             case "layout" : sb.append(String.format("centerWidget.setLayout(%s);\n", name)); break;
             case "widget" : sb.append(String.format("%s.setParent(centerWidget);\n", name)); break;
@@ -25,8 +35,8 @@ public final class ChildParser {
     public void GridChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         Utils.capitalize(component);
         sb.append(String.format("%s.add%s(%s, ", name, Utils.capitalize(component), child));
-        int row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
-        int col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
+        Number row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
+        Number col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
         Utils.tryValue("row-span", "%2s, ", row, sb, nodeMap);
         Utils.tryValue("column-span", "%2s, ", col, sb, nodeMap);
         sb.append("Qt.AlignmentFlag.");

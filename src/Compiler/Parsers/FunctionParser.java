@@ -15,69 +15,75 @@ public final class FunctionParser {
         }
     }
 
-    public void onAbstractSliderFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void AbstractSlider(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".valueChanged", "on-value-change", sb, nodeMap);
         MakeFunc(name + ".sliderReleased", "on-release", sb, nodeMap);
         MakeFunc(name + ".sliderMoved", "on-move", sb, nodeMap);
         MakeFunc(name + ".sliderPressed", "on-press", sb, nodeMap);
         MakeFunc(name + ".actionTriggered", "on-action-trigger", sb, nodeMap);
         MakeFunc(name + ".actionTriggered", "on-range-change", sb, nodeMap);
-        WidgetFunctions(name, sb, nodeMap);
+        Widget(name, sb, nodeMap);
     }
 
-    public void CheckBoxFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void CheckBox(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".stateChanged", Utils.check("on-state-change", nodeMap), sb, nodeMap);
-        onAbstractItemViewFunctions(n, sb, nodeMap);
+        AbstractItemView(n, sb, nodeMap);
     }
 
-    public void onAbstractButtonFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void AbstractButton(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".clicked", "on-click", sb, nodeMap);
         MakeFunc(name + ".released", "on-release", sb, nodeMap);
         MakeFunc(name + ".pressed", "on-press", sb, nodeMap);
         MakeFunc(name + ".toggled", "on-toggle", sb, nodeMap);
-        WidgetFunctions(name, sb, nodeMap);
+        Widget(name, sb, nodeMap);
     }
 
-    public void onAbstractItemViewFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void AbstractItemView(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".clicked", "on-click", sb, nodeMap);
         MakeFunc(name + ".pressed", "on-press", sb, nodeMap);
         MakeFunc(name + ".doubleClicked", "on-double-click", sb, nodeMap);
         MakeFunc(name + ".activated", "on-activate", sb, nodeMap);
         MakeFunc(name + ".entered", "on-enter", sb, nodeMap);
         MakeFunc(name + ".viewportEntered", "on-viewport-enter", sb, nodeMap);
-        WidgetFunctions(name, sb, nodeMap);
+        Widget(name, sb, nodeMap);
     }
 
-    public void MenuBarFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void MenuBar(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".hovered", "on-hover", sb, nodeMap);
         MakeFunc(n + ".triggered", "on-trigger", sb, nodeMap);
-        WidgetFunctions(n, sb, nodeMap);
+        Widget(n, sb, nodeMap);
     }
 
-    public void MenuFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void Menu(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".aboutToHide", "on-hide", sb, nodeMap);
         MakeFunc(n + ".aboutToShow", "on-show", sb, nodeMap);
         MakeFunc(n + ".hovered", "on-hover", sb, nodeMap);
         MakeFunc(n + ".triggered", "on-trigger", sb, nodeMap);
-        WidgetFunctions(n, sb, nodeMap);
+        Widget(n, sb, nodeMap);
     }
 
-    public void WindowFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void Window(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
         MakeFunc(n + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
-        WidgetFunctions(n, sb, nodeMap);
+        Widget(n, sb, nodeMap);
     }
 
-    public void NumberFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc("" + n + ".overflow.connect(", Utils.check("on - overflow", nodeMap), sb, nodeMap);
-        WidgetFunctions(n, sb, nodeMap);
+    protected void Number(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc("" + n + ".overflow.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        Widget(n, sb, nodeMap);
     }
 
-    public void WidgetFunctions(String name, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void Label(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc("" + n + ".linkActivated.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        MakeFunc("" + n + ".linkHovered.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        Widget(n, sb, nodeMap);
+    }
+
+    protected void Widget(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".customContextMenuRequested", "on-custom-context-menu-request", sb, nodeMap);
     }
 
-    public void ActionFunctions(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void Action(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".triggered", "method", sb, nodeMap);
     }
 
