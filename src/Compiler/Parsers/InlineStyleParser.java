@@ -14,8 +14,8 @@ public final class InlineStyleParser {
         Style style = new Style(n, "QListWidget");
         Utils.setName(n, sb);
         Utils.tryBoolean(n, "sorting", "%s.setSortingEnabled(%s);\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QListView", style);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QListView", style);
         ListView(n, sb, nodeMap);
     }
 
@@ -295,8 +295,8 @@ public final class InlineStyleParser {
             Utils.tryEmptyAppend(n, value, "%s.setTickPosition(QSlider.TickPosition.%s);\n", sb);
         }
         Utils.tryValue(n, "interval", "%s.setTickInterval(%s);\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
         AbstractSlider(n, sb, nodeMap);
     }
 
@@ -336,16 +336,16 @@ public final class InlineStyleParser {
         Utils.tryCheck(n, "shortcut", "%s.setShortcut(new QKeySequence(tr(\"%s\"));\n", sb, nodeMap);
         Utils.tryBoolean(n, "default", "%s.setDefault(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "flat", "%s.setFlat(%s);\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QPushButton", style);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QPushButton", style);
         AbstractButton(n, sb, nodeMap);
     }
 
     public void RadioButton(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QRadioButton");
         Utils.setName(n, sb);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QRadioButton", style);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QRadioButton", style);
         AbstractButton(n, sb, nodeMap);
     }
 
@@ -363,8 +363,8 @@ public final class InlineStyleParser {
         Utils.tryBoolean(n, "checkable", "%s.setTristate(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "default", "%s.setDefaultUp(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "native-menubar", "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QCheckBox", style);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QCheckBox", style);
         AbstractButton(n, sb, nodeMap);
     }
 
@@ -513,8 +513,8 @@ public final class InlineStyleParser {
         Utils.tryBoolean(n, "modified", "%s.setModified(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "read-only", "%s.setReadOnly(%s);\n", sb, nodeMap);
         Utils.tryValue(n, "max-length", "%s.setMaxLength(%s);\n", sb, nodeMap);
-        if (!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
         setStyle(style, nodeMap);
+        if (!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
         Widget(n, sb, nodeMap);
     }
 
@@ -538,8 +538,8 @@ public final class InlineStyleParser {
         Utils.tryCheck(n, "title", "%s.setTitle(\"%s\");\n", sb, nodeMap);
         Utils.tryBoolean(n, "flat", "%s.setFlat(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
-        if (!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
         setStyle(style, nodeMap);
+        if (!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
         Widget(n, sb, nodeMap);
     }
 
@@ -581,8 +581,8 @@ public final class InlineStyleParser {
         Utils.tryValue(n, "spacing", "%s.setSpacing(%s);\n", sb, nodeMap);
         Utils.tryValue(n, "row-spacing", "%s.setVerticalSpacing(%s);\n", sb, nodeMap);
         Utils.tryValue(n, "column-spacing", "%s.setHorizontalSpacing(%s);\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
     }
 
     public void Item(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
@@ -645,8 +645,8 @@ public final class InlineStyleParser {
         Utils.tryCheck(n, "icon", "%s.setIcon(new QIcon(\"%s\"));\n", sb, nodeMap);
         Utils.tryCheck(n, "tool-tip", "%s.setToolTip(\"%s\");\n", sb, nodeMap);
         Utils.tryCheck(n, "what-is-this", "%s.setWhatsThis(\"%s\");\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
     }
 
     public void Action(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
@@ -700,8 +700,8 @@ public final class InlineStyleParser {
         Utils.tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "icon-visible", "%s.setIconVisibleMenu(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "is-separator", "%s.setSeparator(%s);\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
         setStyle(style, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
     }
 
     public void setStyle(Style style, NamedNodeMap nodeMap) {

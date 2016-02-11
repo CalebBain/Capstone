@@ -37,7 +37,7 @@ public final class Assembler {
                     Map<String, String> methodCalls = new HashMap<>();
                     if (methods != null) methodCalls = new SlotParser().Parse(methods);
                     Node window = docElement.getElementsByTagName("window").item(0);
-                    if (window != null) new CodeAssembler().assemble(fXmlFile.getName(), methodCalls, window);
+                    if (window != null) new Compiler().assemble(fXmlFile.getName(), methodCalls, window);
                 }
             }
         } catch (Exception e) {

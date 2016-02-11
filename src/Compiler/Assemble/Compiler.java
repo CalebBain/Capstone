@@ -5,19 +5,20 @@ import org.w3c.dom.Node;
 
 import javax.tools.*;
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.*;
 
-public final class CodeAssembler {
+public final class Compiler {
 
-    public CodeAssembler() {
+    public Compiler() {
     }
 
     public void assemble(String file, Map<String, String> methodCalls, Node node){
         StringBuilder sb = new StringBuilder();
         sb.append("package GeneratedCode;\n");
         sb.append("import com.trolltech.qt.core.*;\nimport com.trolltech.qt.gui.*;\n");
-        sb.append("public class qt extends QApplication{\npublic qt() { super(new String[0]);\nrun();\n}\n");
+        sb.append("public class qt extends QApplication{\npublic qt(boolean run) { super(new String[0]);\nif(run) run();\n}\n");
         sb.append("public void run() {\n");
         ComponentParser parser = new ComponentParser(file, methodCalls, sb, node);
         String styles = parser.StyleSheet();
@@ -25,18 +26,36 @@ public final class CodeAssembler {
         sb.append("window.show();\n");
         sb.append("this.exec();\n}\n}");
         try(PrintWriter writer = new PrintWriter("src/GeneratedCode/qt.java", "UTF-8")) {
+            File f = new File("src/GeneratedCode/qt.java");
+            if(f.exists()) f.delete();
             String Code = sb.toString();
+            System.out.println("Rewriting");
+            writer.println(Code);
             System.out.println(Code);
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             JavaFileObject qtCode = new InMemoryJavaFileObject("GeneratedCode.qt", Code);
             Iterable<? extends JavaFileObject> files = Arrays.asList(qtCode);
             final Iterable<String> options = Arrays.asList("-d", "out/production/JAML/GeneratedCode/");
             JavaCompiler.CompilationTask task = compiler.getTask(null, null, null, options, null, files);
-            if(task.call()){
-                writer.println(Code);
+            if (task.call()) {
                 Class<?> c = Class.forName("GeneratedCode.qt");
-                c.newInstance();
+                Constructor ctor = c.getDeclaredConstructor(Boolean.TYPE);
+                ctor.newInstance(true);
             }
+            /*if (task.call()) {
+                System.out.println("Running");
+                Class<?> c = Class.forName("GeneratedCode.qt");
+                Constructor ctor = c.getDeclaredConstructor(Boolean.TYPE);
+                ctor.newInstance(true);
+            }
+            /*if(task.call()){
+
+                Class<?> c = Class.forName("GeneratedCode.qt");
+            }else{
+                callOnce = true;
+            }
+            Class<?> c = Class.forName("GeneratedCode.qt");
+            c.newInstance();*/
         } catch (Exception e) {
             e.printStackTrace();
         }
