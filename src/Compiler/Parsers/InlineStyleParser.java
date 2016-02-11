@@ -1,12 +1,7 @@
 package Compiler.Parsers;
 
 import Compiler.Utils;
-import com.trolltech.qt.QNativePointer;
-import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.gui.QBrush;
-import com.trolltech.qt.gui.QGridLayout;
-import com.trolltech.qt.gui.QIcon;
-import com.trolltech.qt.gui.QListWidgetItem;
+import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 
 import java.util.HashMap;
@@ -339,7 +334,7 @@ public final class InlineStyleParser {
     public void PushButton(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QPushButton");
         Utils.setName(n, sb);
-        Utils.tryCheck(n, "shortcut", "%s.setShortcut(new QKeySequence(tr(%s));\n", sb, nodeMap);
+        Utils.tryCheck(n, "shortcut", "%s.setShortcut(new QKeySequence(tr(\"%s\"));\n", sb, nodeMap);
         Utils.tryBoolean(n, "default", "%s.setDefault(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "flat", "%s.setFlat(%s);\n", sb, nodeMap);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QPushButton", style);
@@ -375,7 +370,7 @@ public final class InlineStyleParser {
     }
 
     public void AbstractButton(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        Utils.tryCheck(n, "text", "%s.setText(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "text", "%s.setText(\"%s\");\n", sb, nodeMap);
         Utils.tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "checked", "%s.setChecked(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "pressed", "%s.setDown(%s);\n", sb, nodeMap);
@@ -464,7 +459,7 @@ public final class InlineStyleParser {
     public void Menu(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QMenu");
         Utils.setName(n, sb);
-        Utils.tryCheck(n, "icon", "%s.setIcon(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "icon", "%s.setIcon(\"%s\");\n", sb, nodeMap);
         Utils.tryCheck(n, "title", "%s.setTitle(\"%s\");\n", "menu", sb, nodeMap);
         Utils.tryBoolean(n, "tear-off", "%s.setTearOffEnabled(%s);\n", sb, nodeMap);
         setStyle(style, nodeMap);
@@ -477,6 +472,51 @@ public final class InlineStyleParser {
         Utils.setName(n, sb);
         setStyle(style, nodeMap);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
+        Widget(n, sb, nodeMap);
+    }
+
+    public void LineEdit(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
+        Style style = new Style(n, "QLineEdit");
+        Utils.setName(n, sb);
+        if (!(prop = Utils.check("align", nodeMap)).isEmpty()){
+            switch (prop) {
+                case "left": value = "AlignLeft"; break;
+                case "right": value = "AlignRight"; break;
+                case "horizontal-center": value = "AlignHCenter"; break;
+                case "justify": value = "AlignJustify"; break;
+                case "top": value = "AlignTop"; break;
+                case "bottom": value = "AlignBottom"; break;
+                case "vertical-center": value = "AlignVCenter"; break;
+                case "center": value = "AlignCenter"; break;
+                case "absolute": value = "AlignAbsolute"; break;
+            }
+            Utils.tryEmptyAppend(n, value, "%s.setAlignment(Qt.AlignmentFlag.%s);\n",sb);
+        }
+        if (!(prop = Utils.check("echo-mode ", nodeMap)).isEmpty()){
+            switch (prop) {
+                case "normal": value = "Normal"; break;
+                case "none": value = "NoEcho"; break;
+                case "password": value = "Password"; break;
+                case "echo-on-edit": value = "PasswordEchoOnEdit"; break;
+            }
+            Utils.tryEmptyAppend(n, value, "%s.setEchoMode(QLineEdit.EchoMode.%s);\n",sb);
+        }
+        if (!(prop = Utils.check("cursor-move-style", nodeMap)).isEmpty()){
+            switch (prop) {
+                case "logical": value = "LogicalMoveStyle"; break;
+                case "visual": value = "VisualMoveStyle"; break;
+            }
+            Utils.tryEmptyAppend(n, value, "%s.setCursorMoveStyle(Qt.CursorMoveStyle.%s);\n",sb);
+        }
+        new QLineEdit().setEchoMode(QLineEdit.EchoMode.Normal);
+        Utils.tryCheck(n, "placeholder", "%s.setPlaceholderText(\"%s\");\n", sb, nodeMap);
+        Utils.tryBoolean(n, "draggable", "%s.setDragEnabled(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "frame", "%s.setFrame(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "modified", "%s.setModified(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "read-only", "%s.setReadOnly(%s);\n", sb, nodeMap);
+        Utils.tryValue(n, "max-length", "%s.setMaxLength(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
+        setStyle(style, nodeMap);
         Widget(n, sb, nodeMap);
     }
 
@@ -497,7 +537,7 @@ public final class InlineStyleParser {
         if(!(prop = Utils.check("cursor", nodeMap)).isEmpty()){
             Utils.tryEmptyAppend(n, cursors.get(prop), "%s.setCursor(new QCursor(Qt.CursorShape.%s));\n", sb);
         }
-        Utils.tryCheck(n, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "tool-tip", "%s.setToolTip(\"%s\");\n", sb, nodeMap);
         Utils.tryBoolean(n, "mouse-tracking", "%s.setMouseTracking(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "visibility", "%s.setHidden(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "update", "%s.setUpdatesEnabled(%s);\n", sb, nodeMap);
@@ -577,11 +617,11 @@ public final class InlineStyleParser {
         }
         Utils.tryBoolean(n, "hidden", "%s.setHidden(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "selected", "%s.setSelected(%s);\n", sb, nodeMap);
-        Utils.tryCheck(n, "status-tip", "%s.setStatusTip(%s);\n", sb, nodeMap);
-        Utils.tryCheck(n, "text", "%s.setText(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "status-tip", "%s.setStatusTip(\"%s\");\n", sb, nodeMap);
+        Utils.tryCheck(n, "text", "%s.setText(\"%s\");\n", sb, nodeMap);
         Utils.tryCheck(n, "icon", "%s.setIcon(new QIcon(\"%s\"));\n", sb, nodeMap);
-        Utils.tryCheck(n, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
-        Utils.tryCheck(n, "what-is-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "tool-tip", "%s.setToolTip(\"%s\");\n", sb, nodeMap);
+        Utils.tryCheck(n, "what-is-this", "%s.setWhatsThis(\"%s\");\n", sb, nodeMap);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QGridLayout", style);
         setStyle(style, nodeMap);
     }
@@ -628,11 +668,11 @@ public final class InlineStyleParser {
             Utils.tryEmptyAppend(n, value, "%s.setShortcutContext(Qt.ShortcutContext.%s);\n", sb);
         }
         Utils.tryCheck(n, "shortcut", "%s.setShortcut(new QKeySequence(tr(\"%s\")));\n", sb, nodeMap);
-        Utils.tryCheck(n, "status-tip", "%s.setStatusTip(%s);\n", sb, nodeMap);
-        Utils.tryCheck(n, "tool-tip", "%s.setToolTip(%s);\n", sb, nodeMap);
-        Utils.tryCheck(n, "what-is-this", "%s.setWhatsThis(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "status-tip", "%s.setStatusTip(\"%s\");\n", sb, nodeMap);
+        Utils.tryCheck(n, "tool-tip", "%s.setToolTip(\"%s\");\n", sb, nodeMap);
+        Utils.tryCheck(n, "what-is-this", "%s.setWhatsThis(\"%s\");\n", sb, nodeMap);
         Utils.tryCheck(n, "icon", "%s.setIcon(new QIcon(\"%s\"));\n", sb, nodeMap);
-        Utils.tryCheck(n, "icon-Text", "%s.setIconText(%s);\n", sb, nodeMap);
+        Utils.tryCheck(n, "icon-Text", "%s.setIconText(\"%s\");\n", sb, nodeMap);
         Utils.tryBoolean(n, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "icon-visible", "%s.setIconVisibleMenu(%s);\n", sb, nodeMap);

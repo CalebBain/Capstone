@@ -166,6 +166,12 @@ public final class ComponentParser {
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
+            case "text-area":
+                n = methodName(name, methods, "", nodeMap);
+                styles.LineEdit(n, stylesSheet, sb, nodeMap);
+                functions.LineEdit(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
         }
         return component;
     }

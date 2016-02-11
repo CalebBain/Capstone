@@ -82,24 +82,35 @@ public final class FunctionParser {
     }
 
     protected void Window(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(n + ".iconSizeChanged.connect(", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
-        MakeFunc(n + ".toolButtonStyleChanged.connect(", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".iconSizeChanged", Utils.check("on-icon-size-change", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".toolButtonStyleChanged", Utils.check("on-tool-button-style-change", nodeMap), sb, nodeMap);
         Widget(n, sb, nodeMap);
     }
 
     protected void Number(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(n + ".overflow.connect(", Utils.check("on-overflow", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".overflow", Utils.check("on-overflow", nodeMap), sb, nodeMap);
         Widget(n, sb, nodeMap);
     }
 
     protected void Label(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        MakeFunc(n + ".linkActivated.connect(", Utils.check("on-active", nodeMap), sb, nodeMap);
-        MakeFunc(n + ".linkHovered.connect(", Utils.check("on-hover", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".linkActivated", Utils.check("on-active", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".linkHovered", Utils.check("on-hover", nodeMap), sb, nodeMap);
         Widget(n, sb, nodeMap);
     }
 
     public void Splitter(String n, StringBuilder sb, NamedNodeMap nodeMap) {
-        MakeFunc(n + ".splitterMoved.connect(", Utils.check("on-move", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".splitterMoved", Utils.check("on-move", nodeMap), sb, nodeMap);
+        Widget(n, sb, nodeMap);
+    }
+
+
+    public void LineEdit(String n, StringBuilder sb, NamedNodeMap nodeMap) {
+        MakeFunc(n + ".cursorPositionChanged", Utils.check("on-cursor-move", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".editingFinished", Utils.check("on-edit-finish", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".returnPressed", Utils.check("on-return-press", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".selectionChanged", Utils.check("on-selection-change", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".textChanged", Utils.check("on-text-change", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".textEdited", Utils.check("on-text-edit", nodeMap), sb, nodeMap);
         Widget(n, sb, nodeMap);
     }
 
