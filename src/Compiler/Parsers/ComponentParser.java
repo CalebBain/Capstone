@@ -172,12 +172,19 @@ public final class ComponentParser {
                 functions.LineEdit(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
+            case "group":
+                n = methodName(name, methods, "", nodeMap);
+                styles.Group(n, stylesSheet, sb, nodeMap);
+                functions.Group(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
         }
         return component;
     }
 
     private String methodName(String name, String methods, String text, NamedNodeMap nodeMap){
-        String n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
+        String n = Utils.tryEmpty("name", name.replaceAll("-", "_"), namedComponents, components, nodeMap);
         events.Events(file, n, name, text, methods, sb, nodeMap);
         return n;
     }

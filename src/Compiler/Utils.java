@@ -15,9 +15,7 @@ public final class Utils {
         put("number", "QLCDNumber");
         put("radio", "QRadioButton");
         put("slider", "QSlider");
-        put("check-box", "QCheckBox");
-        put("tri-state", "QTriState");
-        put("menu-bar", "QMenuBar");
+        put("check_box", "QCheckBox");
         put("grid", "QGridLayout");
         put("menubar", "QMenuBar");
         put("label", "QLabel");
@@ -27,7 +25,8 @@ public final class Utils {
         put("section", "QWidget");
         put("splitter", "QSplitter");
         put("item", "QListWidgetItem");
-        put("text-area", "QLineEdit");
+        put("text_area", "QLineEdit");
+        put("group", "QGroupBox");
     }};
 
     public static boolean tryDouble(String value) {
@@ -49,7 +48,7 @@ public final class Utils {
     }
 
     public static String setName(String name) {
-        String comp = components.get(name.replaceAll("\\d", ""));
+        String comp = components.get(name.replaceAll("\\d", "").replaceAll("-", "_"));
         return (comp == null) ? name : comp;
     }
 

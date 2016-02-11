@@ -1,7 +1,6 @@
 package Compiler.Parsers;
 
 import Compiler.Utils;
-import com.trolltech.qt.gui.*;
 import org.w3c.dom.NamedNodeMap;
 
 import java.util.HashMap;
@@ -478,7 +477,7 @@ public final class InlineStyleParser {
     public void LineEdit(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
         Style style = new Style(n, "QLineEdit");
         Utils.setName(n, sb);
-        if (!(prop = Utils.check("align", nodeMap)).isEmpty()){
+        if (!(prop = Utils.check("align", nodeMap)).isEmpty()) {
             switch (prop) {
                 case "left": value = "AlignLeft"; break;
                 case "right": value = "AlignRight"; break;
@@ -490,32 +489,56 @@ public final class InlineStyleParser {
                 case "center": value = "AlignCenter"; break;
                 case "absolute": value = "AlignAbsolute"; break;
             }
-            Utils.tryEmptyAppend(n, value, "%s.setAlignment(Qt.AlignmentFlag.%s);\n",sb);
+            Utils.tryEmptyAppend(n, value, "%s.setAlignment(Qt.AlignmentFlag.%s);\n", sb);
         }
-        if (!(prop = Utils.check("echo-mode ", nodeMap)).isEmpty()){
+        if (!(prop = Utils.check("echo-mode ", nodeMap)).isEmpty()) {
             switch (prop) {
                 case "normal": value = "Normal"; break;
                 case "none": value = "NoEcho"; break;
                 case "password": value = "Password"; break;
                 case "echo-on-edit": value = "PasswordEchoOnEdit"; break;
             }
-            Utils.tryEmptyAppend(n, value, "%s.setEchoMode(QLineEdit.EchoMode.%s);\n",sb);
+            Utils.tryEmptyAppend(n, value, "%s.setEchoMode(QLineEdit.EchoMode.%s);\n", sb);
         }
-        if (!(prop = Utils.check("cursor-move-style", nodeMap)).isEmpty()){
+        if (!(prop = Utils.check("cursor-move-style", nodeMap)).isEmpty()) {
             switch (prop) {
                 case "logical": value = "LogicalMoveStyle"; break;
                 case "visual": value = "VisualMoveStyle"; break;
             }
-            Utils.tryEmptyAppend(n, value, "%s.setCursorMoveStyle(Qt.CursorMoveStyle.%s);\n",sb);
+            Utils.tryEmptyAppend(n, value, "%s.setCursorMoveStyle(Qt.CursorMoveStyle.%s);\n", sb);
         }
-        new QLineEdit().setEchoMode(QLineEdit.EchoMode.Normal);
         Utils.tryCheck(n, "placeholder", "%s.setPlaceholderText(\"%s\");\n", sb, nodeMap);
         Utils.tryBoolean(n, "draggable", "%s.setDragEnabled(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "frame", "%s.setFrame(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "modified", "%s.setModified(%s);\n", sb, nodeMap);
         Utils.tryBoolean(n, "read-only", "%s.setReadOnly(%s);\n", sb, nodeMap);
         Utils.tryValue(n, "max-length", "%s.setMaxLength(%s);\n", sb, nodeMap);
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
+        if (!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
+        setStyle(style, nodeMap);
+        Widget(n, sb, nodeMap);
+    }
+
+    public void Group(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
+        Style style = new Style(n, "QGroupBox");
+        Utils.setName(n, sb);
+        if (!(prop = Utils.check("align", nodeMap)).isEmpty()){
+            switch (prop) {
+                case "left": value = "1"; break;
+                case "right": value = "2"; break;
+                case "horizontal-center": value = "4"; break;
+                case "justify": value = "8"; break;
+                case "absolute": value = "10"; break;
+                case "top": value = "20"; break;
+                case "bottom": value = "40"; break;
+                case "vertical-center": value = "80"; break;
+                case "center": value = "84"; break;
+            }
+            Utils.tryEmptyAppend(n, value, "%s.setTextAlignment(%s);\n",sb);
+        }
+        Utils.tryCheck(n, "title", "%s.setTitle(\"%s\");\n", sb, nodeMap);
+        Utils.tryBoolean(n, "flat", "%s.setFlat(%s);\n", sb, nodeMap);
+        Utils.tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
+        if (!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QAction", style);
         setStyle(style, nodeMap);
         Widget(n, sb, nodeMap);
     }

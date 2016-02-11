@@ -114,6 +114,12 @@ public final class FunctionParser {
         Widget(n, sb, nodeMap);
     }
 
+    protected void Group(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc(n + ".clicked", Utils.check("on-click", nodeMap), sb, nodeMap);
+        MakeFunc(n + ".toggled", Utils.check("on-toggle", nodeMap), sb, nodeMap);
+        Widget(n, sb, nodeMap);
+    }
+
     protected void Widget(String name, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(name + ".customContextMenuRequested", "on-custom-context-menu-request", sb, nodeMap);
     }

@@ -14,20 +14,21 @@ final class ChildParser {
             case "label" : LabelChild(name, component, child, sb); break;
             case "section" : WidgetChild(name, component, child, sb); break;
             case "splitter" : SplitChild(name, component, child, sb); break;
-            case "List" : ListChild(name, component, child, sb); break;
+            case "list" : ListChild(name, component, child, sb); break;
+            case "group" : GroupChild(name, component, child, sb); break;
         }
+    }
+
+    private void GroupChild(String name, String component, String child, StringBuilder sb) {
+        if(component.equals("layout")) sb.append(String.format("%s.setLayout(%s);\n", name, child));
     }
 
     private void ListChild(String name, String component, String child, StringBuilder sb) {
-        switch (component){
-            case "item" : sb.append(String.format("%s.addItem(%s);\n", name, child)); break;
-        }
+        if(component.equals("item")) sb.append(String.format("%s.addItem(%s);\n", name, child));
     }
 
     private void SplitChild(String name, String component, String child, StringBuilder sb) {
-        switch (component){
-            case "widget" : sb.append(String.format("%s.addWidget(%s);\n", name, child)); break;
-        }
+        if(component.equals("widget")) sb.append(String.format("%s.addWidget(%s);\n", name, child));
     }
 
     private void WidgetChild(String name, String component, String child, StringBuilder sb){
