@@ -19,14 +19,22 @@ public final class ComponentParser {
     private final String file;
     private StringBuilder sb;
 
-    public ComponentParser(String file, Map<String, String> methodCalls, StringBuilder sb, Node node) {
-        this.sb = sb;
+    @Override
+    public String toString() {
+        return sb.toString();
+    }
+
+    public ComponentParser(String file, Map<String, String> methodCalls, Node node) {
+        this.sb = new StringBuilder();
         this.methodCalls = methodCalls;
         this.file = file.replaceFirst("\\.jaml", "");
         functions = new FunctionParser();
         NamedNodeMap nodeMap = node.getAttributes();
         String name = "window";
         String methods = methodCalls.get("window");
+        sb.append("import com.trolltech.qt.core.*;\nimport com.trolltech.qt.gui.*;\n");
+        sb.append("public class qt extends QApplication{\npublic qt() { super(new String[0]); run(); }\n");
+        sb.append("public void run() {\n");
         sb.append(String.format("QMainWindow %s = new QMainWindow()", name));
         try{
             if (!methods.isEmpty()) sb.append(String.format("{\n%s\n}", methods));
@@ -36,9 +44,13 @@ public final class ComponentParser {
         styles.MainWindow(name, stylesSheet, sb, nodeMap);
         functions.Window(name, sb, nodeMap);
         nodeLoop("window", node);
+        String styles = StyleSheet();
+        if (!styles.isEmpty()) sb.append(String.format("this.setStyleSheet(\"%s\");\n", styles));
+        sb.append("window.show();\n");
+        sb.append("this.exec();\n}\n}");
     }
 
-    public String StyleSheet(){
+    private String StyleSheet(){
         StringBuilder sb = new StringBuilder();
         Collection<Style> temp = stylesSheet.values();
         Style[] styles = temp.toArray(new Style[temp.size()]);
