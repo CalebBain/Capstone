@@ -1,12 +1,12 @@
 package Compiler.Parsers;
 
+import Compiler.Utils;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.HashMap;
 import java.util.Map;
-import Compiler.Utils;
 
 public class SlotParser {
 
@@ -23,12 +23,10 @@ public class SlotParser {
             String owner = Utils.tryEmpty("owner", "window", attributes);
             String Method = (result.containsKey(owner)) ? result.get(owner) : "";
             if(!methodCall.isEmpty() && !classCall.isEmpty())
-                Method += String.format("public void %s(%s){ new %s().%s(%s); }\n",
+                Method += String.format("public Object %s(%s){ new %s().%s(%s); return null; }\n",
                         methodName, params, classCall, methodCall, params);
             result.put(owner, Method);
         }
-
-
         return result;
     }
 }

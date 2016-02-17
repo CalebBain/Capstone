@@ -137,7 +137,9 @@ public final class EventParser {
     private void Write(String[] Params, StringBuilder sb){
         sb.append(String.format("protected void %s(%s) {\n",
                 EventFind(Params[0], false, false), EventFind(Params[0], true, true)));
-        sb.append(String.format("new %s().%s(this, event);\n", Params[1], Params[2]));
+        String prop1 = Params[1], prop2 = Params[2];
+        if(prop2.contains("(")) sb.append(String.format("new %s().%s;\n", prop1, prop2));
+        else sb.append(String.format("new %s().%s(this, event);\n", prop1, prop2));
         sb.append("}\n");
     }
 }

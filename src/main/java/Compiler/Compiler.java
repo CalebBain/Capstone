@@ -28,8 +28,7 @@ public final class Compiler {
             //System.out.println("Root element : " + doc.getDocumentElement().getNodeName());
             if (doc.hasChildNodes()){
                 NodeList nodeList = doc.getChildNodes();
-                //printNote(nodeList);
-                //System.out.println("\n\n");
+                //printNote(nodeList, true);
                 Node node = nodeList.item(0);
                 if (node instanceof Element && node.getNodeName().equals("jaml")) {
                     Element docElement = (Element) node;
@@ -52,7 +51,7 @@ public final class Compiler {
         }
     }
 
-    private void printNote(NodeList nodeList) {
+    private void printNote(NodeList nodeList, boolean end) {
         for (int count = 0; count < nodeList.getLength(); count++) {
             Node tempNode = nodeList.item(count);
             if (tempNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -67,9 +66,10 @@ public final class Compiler {
                         System.out.println("attr value : " + node.getNodeValue());
                     }
                 }
-                if (tempNode.hasChildNodes()) printNote(tempNode.getChildNodes());
+                if (tempNode.hasChildNodes()) printNote(tempNode.getChildNodes(), false);
                 System.out.println("Node Name = " + tempNode.getNodeName() + " [CLOSE]");
             }
         }
+        if(end) System.out.println("\n\n");
     }
 }
