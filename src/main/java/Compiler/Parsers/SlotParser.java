@@ -20,11 +20,17 @@ public class SlotParser {
             String methodCall = Utils.check("call", attributes);
             String classCall = Utils.check("class", attributes);
             String params = Utils.check("params", attributes);
+            String methodParams = params.replaceAll("(, )?this(, )?", "");
             String owner = Utils.tryEmpty("owner", "window", attributes);
             String Method = (result.containsKey(owner)) ? result.get(owner) : "";
-            if(!methodCall.isEmpty() && !classCall.isEmpty())
-                Method += String.format("public Object %s(%s){ new %s().%s(%s); return null; }\n",
-                        methodName, params, classCall, methodCall, params);
+            if(!methodCall.isEmpty() && !classCall.isEmpty()){
+                if(classCall.contains("("))
+                    Method += String.format("public Object %s(%s){ new %s.%s(%s); return null; }\n",
+                            methodName, methodParams, classCall, methodCall, params);
+                else Method += String.format("public Object %s(%s){ new %s().%s(%s); return null; }\n",
+                        methodName, methodParams, classCall, methodCall, params);
+            }
+
             result.put(owner, Method);
         }
         return result;

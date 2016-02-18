@@ -102,7 +102,6 @@ public final class EventParser {
             switch(parts[0]){
                 case "class": Class = parts[1]; break;
                 case "method": Method = parts[1]; break;
-                case "component": case"components": parameters.add(parts[1]); break;
             }
         }
         String[] result = new String[parameters.size() + 3];
@@ -117,7 +116,7 @@ public final class EventParser {
         String result = "";
         if(events.containsKey(event)){
             String Event = events.get(event);
-            if (prop) result = String.format("Q%s event", Utils.capitalize(Event));
+            if (prop) result = String.format(" Q%s", Utils.capitalize(Event));
             else result = Event;
         }else {
             switch (event){

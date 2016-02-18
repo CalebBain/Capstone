@@ -1,57 +1,60 @@
 package GeneratedCode;
 
-import com.trolltech.qt.gui.QMouseEvent;
-import com.trolltech.qt.gui.QPushButton;
-import com.trolltech.qt.gui.QSlider;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.InitCommand;
+import org.eclipse.jgit.api.errors.*;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FileFuncs {
 
+    File localPath = new File("C:\\Users\\Caleb Bain\\Desktop\\test");
+    Git git;
 
     public FileFuncs() {
+        InitCommand initCommand = Git.init();
+        initCommand.setDirectory(localPath);
+        try{
+            git = Git.open(localPath);
+        } catch (IOException ignored) {
+        }
     }
-
-    public void generate(){
-        System.out.println("slots are working");
-    }
-
-    public void generate(QPushButton slider, QMouseEvent event){
-        System.out.println("events are working : " + event);
-    }
-
-    public void generate(QSlider slider, QMouseEvent event){
-        System.out.println("events are working : " + event);
-    }
-
-    public void undo(){ }
-
-    public void redo(){ }
-
-    public void cut(){ }
-
-    public void copy(){ }
-
-    public void paste(){ }
-
-    public void delete(){ }
 
     public void Clone(){
-        final File localPath = new File("C:\\Users\\Caleb Bain\\Desktop\\test");
         try {
-            Git.cloneRepository().setURI("https://github.com/CalebBain/test.git").setDirectory(localPath)
+            git = Git.cloneRepository().setURI("https://github.com/CalebBain/test.git").setDirectory(localPath)
                     .setCredentialsProvider(new UsernamePasswordCredentialsProvider("calebbain", "a2001033954"))
                     .call();
-            System.out.println("cloning");
+            System.out.println("cloned");
+        } catch (GitAPIException e) {
+        }
+    }
+
+    public void Commit(){
+        try {
+            File myfile = new File(localPath + "/test.txt");
+            git.add().addFilepattern("test.txt").call();
+            git.commit().setMessage("test commit").call();
         } catch (GitAPIException e) {
             e.printStackTrace();
         }
     }
 
-    public void commit() {
+    public void Push(){
+        try {
+            git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider("calebbain", "a2001033954")).call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void Pull(){
+        try {
+            git.pull().setCredentialsProvider(new UsernamePasswordCredentialsProvider("calebbain", "a2001033954")).call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -8,3 +8,4 @@ out/*
 jaml/*
 src/GeneratedCode/*
 pom.xml
+target/*
