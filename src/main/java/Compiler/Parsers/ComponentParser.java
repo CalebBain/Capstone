@@ -12,12 +12,20 @@ public final class ComponentParser {
     private final EventParser events = new EventParser();
     private final ChildParser children = new ChildParser();
     private Map<String, Style> stylesSheet = new HashMap<>();
-    private List<String> namedComponents = new ArrayList<>();
-    private List<String> components = new ArrayList<>();
+    private static List<String> namedComponents = new ArrayList<>();
+    private static List<String> components = new ArrayList<>();
     private Map<String, String> methodCalls;
     private final FunctionParser functions;
     private final String file;
     private StringBuilder sb;
+
+    public static List<String> getNamedComponents() {
+        return namedComponents;
+    }
+
+    public static List<String> getComponents() {
+        return components;
+    }
 
     @Override
     public String toString() {
@@ -37,7 +45,7 @@ public final class ComponentParser {
         sb.append("public void run() {\n");
         sb.append(String.format("QMainWindow %s = new QMainWindow()", name));
         try{
-            if (!methods.isEmpty()) sb.append(String.format("{\n%s\n}", methods));
+            if (!methods.isEmpty()) sb.append(String.format("{\n%s}", methods));
         }catch (NullPointerException ignored){
         }
         sb.append(";\n");
@@ -159,7 +167,7 @@ public final class ComponentParser {
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
             case "action":
-                n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
+                n = Utils.trySetName("name", name, nodeMap);
                 String text = Utils.tryEmpty("text", "action", nodeMap);
                 events.ActionEvents(file, n, name, text, methods, sb, nodeMap);
                 styles.Action(n, stylesSheet, sb, nodeMap);
@@ -168,7 +176,7 @@ public final class ComponentParser {
                 component = "layout:" + n;
                 break;
             case "separator":
-                n = Utils.tryEmpty("name", name, namedComponents, components, nodeMap);
+                n = Utils.trySetName("name", name, nodeMap);
                 children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
                 break;
             case "splitter":
@@ -180,7 +188,7 @@ public final class ComponentParser {
                 break;
             case "text-area":
                 n = methodName(name, "", nodeMap);
-                styles.LineEdit(n, stylesSheet, sb, nodeMap);
+                styles.TextEdit(n, stylesSheet, sb, nodeMap);
                 functions.LineEdit(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
@@ -196,7 +204,7 @@ public final class ComponentParser {
     }
 
     private String methodName(String name, String text, NamedNodeMap nodeMap){
-        String n = Utils.tryEmpty("name", name.replaceAll("-", "_"), namedComponents, components, nodeMap);
+        String n = Utils.trySetName("name", name.replaceAll("-", "_"), nodeMap);
         String methods = methodCalls.get(n);
         events.Events(file, n, name, text, methods, sb, nodeMap);
         return n;

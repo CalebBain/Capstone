@@ -16,7 +16,31 @@ final class ChildParser {
             case "splitter" : SplitChild(name, component, child, sb); break;
             case "list" : ListChild(name, component, child, sb); break;
             case "group" : GroupChild(name, component, child, sb); break;
+            case "pen" : PenChild(name, component, child, sb); break;
         }
+    }
+
+    private void TextFormatChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+        switch (component){
+            case "tab" : sb.append(String.format("%s.setProperty(0x1035, %s);\n", name, child)); break;
+            case "brush" :
+                String prop;
+                if (!(prop = Utils.check("type", nodeMap)).isEmpty()){
+                    String value = "";
+                    switch (prop) {
+                        case "foreground": value = String.format("0x821, %s", child); break;
+                        case "background": value = String.format("0x820, %s", child); break;
+                        case "frame-border": value = String.format("0x4009, %s", child); break;
+                    }
+                    Utils.tryEmptyAppend(name, value, "%s.setProperty(%s);\n", sb);
+                }
+                break;
+            case "pen": sb.append(String.format("%s.setProperty(0x810, %s);\n", name, child)); break;
+        }
+    }
+
+    private void PenChild(String name, String component, String child, StringBuilder sb){
+        if(component.equals("brush")) sb.append(String.format("%s.setBrush(%s);\n", name, child));
     }
 
     private void GroupChild(String name, String component, String child, StringBuilder sb) {
