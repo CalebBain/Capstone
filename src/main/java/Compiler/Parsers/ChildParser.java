@@ -82,10 +82,10 @@ final class ChildParser {
     private void GridChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
         Utils.capitalize(component);
         sb.append(String.format("%s.add%s(%s, ", name, Utils.capitalize(component), child));
-        Number row = Utils.tryValue("row", "%2s, ", 1, sb, nodeMap);
-        Number col = Utils.tryValue("column", "%2s, ", 1, sb, nodeMap);
-        Utils.tryValue("row-span", "%2s, ", row, sb, nodeMap);
-        Utils.tryValue("column-span", "%2s, ", col, sb, nodeMap);
+        Number row = tryValue("row", "%2s, ", 1, sb, nodeMap);
+        Number col = tryValue("column", "%2s, ", 1, sb, nodeMap);
+        tryValue("row-span", "%2s, ", row, sb, nodeMap);
+        tryValue("column-span", "%2s, ", col, sb, nodeMap);
         sb.append("Qt.AlignmentFlag.");
         switch(Utils.check("position", nodeMap)){
             case "bottom": sb.append("AlignBottom);\n"); break;
@@ -134,5 +134,17 @@ final class ChildParser {
                 Utils.tryBoolean(name, "collapsible", child, "%s.setSeparatorsCollapsible(%s);\n", sb, nodeMap);
                 break;
         }
+    }
+
+    public Number tryValue(String prop, String command, Number replacement, StringBuilder sb, NamedNodeMap nodeMap){
+        String p;
+        if (Utils.tryInteger(p = Utils.check(prop, nodeMap))){
+            sb.append(String.format(command, p));
+            return Integer.parseInt(p);
+        } else if (Utils.tryDouble(p = Utils.check(prop, nodeMap))){
+            sb.append(String.format(command, p));
+            return Double.parseDouble(p);
+        }else sb.append(String.format(command, replacement));
+        return replacement;
     }
 }

@@ -90,31 +90,8 @@ public final class Utils {
         else sb.append(String.format(command, name, replacement));
     }
 
-    public static void tryValue(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryInteger(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
-        else if(Utils.tryDouble(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
-    }
-
-    public static Number tryValue(String prop, String command, Number replacement, StringBuilder sb, NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryInteger(p = Utils.check(prop, nodeMap))){
-            sb.append(String.format(command, p));
-            return Integer.parseInt(p);
-        } else if (Utils.tryDouble(p = Utils.check(prop, nodeMap))){
-            sb.append(String.format(command, p));
-            return Double.parseDouble(p);
-        }else sb.append(String.format(command, replacement));
-        return replacement;
-    }
-
     public static void tryBoolean(String name, String prop, String child, String command, StringBuilder sb, NamedNodeMap nodeMap){
         if (Utils.tryBoolean(Utils.check(prop, nodeMap))) sb.append(String.format(command, name, child));
-    }
-
-    public static void tryBoolean(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryBoolean(p = Utils.check(prop, nodeMap))) sb.append(String.format(command, name, p));
     }
 
     public static void formatAppend(String command, StringBuilder sb, String... props){ sb.append(String.format(command, props)); }
@@ -129,9 +106,7 @@ public final class Utils {
         if(!value.isEmpty()) sb.append(String.format(command, name, value));
     }
 
-    public static void setName(String n, StringBuilder sb){
-        if(!components.containsKey(n.replaceAll("\\d", ""))) sb.append(String.format("%s.setObjectName(\"%s\");\n", n, n));
-    }
+
 
     public static String trySetName(String prop, String replacement, NamedNodeMap nodeMap){
         String p;
