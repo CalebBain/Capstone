@@ -114,8 +114,8 @@ final class ChildParser {
                 sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
             case "action" :
                 sb.append(String.format("%s.addAction(%s);\n", name, child));
-                Utils.tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
-                Utils.tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
+                tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
+                tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
                 break;
             case "separator" : sb.append(String.format("%s.addSeparator();\n", name)); break;
         }
@@ -126,12 +126,12 @@ final class ChildParser {
             case "menu" : sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
             case "action" :
                 sb.append(String.format("%s.addAction(%s);\n", name, child));
-                Utils.tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
-                Utils.tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
+                tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
+                tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
                 break;
             case "separator" :
                 sb.append(String.format("%s.addSeparator();\n", name));
-                Utils.tryBoolean(name, "collapsible", child, "%s.setSeparatorsCollapsible(%s);\n", sb, nodeMap);
+                tryBoolean(name, "collapsible", child, "%s.setSeparatorsCollapsible(%s);\n", sb, nodeMap);
                 break;
         }
     }
@@ -146,5 +146,9 @@ final class ChildParser {
             return Double.parseDouble(p);
         }else sb.append(String.format(command, replacement));
         return replacement;
+    }
+
+    public void tryBoolean(String name, String prop, String child, String command, StringBuilder sb, NamedNodeMap nodeMap){
+        if (Utils.tryBoolean(Utils.check(prop, nodeMap))) sb.append(String.format(command, name, child));
     }
 }

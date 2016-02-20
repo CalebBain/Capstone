@@ -167,7 +167,7 @@ public final class ComponentParser {
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
             case "action":
-                n = Utils.trySetName("name", name, nodeMap);
+                n = trySetName("name", name, nodeMap);
                 String text = Utils.tryEmpty("text", "action", nodeMap);
                 events.ActionEvents(file, n, name, text, methods, sb, nodeMap);
                 styles.Action(n, stylesSheet, sb, nodeMap);
@@ -176,7 +176,7 @@ public final class ComponentParser {
                 component = "layout:" + n;
                 break;
             case "separator":
-                n = Utils.trySetName("name", name, nodeMap);
+                n = trySetName("name", name, nodeMap);
                 children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
                 break;
             case "splitter":
@@ -204,9 +204,24 @@ public final class ComponentParser {
     }
 
     private String methodName(String name, String text, NamedNodeMap nodeMap){
-        String n = Utils.trySetName("name", name.replaceAll("-", "_"), nodeMap);
+        String n = trySetName("name", name.replaceAll("-", "_"), nodeMap);
         String methods = methodCalls.get(n);
         events.Events(file, n, name, text, methods, sb, nodeMap);
         return n;
+    }
+
+    public static String trySetName(String prop, String replacement, NamedNodeMap nodeMap){
+        String p;
+        List<String> comps = ComponentParser.getComponents();
+        if((p = Utils.check(prop, nodeMap)).isEmpty()) p = replacement;
+        if(!Utils.components.containsKey(p)) ComponentParser.getNamedComponents().add(p);
+        else if(!comps.contains(p)) comps.add(p);
+        else{
+            int count = 0;
+            for(String comp : comps) if(comp.startsWith(p)) count++;
+            p += count;
+            comps.add(p);
+        }
+        return p;
     }
 }

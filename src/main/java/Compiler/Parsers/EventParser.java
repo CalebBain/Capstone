@@ -2,6 +2,7 @@ package Compiler.Parsers;
 
 import org.w3c.dom.NamedNodeMap;
 import Compiler.Utils;
+import org.w3c.dom.Node;
 
 import java.util.*;
 
@@ -78,8 +79,18 @@ public final class EventParser {
         sb.append(";\n");
     }
 
+    public boolean exists(String keyword, NamedNodeMap nodeMap){
+        try {
+            Node word = nodeMap.getNamedItem(keyword);
+            word.getNodeValue();
+            return true;
+        } catch (NullPointerException ignored) {
+            return false;
+        }
+    }
+
     private void PropCheck(String file, String name, String command, StringBuilder sb, NamedNodeMap nodeMap){
-        if(Utils.exists(command, nodeMap)){
+        if(exists(command, nodeMap)){
             String[] props = Utils.check(command, nodeMap).split(" ");
             if(!hasProps) {
                 hasProps = true;
