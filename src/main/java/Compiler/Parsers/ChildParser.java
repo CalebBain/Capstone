@@ -30,12 +30,20 @@ final class ChildParser {
                     switch (prop) {
                         case "foreground": value = String.format("0x821, %s", child); break;
                         case "background": value = String.format("0x820, %s", child); break;
-                        case "frame-border": value = String.format("0x4009, %s", child); break;
+                        case "border": value = String.format("0x4009, %s", child); break;
                     }
                     Utils.tryEmptyAppend(name, value, "%s.setProperty(%s);\n", sb);
                 }
                 break;
-            case "pen": sb.append(String.format("%s.setProperty(0x810, %s);\n", name, child)); break;
+            case "pen":
+                if (!(prop = Utils.check("type", nodeMap)).isEmpty()){
+                    String value;
+                    switch (prop) {
+                        case "text-outline": value = String.format("0x2022, %s", child); break;
+                        default: value = String.format("0x810, %s", child);
+                    }
+                    Utils.tryEmptyAppend(name, value, "%s.setProperty(%s);\n", sb);
+                }
         }
     }
 
@@ -136,7 +144,7 @@ final class ChildParser {
         }
     }
 
-    public Number tryValue(String prop, String command, Number replacement, StringBuilder sb, NamedNodeMap nodeMap){
+    private Number tryValue(String prop, String command, Number replacement, StringBuilder sb, NamedNodeMap nodeMap){
         String p;
         if (Utils.tryInteger(p = Utils.check(prop, nodeMap))){
             sb.append(String.format(command, p));
@@ -148,7 +156,7 @@ final class ChildParser {
         return replacement;
     }
 
-    public void tryBoolean(String name, String prop, String child, String command, StringBuilder sb, NamedNodeMap nodeMap){
+    private void tryBoolean(String name, String prop, String child, String command, StringBuilder sb, NamedNodeMap nodeMap){
         if (Utils.tryBoolean(Utils.check(prop, nodeMap))) sb.append(String.format(command, name, child));
     }
 }

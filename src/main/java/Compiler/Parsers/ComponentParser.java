@@ -210,7 +210,7 @@ public final class ComponentParser {
         return n;
     }
 
-    public static String trySetName(String prop, String replacement, NamedNodeMap nodeMap){
+    private static String trySetName(String prop, String replacement, NamedNodeMap nodeMap){
         String p;
         List<String> comps = ComponentParser.getComponents();
         if((p = Utils.check(prop, nodeMap)).isEmpty()) p = replacement;
