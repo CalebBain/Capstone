@@ -6,6 +6,6 @@ out/*
 /*class
 
 jaml/*
-src/GeneratedCode/*
+src/main/java/GeneratedCode/*
 pom.xml
 target/*
