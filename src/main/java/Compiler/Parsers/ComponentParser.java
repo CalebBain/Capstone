@@ -40,7 +40,7 @@ public final class ComponentParser {
         NamedNodeMap nodeMap = node.getAttributes();
         String name = "window";
         String methods = methodCalls.get("window");
-        sb.append("import com.trolltech.qt.core.*;\nimport com.trolltech.qt.gui.*;\n");
+        sb.append("import com.trolltech.qt.core.*;\nimport com.trolltech.qt.gui.*;\nimport java.util.List;\n");
         sb.append("public class qt extends QApplication{\npublic qt() { super(new String[0]); run(); }\n");
         sb.append("public void run() {\n");
         sb.append(String.format("QMainWindow %s = new QMainWindow()", name));
@@ -197,6 +197,52 @@ public final class ComponentParser {
                 styles.Group(n, stylesSheet, sb, nodeMap);
                 functions.Group(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "font":
+                n = methodName(name, "", nodeMap);
+                styles.Font(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "font", n, sb, nodeMap);
+                break;
+            case "brush":
+                n = methodName(name, "", nodeMap);
+                styles.Brush(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "brush", n, sb, nodeMap);
+                break;
+            case "pen":
+                n = methodName(name, "", nodeMap);
+                styles.Pen(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "pen", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "tab":
+                n = methodName(name, "", nodeMap);
+                styles.Brush(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "tab", n, sb, nodeMap);
+                break;
+            case "char-format":
+                n = methodName(name, "", nodeMap);
+                styles.CharFormat(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "char-format", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "text-option":
+                n = methodName(name, "", nodeMap);
+                styles.TextOption(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "text-option", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "document-layout":
+                n = methodName(name, "", nodeMap);
+                styles.PlainTextDocumentLayout(n, stylesSheet, sb, nodeMap);
+                functions.AbstactTextDocumentLayout(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "document-layout", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "document":
+                n = methodName(name, "", nodeMap);
+                styles.TextDocument(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "document", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
         }

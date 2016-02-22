@@ -98,7 +98,7 @@ public final class FunctionParser {
         Widget(n, sb, nodeMap);
     }
 
-    public void Splitter(String n, StringBuilder sb, NamedNodeMap nodeMap) {
+    protected void Splitter(String n, StringBuilder sb, NamedNodeMap nodeMap) {
         MakeFunc(n + ".splitterMoved", Utils.check("on-move", nodeMap), sb, nodeMap);
         Widget(n, sb, nodeMap);
     }
@@ -126,5 +126,12 @@ public final class FunctionParser {
 
     protected void Action(String n, StringBuilder sb, NamedNodeMap nodeMap){
         MakeFunc(n + ".triggered", "method", sb, nodeMap);
+    }
+
+    protected void AbstactTextDocumentLayout(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        MakeFunc(n + ".documentSizeChanged", "on-size-change", sb, nodeMap);
+        MakeFunc(n + ".pageCountChanged", "on-page-count-change", sb, nodeMap);
+        MakeFunc(n + ".update", "on-update", sb, nodeMap);
+        MakeFunc(n + ".updateBlock", "on-update-block", sb, nodeMap);
     }
 }

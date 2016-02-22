@@ -17,7 +17,34 @@ final class ChildParser {
             case "list" : ListChild(name, component, child, sb); break;
             case "group" : GroupChild(name, component, child, sb); break;
             case "pen" : PenChild(name, component, child, sb); break;
+            case "char-format": CharFormatChild(name, component, child, sb, nodeMap);
+            case "text-edit": TextEditChild(name, component, child, sb);
+            case "document": DocumentChild(name, component, child, sb);
         }
+    }
+
+    private void DocumentChild(String name, String component, String child, StringBuilder sb){
+        switch(component){
+            case "font": sb.append(String.format("%s.setDefaultFont(%s);\n", name, child)); break;
+            case "text-option": sb.append(String.format("%s.setDefaultTextOption(%s);\n", name, child)); break;
+            case "document-layout": sb.append(String.format("%s.setDocumentLayout(%s);\n", name, child)); break;
+        }
+    }
+
+    private void TextEditChild(String name, String component, String child, StringBuilder sb){
+        switch(component){
+            case "char-format": sb.append(String.format("%s.setCurrentCharFormat(%s);\n", name, child)); break;
+            case "document": sb.append(String.format("%s.setDocument(%s);\n", name, child)); break;
+        }
+    }
+
+    private void CharFormatChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+        switch(component){
+            case "font": sb.append(String.format("%s.setFont(%s);\n", name, child)); break;
+            case "pen": sb.append(String.format("%s.setTextOutline(%s);\n", name, child)); break;
+            case "color": sb.append(String.format("%s.setUnderlineColor(%s);\n", name, child)); break;
+        }
+        TextFormatChild(name, component, child, sb, nodeMap);
     }
 
     private void TextFormatChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){

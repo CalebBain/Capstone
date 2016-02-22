@@ -30,7 +30,11 @@ public final class Utils {
         put("brush", "QBrush");
         put("pen", "QPen");
         put("tab", "QTextOption_Tab");
+        put("font", "QFont");
         put("gradient", "QGradient");
+        put("char_format", "QTextCharFormat");
+        put("text_option", "QTextOption");
+        put("document_layout", "QPlaintTextDocumentLayout");
     }};
     public static boolean tryDouble(String value) {
         try {

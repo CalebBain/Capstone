@@ -546,6 +546,46 @@ final class InlineStyleParser {
         put("page-break-policy", "0x7000:c");
     }};
 
+    private Map<String, String> FontCapitalizationTypes = new HashMap<String, String>(){{
+        put("mixed-case", "QFont.Capitalization.MixedCase");
+        put("all-uppercase", "QFont.Capitalization.AllUppercase");
+        put("all-lowercase", "QFont.Capitalization.AllLowercase");
+        put("small-caps", "QFont.Capitalization.SmallCaps");
+        put("capitalize", "QFont.Capitalization.Capitalize");
+    }};
+
+    private Map<String, String> FontSpacingType = new HashMap<String, String>(){{
+        put("percentage", "QFont.SpacingType.PercentageSpacing");
+        put("absolute", "QFont.SpacingType.AbsoluteSpacing");
+    }};
+
+    private Map<String, String> TextEditAutoFormats = new HashMap<String, String>(){{
+        put("none", "QTextEdit.AutoFormattingFlag.AutoNone");
+        put("bullet-list", "QTextEdit.AutoFormattingFlag.AutoBulletList");
+        put("all", "QTextEdit.AutoFormattingFlag.AutoAll");
+    }};
+
+    private Map<String, String> TextOptionFlags = new HashMap<String, String>(){{
+        put("add-spaces-for-separators", "QTextOption.Flag.AddSpaceForLineAndParagraphSeparators");
+        put("show-tabs-and-spaces", "QTextOption.Flag.ShowTabsAndSpaces");
+        put("include-trailing-spaces", "QTextOption.Flag.IncludeTrailingSpaces");
+        put("show-separators", "QTextOption.Flag.ShowLineAndParagraphSeparators");
+        put("suppress-colors", "QTextOption.Flag.SuppressColors");
+    }};
+
+    private Map<String, String> TextOptionWrapMode = new HashMap<String, String>(){{
+        put("none", "QTextOption.WrapMode.NoWrap");
+        put("wrap", "QTextOption.WrapMode.WordWrap");
+        put("manual", "QTextOption.WrapMode.ManualWrap");
+        put("anywhere", "QTextOption.WrapMode.WrapAnywhere");
+        put("boundary-or-anywhere", "QTextOption.WrapMode.WrapAtWordBoundaryOrAnywhere");
+    }};
+
+    private Map<String, String> MetaInfo = new HashMap<String, String>(){{
+        put("title", "QTextDocument.MetaInformation.DocumentTitle");
+        put("url", "QTextDocument.MetaInformation.DocumentUrl");
+    }};
+
     protected void List(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QListWidget");
         setName(n, sb);
@@ -560,11 +600,11 @@ final class InlineStyleParser {
             String[] parts = prop.split(" ");
             sb.append(String.format("%s.setGridSize(new QSize(%s, %s);\n", n, parts[0], parts[1]));
         }
-        tryList(n, "movement", "%s.setMovement(%s);\n", ListMovements, sb, nodeMap);
-        tryList(n, "layout-mode", "%s.setLayoutMode(%s);\n", ListLayoutModes, sb, nodeMap);
-        tryList(n, "orientation", "%s.setFlow(%s);\n", ListFlows, sb, nodeMap);
-        tryList(n, "view-mode", "%s.setViewMode(%s);\n", ListViewModes, sb, nodeMap);
-        tryList(n, "resize-mode", "%s.setResizeMode(%s);\n", ListResizeModes, sb, nodeMap);
+        tryMap(n, "movement", "%s.setMovement(%s);\n", ListMovements, sb, nodeMap);
+        tryMap(n, "layout-mode", "%s.setLayoutMode(%s);\n", ListLayoutModes, sb, nodeMap);
+        tryMap(n, "orientation", "%s.setFlow(%s);\n", ListFlows, sb, nodeMap);
+        tryMap(n, "view-mode", "%s.setViewMode(%s);\n", ListViewModes, sb, nodeMap);
+        tryMap(n, "resize-mode", "%s.setResizeMode(%s);\n", ListResizeModes, sb, nodeMap);
         tryBoolean(n, "selection-rectangle-visible", "%s.setSelectionRectVisible(%s);\n", sb, nodeMap);
         tryBoolean(n, "uniform-sizes", "%s.setUniformItemSizes(%s);\n", sb, nodeMap);
         tryBoolean(n, "word-wrap", "%s.setWordWrap(%s);\n", sb, nodeMap);
@@ -576,12 +616,12 @@ final class InlineStyleParser {
     }
 
     protected void AbstractItemView(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        tryList(n, "drag-drop-mode", "%s.setDragDropMode(%s);\n", AbstractItemViewDragDropModes, sb, nodeMap);
-        tryList(n, "edit-trigger", "%s.setEditTriggers(%s);\n", AbstractItemViewEditTriggers, sb, nodeMap);
-        tryList(n, "horizontal-scroll-mode", "%s.setHorizontalScrollMode(%s);\n", AbstractItemViewScrollModes, sb, nodeMap);
-        tryList(n, "selection-behavior", "%s.setSelectionBehavior(%s);\n", AbstractItemViewSelectionBehaviors, sb, nodeMap);
-        tryList(n, "text-elide-mode", "%s.setTextElideMode(%s);\n", AbstractItemViewTextElideModes, sb, nodeMap);
-        tryList(n, "vertical-scroll-mode", "%s.setVerticalScrollMode(%s);\n", AbstractItemViewScrollModes, sb, nodeMap);
+        tryMap(n, "drag-drop-mode", "%s.setDragDropMode(%s);\n", AbstractItemViewDragDropModes, sb, nodeMap);
+        tryMap(n, "edit-trigger", "%s.setEditTriggers(%s);\n", AbstractItemViewEditTriggers, sb, nodeMap);
+        tryMap(n, "horizontal-scroll-mode", "%s.setHorizontalScrollMode(%s);\n", AbstractItemViewScrollModes, sb, nodeMap);
+        tryMap(n, "selection-behavior", "%s.setSelectionBehavior(%s);\n", AbstractItemViewSelectionBehaviors, sb, nodeMap);
+        tryMap(n, "text-elide-mode", "%s.setTextElideMode(%s);\n", AbstractItemViewTextElideModes, sb, nodeMap);
+        tryMap(n, "vertical-scroll-mode", "%s.setVerticalScrollMode(%s);\n", AbstractItemViewScrollModes, sb, nodeMap);
         tryBoolean(n, "alt-row-color", "%s.setAlternatingRowColors(%s);\n", sb, nodeMap);
         tryBoolean(n, "draggable", "%s.setDragEnabled(%s);\n", sb, nodeMap);
         tryBoolean(n, "auto-scroll", "%s.setAutoScroll(%s);\n", sb, nodeMap);
@@ -590,74 +630,129 @@ final class InlineStyleParser {
         tryValue(n, "auto-scroll-margin", "%s.setAutoScrollMargin(%s);\n", sb, nodeMap);
         AbstractScrollArea(n, sb, nodeMap);
     }
-    // need todo
-    protected void TextEdit(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
-        Style style = new Style(n, "QListWidget");
-        setName(n, sb);
 
-        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QListView", style);
+    private Map<String, String> LineWrapModes = new HashMap<String, String>(){{
+        put("none", "QTextEdit.LineWrapMode.NoWrap");
+        put("widget", "QTextEdit.LineWrapMode.WidgetWidth");
+        put("fixed-pixel", "QTextEdit.LineWrapMode.FixedPixelWidth");
+        put("fixed-column", "QTextEdit.LineWrapMode.FixedColumnWidth");
+    }};
+
+    protected void TextEdit(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QTextEdit");
+        setName(n, sb);
+        tryMap(n, "auto-format", "%s.setAutoFormatting(%s);\n", TextEditAutoFormats, sb, nodeMap);
+        tryMap(n, "line-wrap-mode", "%s.setLineWrapMode(%s);\n", LineWrapModes, sb, nodeMap);
+        tryMap(n, "wrap-mode", "%s.setWordWrapMode(%s);\n", TextOptionWrapMode, sb, nodeMap);
+        tryCheck(n, "doc-title", "%s.setDocumentTitle(\"%s\");\n", sb, nodeMap);
+        tryBoolean(n, "rich-text", "%s.setRichText(%s);\n", sb, nodeMap);
+        tryBoolean(n, "overwrite-mode", "%s.setOverwriteMode(%s);\n", sb, nodeMap);
+        tryBoolean(n, "read-only", "%s.setReadOnly(%s);\n", sb, nodeMap);
+        tryBoolean(n, "tab-changes-focus", "%s.setTabChangesFocus(%s);\n", sb, nodeMap);
+        tryBoolean(n, "undo-and-redo", "%s.setUndoRedoEnabled(%s);\n", sb, nodeMap);
+        tryValue(n, "cursor-width", "%s.setCursorWidth(%s);\n", sb, nodeMap);
+        tryValue(n, "line-wrap-column", "%s.setLineWrapColumnOrWidth(%s);\n", sb, nodeMap);
+        tryValue(n, "tab-stop-width", "%s.setTabStopWidth(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QTextEdit", style);
         AbstractScrollArea(n, sb, nodeMap);
     }
 
-    private void TextCharFormat(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void TextDocument(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QTextDocument");
         setName(n, sb);
-        tryBoolean(n, "anchor", "%s.setAnchor(%s);\n", sb, nodeMap);
+        if (!(prop = Utils.check("meta-info", nodeMap)).isEmpty()) {
+            String[] props = prop.split(":");
+            if(MetaInfo.containsKey(props[0])) sb.append(String.format("%s.setMetaInformation(%s, %s)", n, props[0], props[1]));
+        }
+        tryMap(n, "cursor-move-style", "%s.setCursorMoveStyle(%s);\n", CursorMoveStyles, sb, nodeMap);
+        tryCheck(n, "text-option", "%s.setToolTip(\"%s\");\n", sb, nodeMap);
+        tryCheck(n, "html", "%s.setHtml(\"%s\");\n", sb, nodeMap);
+        tryCheck(n, "text", "%s.setPlainText(\"%s\");\n", sb, nodeMap);
+        tryBoolean(n, "undo-and-redo", "%s.setUndoRedoEnabled(%s);\n", sb, nodeMap);
+        tryBoolean(n, "use-design-metrics", "%s.setUseDesignMetrics(%s);\n", sb, nodeMap);
+        tryValue(n, "document-margin", "%s.setDocumentMargin(%s);\n", sb, nodeMap);
+        tryValue(n, "indent-width", "%s.setIndentWidth(%s);\n", sb, nodeMap);
+        tryValue(n, "block-limit", "%s.setMaximumBlockCount(%s);\n", sb, nodeMap);
+        tryValue(n, "text-width", "%s.setTextWidth(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QTextDocument", style);
     }
-    ///end of todo
 
-    private void PropertiesParser(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void PlainTextDocumentLayout(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QPlaintTextDocumentLayout");
+        setName(n, sb);
+        tryValue(n, "cursor-width", "%s.setCursorWidth(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QPlaintTextDocumentLayout", style);
+    }
+
+    protected void TextOption(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QTextOption");
+        setName(n, sb);
         if (!(prop = Utils.check("properties", nodeMap)).isEmpty()) {
             String[] props = prop.split(" ");
+            boolean hasFlags = false;
+            String value = "";
             for(String p : props){
-                String[] parts = p.split(":");
-                String[] key = Properties.get(parts[0]).split(":");
-                switch (key[1]) {
-                    case "1": value = parts[1]; break;
-                    case "2": value = String.format("\"%s\"", parts[1]); break;
-                    case "3": value = LayoutDirections.get(parts[1]); break;
-                    case "4": value = Alignments.get(parts[1]); break;
-                    case "5": value = FontStyleHints.get(parts[1]); break;
-                    case "6": value = FontStyleStrategies.get(parts[1]); break;
-                    case "7": value = FontHintingPreferences.get(parts[1]); break;
-                    case "8": value = (Colors.containsKey(parts[1])) ? Colors.get(parts[1]) : String.format("\"%s\"", parts[1]); break;
-                    case "9": value = TextCharFormatVerticalAlignments.get(parts[1]); break;
-                    case "a": value = TextCharFormatUnderlineStyles.get(parts[1]); break;
-                    case "b": value = TextListFormatStyles.get(parts[1]); break;
-                    case "c": value = TextFormatPageBreakFlags.get(parts[1]); break;
-                    case "d": value = TextFrameFormatBorderStyles.get(parts[1]); break;
-                    case "e": value = TextFormatTypes.get(parts[1]); break;
+                if(TextOptionFlags.containsKey(p)){
+                    if(hasFlags)  value += ",";
+                    value += TextOptionFlags.containsKey(p);
+                    hasFlags = true;
                 }
-                Utils.tryEmptyAppend(n, value, "%s.setProperty(" + key +", %s);\n", sb);
             }
+            if(value.isEmpty()) sb.append(String.format("%s.setFlags(%s)", n, value));
         }
+        tryMap(n, "align", "%s.setAlignment(%s);\n", Alignments, sb, nodeMap);
+        tryMap(n, "direction", "%s.setTextDirection(%s);\n", LayoutDirections, sb, nodeMap);
+        tryMap(n, "wrap-mode", "%s.setWrapMode(%s);\n", TextOptionWrapMode, sb, nodeMap);
+        tryBoolean(n, "use-design-metrics", "%s.setUseDesignMetrics(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QTextOption", style);
+    }
+
+    protected void CharFormat(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QTextCharFormat");
+        setName(n, sb);
+        sb.append(tryList(n, "anchor-names", "AnchorNames", nodeMap));
+        tryMap(n, "capitalize", "%s.setFontCapitalization(%s);\n", FontCapitalizationTypes, sb, nodeMap);
+        tryMap(n, "underline-style", "%s.setUnderlineStyle(%s);\n", TextCharFormatUnderlineStyles, sb, nodeMap);
+        tryMap(n, "vertical-alignment", "%s.setVerticalAlignment(%s);\n", TextCharFormatVerticalAlignments, sb, nodeMap);
+        tryCheck(n, "anchor-href", "%s.setAnchorHref(\"%s\");\n", sb, nodeMap);
+        tryCheck(n, "tool-tip", "%s.setToolTip(\"%s\");\n", sb, nodeMap);
+        tryBoolean(n, "anchor", "%s.setAnchor(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QTextCharFormat", style);
+        TextFormat(n, sb, nodeMap);
     }
 
     private void TextFormat(String n, StringBuilder sb, NamedNodeMap nodeMap){
         PropertiesParser(n, sb, nodeMap);
-        tryList(n, "direction", "%s.setLayoutDirection(%s);\n", LayoutDirections, sb, nodeMap);
-        tryList(n, "type", "%s.setObjectType(%s);\n", TextFormatTypes, sb, nodeMap);
+        tryMap(n, "direction", "%s.setLayoutDirection(%s);\n", LayoutDirections, sb, nodeMap);
+        tryMap(n, "type", "%s.setObjectType(%s);\n", TextFormatTypes, sb, nodeMap);
         tryValue(n, "index", "%s.setObjectIndex(%s);\n", sb, nodeMap);
     }
 
-    protected void Tab(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void Tab(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
+        Style style = new Style(n, "QTextOption_Tab");
         setName(n, sb);
-        tryList(n, "type", "%s.setType(%s);\n", TabTypes, sb, nodeMap);
+        tryMap(n, "type", "%s.setType(%s);\n", TabTypes, sb, nodeMap);
         tryCheck(n, "delimiter", "%s.setText('%s');\n", sb, nodeMap);
         tryValue(n, "position", "%s.setPosition(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QTextOption_Tab", style);
     }
 
-    private void Pen(String n, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void Pen(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QPen");
         setName(n, sb);
-        tryList(n, "cap-style", "%s.setCapStyle(%s);\n", PenCapStyles, sb, nodeMap);
-        tryList(n, "joint", "%s.setJoinStyle(%s);\n", PenJoinStyles, sb, nodeMap);
-        tryList(n, "style", "%s.setStyle(%s);\n", PenStyles, sb, nodeMap);
+        tryMap(n, "cap-style", "%s.setCapStyle(%s);\n", PenCapStyles, sb, nodeMap);
+        tryMap(n, "joint", "%s.setJoinStyle(%s);\n", PenJoinStyles, sb, nodeMap);
+        tryMap(n, "style", "%s.setStyle(%s);\n", PenStyles, sb, nodeMap);
         tryBoolean(n, "pen-cosmetic", "%s.setCosmetic(%s);\n", sb, nodeMap);
         tryValue(n, "pen-dash-offset", "%s.setDashOffset(%s);\n", sb, nodeMap);
         tryValue(n, "pen-miter-limit", "%s.setMiterLimit(%s);\n", sb, nodeMap);
         tryValue(n, "pen-width", "%s.setWidth(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QPen", style);
     }
 
-    private void Brush(String n, StringBuilder sb, NamedNodeMap nodeMap) {
+    protected void Brush(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
+        Style style = new Style(n, "QBrush");
+        setName(n, sb);
         boolean brush = false;
         String name;
         if(!(prop = Utils.check("gradient", nodeMap)).isEmpty()) {
@@ -685,15 +780,42 @@ final class InlineStyleParser {
             }
             if(brush) sb.append(")");
         }
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QBrush", style);
+    }
+
+    protected void Font(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+        Style style = new Style(n, "QFont");
+        setName(n, sb);
+        tryMap(n, "capitalization", "%s.setCapitalization(%s);\n", FontCapitalizationTypes, sb, nodeMap);
+        tryMap(n, "hint-preference", "%s.setHintingPreference(%s);\n", FontHintingPreferences, sb, nodeMap);
+        tryMap(n, "style-strategy", "%s.setStyleStrategy(%s);\n", FontStyleStrategies, sb, nodeMap);
+        tryMap(n, "spacing-type", "%s.setLetterSpacingType(%s);\n", FontSpacingType, sb, nodeMap);
+        tryMap(n, "style-hint", "%s.setStyleHint(%s);\n", FontStyleHints, sb, nodeMap);
+        tryCheck(n, "family", "%s.setFamily(\"%s\");\n", sb, nodeMap);
+        tryCheck(n, "raw-name", "%s.setRawName(\"%s\");\n", sb, nodeMap);
+        tryBoolean(n, "bold", "%s.setBold(%s);\n", sb, nodeMap);
+        tryBoolean(n, "italic", "%s.setItalic(%s);\n", sb, nodeMap);
+        tryBoolean(n, "overline", "%s.setOverline(%s);\n", sb, nodeMap);
+        tryBoolean(n, "fixed-pitch", "%s.setFixedPitch(%s);\n", sb, nodeMap);
+        tryBoolean(n, "kerning", "%s.setKerning(%s);\n", sb, nodeMap);
+        tryBoolean(n, "raw-mode", "%s.setRawMode(%s);\n", sb, nodeMap);
+        tryBoolean(n, "strikeout", "%s.setStrikeOut(%s);\n", sb, nodeMap);
+        tryBoolean(n, "underline", "%s.setUnderLine(%s);\n", sb, nodeMap);
+        tryValue(n, "spacing", "%s.setWordSpacing(%s);\n", sb, nodeMap);
+        tryValue(n, "stretch", "%s.setStretch(%s);\n", sb, nodeMap);
+        tryValue(n, "pixel-size", "%s.setPixelSize(%s);\n", sb, nodeMap);
+        tryValue(n, "point-size", "%s.setPointSizeF(%s);\n", sb, nodeMap);
+        tryValue(n, "weight", "%s.setWeight(%s);\n", sb, nodeMap);
+        if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QFont", style);
     }
 
     private void AbstractScrollArea(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        tryList(n, "horizontal-scroll-bar-policy", "%s.setHorizontalScrollBarPolicy(%s);\n", ScrollBarPolicies, sb, nodeMap);
-        tryList(n, "vertical-scroll-bar-policy", "%s.setVerticalScrollBarPolicy(%s);\n", ScrollBarPolicies, sb, nodeMap);
+        tryMap(n, "horizontal-scroll-bar-policy", "%s.setHorizontalScrollBarPolicy(%s);\n", ScrollBarPolicies, sb, nodeMap);
+        tryMap(n, "vertical-scroll-bar-policy", "%s.setVerticalScrollBarPolicy(%s);\n", ScrollBarPolicies, sb, nodeMap);
         Frame(n, sb, nodeMap);
     }
 
-    protected void LCDNumber(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void LCDNumber(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
         Style style = new Style(n, "QLCDNumber");
         setName(n, sb);
         tryCapitalize(n, "segment-style", "%s.setSegmentStyle(QLCDNumber.SegmentStyle.%s);\n", sb, nodeMap);
@@ -709,9 +831,9 @@ final class InlineStyleParser {
     protected void Label(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QLabel");
         setName(n, sb);
-        tryList(n, "align", "%s.setAlignment(%s);\n", Alignments, sb, nodeMap);
-        tryList(n, "text-format", "%s.setTextFormat(%s);\n", TextFormats, sb, nodeMap);
-        tryList(n, "text-interaction", "%s.setTextInteractionFlags(%s);\n", TextInteractionFlags, sb, nodeMap);
+        tryMap(n, "align", "%s.setAlignment(%s);\n", Alignments, sb, nodeMap);
+        tryMap(n, "text-format", "%s.setTextFormat(%s);\n", TextFormats, sb, nodeMap);
+        tryMap(n, "text-interaction", "%s.setTextInteractionFlags(%s);\n", TextInteractionFlags, sb, nodeMap);
         tryCheck(n, "text", "%s.setText(tr(\"%s\"));\n", sb, nodeMap);
         tryBoolean(n, "open-external-links", "%s.setOpenExternalLinks(%s);\n", sb, nodeMap);
         tryBoolean(n, "word-warp", "%s.setWordWrap(%s);\n", sb, nodeMap);
@@ -726,7 +848,7 @@ final class InlineStyleParser {
     protected void Splitter(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
         Style style = new Style(n, "QSplitter");
         setName(n, sb);
-        tryList(n, "orientation", "%s.setOrientation(%s);\n", Orientations, sb, nodeMap);
+        tryMap(n, "orientation", "%s.setOrientation(%s);\n", Orientations, sb, nodeMap);
         tryBoolean(n, "resizeable", "%s.setOpaqueResize(%s);\n", sb, nodeMap);
         tryValue(n, "handle-width", "%s.setHandleWidth(%s);\n", sb, nodeMap);
         tryValue(n, "rubber-band", "%s.setRubberBand(%s);\n", sb, nodeMap);
@@ -735,9 +857,9 @@ final class InlineStyleParser {
         Frame(n, sb, nodeMap);
     }
 
-    protected void Frame(String n, StringBuilder sb, NamedNodeMap nodeMap){
-        tryList(n, "shadow", "%s.setFrameShadow(%s);\n", FrameShadows, sb, nodeMap);
-        tryList(n, "shape", "%s.setFrameShape(%s);\n", FrameShapes, sb, nodeMap);
+    protected void Frame(String n, StringBuilder sb, NamedNodeMap nodeMap) {
+        tryMap(n, "shadow", "%s.setFrameShadow(%s);\n", FrameShadows, sb, nodeMap);
+        tryMap(n, "shape", "%s.setFrameShape(%s);\n", FrameShapes, sb, nodeMap);
         if(!(prop = Utils.check("size", nodeMap)).isEmpty()){
             String[] sizes = prop.split(" ");
             sb.append(String.format("%s.setFrameRect(new QRect(", n));
@@ -759,7 +881,7 @@ final class InlineStyleParser {
     protected void Slider(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QSlider");
         setName(n, sb);
-        tryList(n, "tick-position", "%s.setTickPosition(%s);\n", SliderTickPositions, sb, nodeMap);
+        tryMap(n, "tick-position", "%s.setTickPosition(%s);\n", SliderTickPositions, sb, nodeMap);
         tryValue(n, "interval", "%s.setTickInterval(%s);\n", sb, nodeMap);
         setStyle(style, nodeMap);
         if(!style.isEmpty()) stylesSheet.put((!n.isEmpty()) ? n : "QSlider", style);
@@ -769,8 +891,8 @@ final class InlineStyleParser {
     private void AbstractSlider(String n, StringBuilder sb, NamedNodeMap nodeMap){
         String[] range = Utils.check("range", nodeMap).split(" ");
         if (range.length > 1) sb.append(String.format("%s.setRange(%s, %s);\n", n, range[0], range[1]));
-        tryList(n, "orientation", "%s.setOrientation(%s);\n", Orientations, sb, nodeMap);
-        tryList(n, "invert-numbers", "%s.setInvertedControls(%s);\n", Orientations, sb, nodeMap);
+        tryMap(n, "orientation", "%s.setOrientation(%s);\n", Orientations, sb, nodeMap);
+        tryMap(n, "invert-numbers", "%s.setInvertedControls(%s);\n", Orientations, sb, nodeMap);
         tryBoolean(n, "invert-numbers", "%s.setInvertedControls(%s);\n", sb, nodeMap);
         tryBoolean(n, "invert-controls", "%s.setInvertedAppearance(%s);\n", sb, nodeMap);
         tryBoolean(n, "tracking", "%s.setTracking(%s);\n", sb, nodeMap);
@@ -795,7 +917,7 @@ final class InlineStyleParser {
         AbstractButton(n, sb, nodeMap);
     }
 
-    protected void RadioButton(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void RadioButton(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
         Style style = new Style(n, "QRadioButton");
         setName(n, sb);
         setStyle(style, nodeMap);
@@ -803,10 +925,10 @@ final class InlineStyleParser {
         AbstractButton(n, sb, nodeMap);
     }
 
-    protected void CheckBox(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void CheckBox(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
         Style style = new Style(n, "QCheckBox");
         setName(n, sb);
-        tryList(n, "check-state", "%s.setCheckState(%s);\n", CheckStates, sb, nodeMap);
+        tryMap(n, "check-state", "%s.setCheckState(%s);\n", CheckStates, sb, nodeMap);
         tryBoolean(n, "checkable", "%s.setTristate(%s);\n", sb, nodeMap);
         tryBoolean(n, "default", "%s.setDefaultUp(%s);\n", sb, nodeMap);
         tryBoolean(n, "native-menubar", "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
@@ -832,9 +954,9 @@ final class InlineStyleParser {
         sb.append("QWidget centerWidget = new QWidget();\n");
         sb.append(String.format("%s.setCentralWidget(centerWidget);\n", n));
         sb.append(String.format("%s.setWindowTitle(tr(\"%s\"));\n", n, Utils.tryEmpty("title", "JAML Applicaiton", nodeMap)));
-        tryList(n, "dock-option", "%s.setDockOptions(%s);\n", DockOptions, sb, nodeMap);
-        tryList(n, "tab-shape", "%s.setTabShape(%s);\n", TabShapes, sb, nodeMap);
-        tryList(n, "tool-button-style", "%s.setToolButtonStyle(%s);\n", ToolButtonStyles, sb, nodeMap);
+        tryMap(n, "dock-option", "%s.setDockOptions(%s);\n", DockOptions, sb, nodeMap);
+        tryMap(n, "tab-shape", "%s.setTabShape(%s);\n", TabShapes, sb, nodeMap);
+        tryMap(n, "tool-button-style", "%s.setToolButtonStyle(%s);\n", ToolButtonStyles, sb, nodeMap);
         tryBoolean(n, "dock-animation", "%s.setAnimated(%s);\n", sb, nodeMap);
         tryBoolean(n, "dock-nesting", "%s.setDockNestingEnabled(%s);\n", sb, nodeMap);
         tryBoolean(n, "document-mode", "%s.setDocumentMode(%s);\n", sb, nodeMap);
@@ -844,7 +966,7 @@ final class InlineStyleParser {
         Widget(n, sb, nodeMap);
     }
 
-    protected void MenuBar(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
+    protected void MenuBar(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
         Style style = new Style(n, "QMenuBar");
         setName(n, sb);
         setStyle(style, nodeMap);
@@ -874,9 +996,9 @@ final class InlineStyleParser {
     protected void LineEdit(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
         Style style = new Style(n, "QLineEdit");
         setName(n, sb);
-        tryList(n, "align", "%s.setAlignment(%s);\n", Alignments, sb, nodeMap);
-        tryList(n, "echo-mode", "%s.setEchoMode(%s);\n", EchoModes, sb, nodeMap);
-        tryList(n, "cursor-move-style", "%s.setCursorMoveStyle(%s);\n", CursorMoveStyles, sb, nodeMap);
+        tryMap(n, "align", "%s.setAlignment(%s);\n", Alignments, sb, nodeMap);
+        tryMap(n, "echo-mode", "%s.setEchoMode(%s);\n", EchoModes, sb, nodeMap);
+        tryMap(n, "cursor-move-style", "%s.setCursorMoveStyle(%s);\n", CursorMoveStyles, sb, nodeMap);
         tryCheck(n, "placeholder", "%s.setPlaceholderText(\"%s\");\n", sb, nodeMap);
         tryBoolean(n, "draggable", "%s.setDragEnabled(%s);\n", sb, nodeMap);
         tryBoolean(n, "frame", "%s.setFrame(%s);\n", sb, nodeMap);
@@ -891,7 +1013,7 @@ final class InlineStyleParser {
     protected void Group(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap) {
         Style style = new Style(n, "QGroupBox");
         setName(n, sb);
-        tryList(n, "align", "%s.setTextAlignment(%s);\n", TextAlignments, sb, nodeMap);
+        tryMap(n, "align", "%s.setTextAlignment(%s);\n", TextAlignments, sb, nodeMap);
         tryCheck(n, "title", "%s.setTitle(\"%s\");\n", sb, nodeMap);
         tryBoolean(n, "flat", "%s.setFlat(%s);\n", sb, nodeMap);
         tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
@@ -913,7 +1035,7 @@ final class InlineStyleParser {
             }
             Utils.tryEmptyAppend(n, String.format("%s, %s, %s, %s", v1, v2, v3, v4), "%s.setContentsMargins(%s));\n", sb);
         }
-        tryList(n, "cursor", "%s.setCursor(new QCursor(%s));\n", cursors, sb, nodeMap);
+        tryMap(n, "cursor", "%s.setCursor(new QCursor(%s));\n", cursors, sb, nodeMap);
         tryCheck(n, "tool-tip", "%s.setToolTip(\"%s\");\n", sb, nodeMap);
         tryBoolean(n, "mouse-tracking", "%s.setMouseTracking(%s);\n", sb, nodeMap);
         tryBoolean(n, "visibility", "%s.setHidden(%s);\n", sb, nodeMap);
@@ -923,7 +1045,7 @@ final class InlineStyleParser {
     protected void Grid(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QGridLayout");
         setName(n, sb);
-        tryList(n, "tool-button-style", "%s.setToolButtonStyle(%s);\n", ToolButtonStyles, sb, nodeMap);
+        tryMap(n, "tool-button-style", "%s.setToolButtonStyle(%s);\n", ToolButtonStyles, sb, nodeMap);
         tryValue(n, "spacing", "%s.setSpacing(%s);\n", sb, nodeMap);
         tryValue(n, "row-spacing", "%s.setVerticalSpacing(%s);\n", sb, nodeMap);
         tryValue(n, "column-spacing", "%s.setHorizontalSpacing(%s);\n", sb, nodeMap);
@@ -951,8 +1073,8 @@ final class InlineStyleParser {
         hasFlags = setFlag(hasFlags, n, "checkable", "ItemIsCheckable", sb, nodeMap);
         hasFlags = setFlag(hasFlags, n, "checked", "ItemIsEnabled", sb, nodeMap);
         hasFlags = setFlag(hasFlags, n, "tri-state", "ItemIsTristate", sb, nodeMap);
-        if(hasFlags) sb.append(");\n");
-        tryList(n, "align", "%s.setTextAlignment(%s);\n", TextAlignments, sb, nodeMap);
+        if (hasFlags) sb.append(");\n");
+        tryMap(n, "align", "%s.setTextAlignment(%s);\n", TextAlignments, sb, nodeMap);
         tryCheck(n, "status-tip", "%s.setStatusTip(\"%s\");\n", sb, nodeMap);
         tryCheck(n, "text", "%s.setText(\"%s\");\n", sb, nodeMap);
         tryCheck(n, "icon", "%s.setIcon(new QIcon(\"%s\"));\n", sb, nodeMap);
@@ -966,10 +1088,10 @@ final class InlineStyleParser {
 
     protected void Action(String n, Map<String, Style> stylesSheet, StringBuilder sb, NamedNodeMap nodeMap){
         Style style = new Style(n, "QAction");
-        tryList(n, "menu-role", "%s.setMenuRole(%s);\n", ActionMenuRoles, sb, nodeMap);
-        tryList(n, "priority", "%s.setPriority(%s);\n", ActionPriorities, sb, nodeMap);
-        tryList(n, "soft-key-role", "%s.setSoftKeyRole(%s);\n", ActionSoftKeyRoles, sb, nodeMap);
-        tryList(n, "shortcut-context", "%s.setShortcutContext(%s);\n", ShortcutContexts, sb, nodeMap);
+        tryMap(n, "menu-role", "%s.setMenuRole(%s);\n", ActionMenuRoles, sb, nodeMap);
+        tryMap(n, "priority", "%s.setPriority(%s);\n", ActionPriorities, sb, nodeMap);
+        tryMap(n, "soft-key-role", "%s.setSoftKeyRole(%s);\n", ActionSoftKeyRoles, sb, nodeMap);
+        tryMap(n, "shortcut-context", "%s.setShortcutContext(%s);\n", ShortcutContexts, sb, nodeMap);
         tryBoolean(n, "repeatable", "%s.setAutoRepeat(%s);\n", sb, nodeMap);
         tryBoolean(n, "checkable", "%s.setCheckable(%s);\n", sb, nodeMap);
         tryBoolean(n, "icon-visible", "%s.setIconVisibleMenu(%s);\n", sb, nodeMap);
@@ -986,10 +1108,11 @@ final class InlineStyleParser {
 
     private void setStyle(Style style, NamedNodeMap nodeMap) {
         for (Map.Entry<String, String> entry : Styles.entrySet())
-            if (!(value = Utils.check(entry.getKey(), nodeMap)).isEmpty()) style.addAttribute(entry.getValue(), value);
+            if (!(value = Utils.check(entry.getKey(), nodeMap)).isEmpty())
+                style.addAttribute(entry.getValue(), value);
     }
 
-    private void tryList(String n, String prop, String command, Map<String, String> map, StringBuilder sb, NamedNodeMap nodeMap){
+    private void tryMap(String n, String prop, String command, Map<String, String> map, StringBuilder sb, NamedNodeMap nodeMap){
         if (!(p = Utils.check(prop, nodeMap)).isEmpty())  Utils.tryEmptyAppend(n, map.get(p), command, sb);
     }
 
@@ -1003,7 +1126,8 @@ final class InlineStyleParser {
     }
 
     private void setName(String n, StringBuilder sb){
-        if(!Utils.components.containsKey(n.replaceAll("\\d", ""))) sb.append(String.format("%s.setObjectName(\"%s\");\n", n, n));
+        if(!Utils.components.containsKey(n.replaceAll("\\d", "")))
+            sb.append(String.format("%s.setObjectName(\"%s\");\n", n, n));
     }
 
     private void tryCheck(String name, String prop, String command, StringBuilder sb, NamedNodeMap nodeMap){
@@ -1030,5 +1154,42 @@ final class InlineStyleParser {
             comps.add(prop);
         }
         return prop;
+    }
+
+    private void PropertiesParser(String n, StringBuilder sb, NamedNodeMap nodeMap){
+        if (!(prop = Utils.check("properties", nodeMap)).isEmpty()) {
+            String[] props = prop.split(" ");
+            for(String p : props){
+                String[] parts = p.split(":");
+                String[] key = Properties.get(parts[0]).split(":");
+                switch (key[1]) {
+                    case "1": value = parts[1]; break;
+                    case "2": value = String.format("\"%s\"", parts[1]); break;
+                    case "3": value = LayoutDirections.get(parts[1]); break;
+                    case "4": value = Alignments.get(parts[1]); break;
+                    case "5": value = FontStyleHints.get(parts[1]); break;
+                    case "6": value = FontStyleStrategies.get(parts[1]); break;
+                    case "7": value = FontHintingPreferences.get(parts[1]); break;
+                    case "8": value = (Colors.containsKey(parts[1])) ? Colors.get(parts[1]) : String.format("\"%s\"", parts[1]); break;
+                    case "9": value = TextCharFormatVerticalAlignments.get(parts[1]); break;
+                    case "a": value = TextCharFormatUnderlineStyles.get(parts[1]); break;
+                    case "b": value = TextListFormatStyles.get(parts[1]); break;
+                    case "c": value = TextFormatPageBreakFlags.get(parts[1]); break;
+                    case "d": value = TextFrameFormatBorderStyles.get(parts[1]); break;
+                    case "e": value = TextFormatTypes.get(parts[1]); break;
+                }
+                Utils.tryEmptyAppend(n, value, "%s.setProperty(" + key +", %s);\n", sb);
+            }
+        }
+    }
+
+    private String tryList(String n, String prop, String method, NamedNodeMap nodeMap){
+        StringBuilder value = new StringBuilder();
+        if (!(prop = Utils.check(prop, nodeMap)).isEmpty()) {
+            value.append(String.format("%s.%s(new ArrayList<String>() {{", n, method));
+            for(String p : prop.split(" ")) value.append(String.format("add(\"%s\");\n", p));
+            value.append("}});\n");
+        }
+        return value.toString();
     }
 }
