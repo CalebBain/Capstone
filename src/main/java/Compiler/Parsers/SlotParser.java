@@ -19,7 +19,7 @@ public class SlotParser {
             String methodName = Utils.tryEmpty("name", "method", attributes);
             String methodCall = Utils.check("call", attributes);
             String classCall = Utils.check("class", attributes);
-            String params = Utils.check("params", attributes);
+            String params = ParamsParser(attributes);
             String methodParams = params.replaceAll("(, )?this(, )?", "");
             String owner = Utils.tryEmpty("owner", "window", attributes);
             String Method = (result.containsKey(owner)) ? result.get(owner) : "";
@@ -34,5 +34,23 @@ public class SlotParser {
             result.put(owner, Method);
         }
         return result;
+    }
+
+    private String ParamsParser(NamedNodeMap attributes){
+        int count = 1;
+        boolean hasProps = false;
+        StringBuilder value = new StringBuilder();
+        String params = Utils.check("params", attributes);
+        for(String p : params.split(",")){
+            if(!p.isEmpty()){
+                if(Utils.components.containsKey(p)){
+                    p = Utils.components.get(p);
+                }
+                if(hasProps) value.append(", ");
+                else hasProps = true;
+                value.append(String.format("%s param%s", p, count++));
+            }
+        }
+        return value.toString();
     }
 }

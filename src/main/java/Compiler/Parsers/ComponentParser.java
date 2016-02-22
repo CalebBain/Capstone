@@ -59,7 +59,7 @@ public final class ComponentParser {
     }
 
     private String StyleSheet(){
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         Collection<Style> temp = stylesSheet.values();
         Style[] styles = temp.toArray(new Style[temp.size()]);
         for(int i = 0; i < styles.length;){

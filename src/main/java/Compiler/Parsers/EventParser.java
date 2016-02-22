@@ -36,7 +36,7 @@ public final class EventParser {
     public boolean ActionEvents(String file, String name, String component, String param, String methods, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
         if(!param.isEmpty()) param = String.format("\"%s\"", param);
-        sb.append(String.format("%s %s = new %s(%s, this)", component, name, component, param));
+        sb.append(String.format("final %s %s = new %s(%s, this)", component, name, component, param));
         try{
             if(!methods.isEmpty()){
                 hasProps = true;
@@ -51,7 +51,7 @@ public final class EventParser {
     public boolean Events(String file, String name, String component, String param, String methods, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
         if(!param.isEmpty()) param = String.format("\"%s\"", param);
-        sb.append(String.format("%s %s = new %s(%s)", component, name, component, param));
+        sb.append(String.format("final %s %s = new %s(%s)", component, name, component, param));
         try{
             if(!methods.isEmpty()){
                 hasProps = true;

@@ -13,7 +13,7 @@ final class ChildParser {
             case "menu" : MenuChild(name, component, child, sb, nodeMap); break;
             case "label" : LabelChild(name, component, child, sb); break;
             case "section" : WidgetChild(name, component, child, sb); break;
-            case "splitter" : SplitChild(name, component, child, sb); break;
+            case "splitter" : SplitChild(name, component, child, sb, nodeMap); break;
             case "list" : ListChild(name, component, child, sb); break;
             case "group" : GroupChild(name, component, child, sb); break;
             case "pen" : PenChild(name, component, child, sb); break;
@@ -83,11 +83,15 @@ final class ChildParser {
     }
 
     private void ListChild(String name, String component, String child, StringBuilder sb) {
-        if(component.equals("item")) sb.append(String.format("%s.addItem(%s);\n", name, child));
+        if(component.equals("item"))  sb.append(String.format("%s.addItem(%s);\n", name, child));
     }
 
-    private void SplitChild(String name, String component, String child, StringBuilder sb) {
-        if(component.equals("widget")) sb.append(String.format("%s.addWidget(%s);\n", name, child));
+    private void SplitChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap) {
+        String prop;
+        if(component.equals("widget")) {
+            if(!(prop = Utils.check("insert", nodeMap)).isEmpty()) sb.append(String.format("%s.insertWidget(%s, %s);\n", name, prop, child));
+            else sb.append(String.format("%s.addWidget(%s);\n", name, child));
+        }
     }
 
     private void WidgetChild(String name, String component, String child, StringBuilder sb){
