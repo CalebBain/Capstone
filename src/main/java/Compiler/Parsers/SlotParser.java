@@ -17,18 +17,19 @@ public class SlotParser {
             Node method = methodCalls.item(i);
             NamedNodeMap attributes = method.getAttributes();
             String methodName = Utils.tryEmpty("name", "method", attributes);
+            if(methodName.contains("-")) methodName = methodName.replaceAll("-", "_");
             String methodCall = Utils.check("call", attributes);
             String classCall = Utils.check("class", attributes);
             String params = ParamsParser(attributes);
             String methodParams = params.replaceAll("(, )?this(, )?", "");
+            String refs = Utils.check("ref", attributes);
+            if(!refs.isEmpty()) refs = ", " + refs;
             String owner = Utils.tryEmpty("owner", "window", attributes);
             String Method = (result.containsKey(owner)) ? result.get(owner) : "";
             if(!methodCall.isEmpty() && !classCall.isEmpty()){
                 if(classCall.contains("("))
-                    Method += String.format("public Object %s(%s){ new %s.%s(%s); return null; }\n",
-                            methodName, methodParams, classCall, methodCall, params);
-                else Method += String.format("public Object %s(%s){ new %s().%s(%s); return null; }\n",
-                        methodName, methodParams, classCall, methodCall, params);
+                    Method += String.format("public Object %s(%s){ new %s.%s(%s); return null; }\n", methodName, methodParams, classCall, methodCall, params);
+                else Method += String.format("public Object %s(%s){ new %s().%s(%s%s); return null; }\n", methodName, methodParams, classCall, methodCall, params, refs);
             }
 
             result.put(owner, Method);
@@ -41,14 +42,18 @@ public class SlotParser {
         boolean hasProps = false;
         StringBuilder value = new StringBuilder();
         String params = Utils.check("params", attributes);
-        for(String p : params.split(",")){
-            if(!p.isEmpty()){
+        for(String p : params.split(",( )?")){
+            if(!p.isEmpty() && !p.equals("this")){
                 if(Utils.components.containsKey(p)){
                     p = Utils.components.get(p);
                 }
                 if(hasProps) value.append(", ");
                 else hasProps = true;
                 value.append(String.format("%s param%s", p, count++));
+            }else if(p.equals("this")){
+                if(hasProps) value.append(", ");
+                else hasProps = true;
+                value.append("this");
             }
         }
         return value.toString();

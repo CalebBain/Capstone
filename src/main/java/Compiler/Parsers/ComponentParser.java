@@ -40,10 +40,13 @@ public final class ComponentParser {
         NamedNodeMap nodeMap = node.getAttributes();
         String name = "window";
         String methods = methodCalls.get("window");
-        sb.append("import com.trolltech.qt.core.*;\nimport com.trolltech.qt.gui.*;\nimport java.util.List;\n");
-        sb.append("public class qt extends QApplication{\npublic qt() { super(new String[0]); run(); }\n");
-        sb.append("public void run() {\n");
-        sb.append(String.format("QMainWindow %s = new QMainWindow()", name));
+        sb.append(String.format("import com.trolltech.qt.core.*;\n" +
+                "import com.trolltech.qt.gui.*;\n" +
+                "import java.util.List;\n" +
+                "public class qt extends QApplication{\n" +
+                "public qt() { super(new String[0]); run(); }\n" +
+                "public void run() {\n" +
+                "QMainWindow %s = new QMainWindow()", name));
         try{
             if (!methods.isEmpty()) sb.append(String.format("{\n%s}", methods));
         }catch (NullPointerException ignored){
