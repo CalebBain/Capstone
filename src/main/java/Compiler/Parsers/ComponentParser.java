@@ -46,7 +46,7 @@ public final class ComponentParser {
                 "public class qt extends QApplication{\n" +
                 "public qt() { super(new String[0]); run(); }\n" +
                 "public void run() {\n" +
-                "QMainWindow %s = new QMainWindow()", name));
+                "final QMainWindow %s = new QMainWindow()", name));
         try{
             if (!methods.isEmpty()) sb.append(String.format("{\n%s}", methods));
         }catch (NullPointerException ignored){
