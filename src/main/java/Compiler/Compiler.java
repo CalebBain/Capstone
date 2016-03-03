@@ -36,7 +36,7 @@ public final class Compiler {
                     if (window != null){
                         String Code = new ComponentParser(fXmlFile.getName(), methodCalls, window).toString();
                         System.out.println(Code);
-                        new GroovyShell(new Binding()). evaluate(Code);
+                        new GroovyShell(new Binding()).evaluate(Code);
                     }
                 }
             }

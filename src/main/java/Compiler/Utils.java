@@ -34,6 +34,7 @@ public final class Utils {
         put("gradient", "QGradient");
         put("char_format", "QTextCharFormat");
         put("text_option", "QTextOption");
+        put("document", "QTextDocument");
         put("document_layout", "QPlaintTextDocumentLayout");
     }};
     public static boolean tryDouble(String value) {

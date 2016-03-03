@@ -1,193 +1,225 @@
 package Compiler.Parsers;
 
-import org.w3c.dom.NamedNodeMap;
 import Compiler.Utils;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
 
 final class ChildParser {
+    private StringBuilder sb;
+
+    private Map<String, Map<String, String>> NodeList = new HashMap<String, Map<String, String>>(){{
+        put("Alignment", new HashMap<String, String>(){{
+            put("bottom","Qt.AlignmentFlag.AlignBottom");
+            put("center","Qt.AlignmentFlag.AlignCenter");
+            put("horizontal-center","Qt.AlignmentFlag.AlignHCenter");
+            put("justify","Qt.AlignmentFlag.AlignJustify");
+            put("left","Qt.AlignmentFlag.AlignLeft");
+            put("right","Qt.AlignmentFlag.AlignRight");
+            put("top","Qt.AlignmentFlag.AlignTop");
+            put("vertical-center","Qt.AlignmentFlag.AlignVCenter");
+            put("absolute","Qt.AlignmentFlag.AlignAbsolute");
+        }});
+        put("Pen", new HashMap<String, String>(){{
+            put("text-outline","%s.setProperty(0x2022, %s);");
+            put("default","%s.setProperty(0x810, %s);");
+        }});
+        put("MenuCorner", new HashMap<String, String>(){{
+            put("right","Qt.Corner.TopRightCorner");
+            put("left","Qt.Corner.TopLeftCorner");
+        }});
+    }};
 
     protected void addChild(String name, String layout, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
+        this.sb = sb;
         switch (layout) {
-            case "window": WindowChild(child, component, sb); break;
-            case "grid" : GridChild(name, component, child, sb, nodeMap); break;
-            case "menubar" : MenubarChild(name, component, child, sb, nodeMap); break;
-            case "menu" : MenuChild(name, component, child, sb, nodeMap); break;
-            case "label" : LabelChild(name, component, child, sb); break;
-            case "section" : WidgetChild(name, component, child, sb); break;
-            case "splitter" : SplitChild(name, component, child, sb, nodeMap); break;
-            case "list" : ListChild(name, component, child, sb); break;
-            case "group" : GroupChild(name, component, child, sb); break;
-            case "pen" : PenChild(name, component, child, sb); break;
-            case "char-format": CharFormatChild(name, component, child, sb, nodeMap);
-            case "text-edit": TextEditChild(name, component, child, sb);
-            case "document": DocumentChild(name, component, child, sb);
+            case "window": WindowChild(child, component); break;
+            case "grid" : GridChild(name, component, child, nodeMap); break;
+            case "menubar" : MenubarChild(name, component, child, nodeMap); break;
+            case "menu" : MenuChild(name, component, child, nodeMap); break;
+            case "label" : LabelChild(name, component, child); break;
+            case "section" : WidgetChild(name, component, child); break;
+            case "splitter" : SplitChild(name, component, child); break;
+            case "list" : ListChild(name, component, child); break;
+            case "group" : GroupChild(name, component, child); break;
+            case "pen" : PenChild(name, component, child); break;
+            case "char-format": CharFormatChild(name, component, child, nodeMap);
+            case "text-edit": TextEditChild(name, component, child);
+            case "document": DocumentChild(name, component, child);
         }
     }
 
-    private void DocumentChild(String name, String component, String child, StringBuilder sb){
-        switch(component){
-            case "font": sb.append(String.format("%s.setDefaultFont(%s);\n", name, child)); break;
-            case "text-option": sb.append(String.format("%s.setDefaultTextOption(%s);\n", name, child)); break;
-            case "document-layout": sb.append(String.format("%s.setDocumentLayout(%s);\n", name, child)); break;
-        }
+    private void DocumentChild(String name, String component, String child){
+        tryChildParent(name, component, child, "font", "%s.setDefaultFont(%s);\n");
+        tryChildParent(name, component, child, "text-option", "%s.setDefaultFont(%s);\n");
+        tryChildParent(name, component, child, "document-layout", "%s.setDocumentLayout(%s);\n");
+    }
+    private void TextEditChild(String name, String component, String child){
+        tryChildParent(name, component, child, "char-format", "%s.setCurrentCharFormat(%s);\n");
+        tryChildParent(name, component, child, "document", "%s.setDocument(%s);\n");
+    }
+    private void CharFormatChild(String name, String component, String child, NamedNodeMap nodeMap){
+        tryChildParent(name, component, child, "font", "%s.setFont(%s);\n");
+        tryChildParent(name, component, child, "pen", "%s.setTextOutline(%s);\n");
+        tryChildParent(name, component, child, "color", "%s.setUnderlineColor(%s);\n");
+        TextFormatChild(name, component, child, nodeMap);
+    }
+    private void TextFormatChild(String name, String component, String child, NamedNodeMap nodeMap){
+        tryChildParent(name, component, child, "tab", "%s.setProperty(0x1035, %s);\n");
+        tryChildType(name, component, child, "brush&foreground", "%s.setProperty(0x821, %s);\n", nodeMap);
+        tryChildType(name, component, child, "brush&background", "%s.setProperty(0x820, %s);\n", nodeMap);
+        tryChildType(name, component, child, "brush&border", "%s.setProperty(0x4009, %s);\n", nodeMap);
+        tryChildMapDefault(name, component, child, "%s.setProperty(0x810, %s);\n", NodeList.get("Pen"), nodeMap);
+    }
+    private void PenChild(String name, String component, String child){
+        tryChildParent(name, component, child, "brush", "%s.setBrush(%s);\n");
+    }
+    private void GroupChild(String name, String component, String child) {
+        tryChildParent(name, component, child, "layout", "%s.setLayout(%s);\n");
+    }
+    private void ListChild(String name, String component, String child) {
+        tryChildParent(name, component, child, "item", "%s.addItem(%s);\n");
+    }
+    private void SplitChild(String name, String component, String child) {
+        tryChildParent(name, component, child, "widget", "%s.addWidget(%s);\n");
+    }
+    private void WidgetChild(String name, String component, String child){
+        tryChildParent(name, component, child, "layout", "%s.setLayout(%s);\n");
+        tryChildParent(name, component, child, "widget", "%s.setParent(%s);\n");
+    }
+    private void LabelChild(String name, String component, String child){
+        tryChildParent(name, component, child, "widget", "%s.setBuddy(%s);\n");
+        tryChildParent(name, component, child, "movie", "%s.setMovie(%s);\n");
+        tryChildParent(name, component, child, "picture", "%s.setPicture(%s);\n");
+        tryChildParent(name, component, child, "drawing", "%s.setPixmap(%s);\n");
+    }
+    private void WindowChild(String name, String component){
+        tryChild(name, component, "layout", "centerWidget.setLayout(%s);\n");
+        tryChild(name, component, "widget", "%s.setParent(centerWidget);\n");
+        tryChild(name, component, "menubar", "window.setMenuBar(%s);\n");
+    }
+    private void GridChild(String name, String component, String child, NamedNodeMap nodeMap){
+        tryFindAppend(name, component, "widget", "%s.addWidget(%s, %s, %s, %s, %s, %s);\n", nodeMap, child,
+                "row/int/1", "column/int/1", "row-span/int/row", "column-span/int/column",
+                "position/map/Alignment/absolute");
+        tryFindAppend(name, component, "layout", "%s.addLayout(%s, %s, %s, %s, %s, %s);\n", nodeMap, child,
+                "row/int/1", "column/int/1", "row-span/int/row", "column-span/int/column",
+                "position/map/Alignment/absolute");
+        tryFindAppend(name, component, "item", "%s.addItem(%s, %s, %s, %s, %s, %s);\n", nodeMap, child,
+                "row/int/1", "column/int/1", "row-span/int/row", "column-span/int/column",
+                "position/map/Alignment/absolute");
     }
 
-    private void TextEditChild(String name, String component, String child, StringBuilder sb){
-        switch(component){
-            case "char-format": sb.append(String.format("%s.setCurrentCharFormat(%s);\n", name, child)); break;
-            case "document": sb.append(String.format("%s.setDocument(%s);\n", name, child)); break;
-        }
+    private void MenubarChild(String name, String component, String child, NamedNodeMap nodeMap){
+        tryChildMap(name, "widget", child, "%s.setCornerWidget(%s, %s);\n", NodeList.get("MenuCorner"), nodeMap);
+        tryChildParent(name, component, child, "menu", "%s.addMenu(%s);\n");
+        tryChildParent(name, component, child, "action", "%s.addAction(%s);\n");
+        tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", nodeMap);
+        tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", nodeMap);
+        tryCheck(name, "separator", "%s.addSeparator();\n", nodeMap);
     }
 
-    private void CharFormatChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
-        switch(component){
-            case "font": sb.append(String.format("%s.setFont(%s);\n", name, child)); break;
-            case "pen": sb.append(String.format("%s.setTextOutline(%s);\n", name, child)); break;
-            case "color": sb.append(String.format("%s.setUnderlineColor(%s);\n", name, child)); break;
-        }
-        TextFormatChild(name, component, child, sb, nodeMap);
+    private void MenuChild(String name, String component, String child, NamedNodeMap nodeMap) {
+        tryChildParent(name, component, child, "menu", "%s.addMenu(%s);\n");
+        tryChildParent(name, component, child, "action", "%s.addAction(%s);\n");
+        tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", nodeMap);
+        tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", nodeMap);
+        tryBoolean(name, "collapsible", child, "%s.setSeparatorsCollapsible(%s);\n", nodeMap);
+        tryCheck(name, "separator", "%s.addSeparator();\n", nodeMap);
     }
 
-    private void TextFormatChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
-        switch (component){
-            case "tab" : sb.append(String.format("%s.setProperty(0x1035, %s);\n", name, child)); break;
-            case "brush" :
-                String prop;
-                if (!(prop = Utils.check("type", nodeMap)).isEmpty()){
-                    String value = "";
-                    switch (prop) {
-                        case "foreground": value = String.format("0x821, %s", child); break;
-                        case "background": value = String.format("0x820, %s", child); break;
-                        case "border": value = String.format("0x4009, %s", child); break;
-                    }
-                    Utils.tryEmptyAppend(name, value, "%s.setProperty(%s);\n", sb);
-                }
-                break;
-            case "pen":
-                if (!(prop = Utils.check("type", nodeMap)).isEmpty()){
-                    String value;
-                    switch (prop) {
-                        case "text-outline": value = String.format("0x2022, %s", child); break;
-                        default: value = String.format("0x810, %s", child);
-                    }
-                    Utils.tryEmptyAppend(name, value, "%s.setProperty(%s);\n", sb);
-                }
-        }
-    }
-
-    private void PenChild(String name, String component, String child, StringBuilder sb){
-        if(component.equals("brush")) sb.append(String.format("%s.setBrush(%s);\n", name, child));
-    }
-
-    private void GroupChild(String name, String component, String child, StringBuilder sb) {
-        if(component.equals("layout")) sb.append(String.format("%s.setLayout(%s);\n", name, child));
-    }
-
-    private void ListChild(String name, String component, String child, StringBuilder sb) {
-        if(component.equals("item"))  sb.append(String.format("%s.addItem(%s);\n", name, child));
-    }
-
-    private void SplitChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap) {
+    private void tryFindAppend(String name, String component, String compare, String command, NamedNodeMap nodeMap, String... params){
         String prop;
-        if(component.equals("widget")) {
-            if(!(prop = Utils.check("insert", nodeMap)).isEmpty()) sb.append(String.format("%s.insertWidget(%s, %s);\n", name, prop, child));
-            else sb.append(String.format("%s.addWidget(%s);\n", name, child));
-        }
-    }
-
-    private void WidgetChild(String name, String component, String child, StringBuilder sb){
-        switch (component){
-            case "layout" : sb.append(String.format("%s.setLayout(%s);\n", name, child)); break;
-            case "widget" : sb.append(String.format("%s.setParent(%s);\n", name, child)); break;
-        }
-    }
-
-    private void LabelChild(String name, String component, String child, StringBuilder sb){
-        switch (component){
-            case "widget" : sb.append(String.format("%s.setBuddy(%s);\n", name, child)); break;
-            case "movie" : sb.append(String.format("%s.setMovie(%s);\n", name, child)); break;
-            case "picture" : sb.append(String.format("%s.setPicture(%s);\n", name, child)); break;
-            case "drawing" : sb.append(String.format("%s.setPixmap(%s);\n", name, child)); break;
-        }
-    }
-
-    private void WindowChild(String name, String component, StringBuilder sb){
-        switch (component){
-            case "layout" : sb.append(String.format("centerWidget.setLayout(%s);\n", name)); break;
-            case "widget" : sb.append(String.format("%s.setParent(centerWidget);\n", name)); break;
-            case "menubar" : sb.append(String.format("window.setMenuBar(%s);\n", name)); break;
-        }
-    }
-
-    private void GridChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
-        Utils.capitalize(component);
-        sb.append(String.format("%s.add%s(%s, ", name, Utils.capitalize(component), child));
-        Number row = tryValue("row", "%2s, ", 1, sb, nodeMap);
-        Number col = tryValue("column", "%2s, ", 1, sb, nodeMap);
-        tryValue("row-span", "%2s, ", row, sb, nodeMap);
-        tryValue("column-span", "%2s, ", col, sb, nodeMap);
-        sb.append("Qt.AlignmentFlag.");
-        switch(Utils.check("position", nodeMap)){
-            case "bottom": sb.append("AlignBottom);\n"); break;
-            case "center": sb.append("AlignCenter);\n"); break;
-            case "horizontal-center": sb.append("AlignHCenter);\n"); break;
-            case "justify": sb.append("AlignJustify);\n"); break;
-            case "left": sb.append("AlignLeft);\n"); break;
-            case "right": sb.append("AlignRight);\n"); break;
-            case "top": sb.append("AlignTop);\n"); break;
-            case "vertical-center": sb.append("AlignVCenter);\n"); break;
-            default: sb.append("AlignAbsolute);\n"); break;
-        }
-    }
-
-    private void MenubarChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap){
-        switch (component){
-            case "widget" :
-                sb.append(String.format("%s.setCornerWidget(%s", name, child));
-                switch(Utils.check("corner", nodeMap)){
-                    case "right": sb.append(", Qt.Corner.TopRightCorner"); break;
-                    case "left": sb.append(", Qt.Corner.TopLeftCorner"); break;
+        if(component.equals(compare)){
+            Map<Integer, Map.Entry<String, Object>> values = new HashMap<Integer, Map.Entry<String, Object>>(){{
+                put(0, new AbstractMap.SimpleEntry<>("name", name));
+            }};
+            int count = 1;
+            for(String s : params){
+                String[] s1 = s.split("/");
+                if(s1.length == 1) values.put(count++, new AbstractMap.SimpleEntry<>(s1[0], s1[0]));
+                else if(s1[1].equals("int")){
+                    if(!(prop = check(s1[0], nodeMap)).isEmpty())
+                        values.put(count++, new AbstractMap.SimpleEntry<>(s1[0], Integer.parseInt(prop)));
+                    else if(tryInteger(s1[2]))
+                        values.put(count++, new AbstractMap.SimpleEntry<>(s1[0], Integer.parseInt(s1[2])));
+                    else for(Map.Entry entry : values.values()) if(entry.getKey().equals(s1[2])){
+                        values.put(count++, new AbstractMap.SimpleEntry<>(s1[0], entry.getValue()));
+                        break;
+                    }
+                }else if(s1[1].equals("map")){
+                    String value = "";
+                    Map<String, String> map = NodeList.get(s1[2]);
+                    if(!(prop = check(s1[0], nodeMap)).isEmpty()) value = map.get(prop);
+                    else if(s1.length == 4) value = map.get(s1[3]);
+                    values.put(count++, new AbstractMap.SimpleEntry<>(s1[0], value));
                 }
-                sb.append(");\n");
-                break;
-            case "menu" :
-                sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
-            case "action" :
-                sb.append(String.format("%s.addAction(%s);\n", name, child));
-                tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
-                tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
-                break;
-            case "separator" : sb.append(String.format("%s.addSeparator();\n", name)); break;
+            }
+            Object[] list = new Object[values.size()];
+            for(Map.Entry entry : values.entrySet())
+                list[(int)entry.getKey()] = ((Map.Entry) entry.getValue()).getValue();
+            String comp = String.format(command, list);
+            sb.append(comp);
         }
     }
 
-    private void MenuChild(String name, String component, String child, StringBuilder sb, NamedNodeMap nodeMap) {
-        switch (component){
-            case "menu" : sb.append(String.format("%s.addMenu(%s);\n", name, child)); break;
-            case "action" :
-                sb.append(String.format("%s.addAction(%s);\n", name, child));
-                tryBoolean(name, "default", child, "%s.setDefaultUp(%s);\n", sb, nodeMap);
-                tryBoolean(name, "active", child, "%s.setNativeMenuBar(%s);\n", sb, nodeMap);
-                break;
-            case "separator" :
-                sb.append(String.format("%s.addSeparator();\n", name));
-                tryBoolean(name, "collapsible", child, "%s.setSeparatorsCollapsible(%s);\n", sb, nodeMap);
-                break;
+    private String check(String keyword, NamedNodeMap nodeMap) {
+        try {
+            Node word = nodeMap.getNamedItem(keyword);
+            return (word != null) ? word.getNodeValue() : "";
+        } catch (NullPointerException ignored) { return ""; }
+    }
+
+    private void tryChildParent(String name, String component, String child, String prop, String command){
+        if(prop.equals(component)) sb.append(String.format(command, name, child));
+    }
+
+    private void tryChild(String name, String component, String prop, String command){
+        if(prop.equals(component)) sb.append(String.format(command, name));
+    }
+
+    private boolean tryChildType(String name, String component, String child, String prop, String command, NamedNodeMap nodeMap){
+        String[] nameNtype = component.split("&");
+        boolean result = false;
+        if(prop.equals(nameNtype[0])) if(Utils.check("type", nodeMap).equals(nameNtype[1])){
+            sb.append(String.format(command, name, child));
+            result = true;
+        }
+        return result;
+    }
+
+    private void tryChildMapDefault(String name, String component, String child, String Default, Map<String, String> map, NamedNodeMap nodeMap){
+        boolean result = false;
+        for(String key : map.keySet()) {
+            result = true;
+            tryChildType(name, component, child, key, map.get(key), nodeMap);
+        }
+        if(!result) sb.append(String.format(Default, name, child));
+    }
+
+    private void tryCheck(String name, String p, String command, NamedNodeMap nodeMap){
+        String prop;
+        if (!(prop = check(p, nodeMap)).isEmpty()) sb.append(String.format(command, name, prop));
+    }
+
+    private void tryChildMap(String name, String p, String child, String command, Map<String, String> map, NamedNodeMap nodeMap){
+        String prop;
+        if(!(prop = Utils.check(p, nodeMap)).isEmpty()) sb.append(String.format(command, name, child, map.get(prop)));
+    }
+
+    private boolean tryInteger(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException ignored) {
+            return false;
         }
     }
 
-    private Number tryValue(String prop, String command, Number replacement, StringBuilder sb, NamedNodeMap nodeMap){
-        String p;
-        if (Utils.tryInteger(p = Utils.check(prop, nodeMap))){
-            sb.append(String.format(command, p));
-            return Integer.parseInt(p);
-        } else if (Utils.tryDouble(p = Utils.check(prop, nodeMap))){
-            sb.append(String.format(command, p));
-            return Double.parseDouble(p);
-        }else sb.append(String.format(command, replacement));
-        return replacement;
-    }
-
-    private void tryBoolean(String name, String prop, String child, String command, StringBuilder sb, NamedNodeMap nodeMap){
+    private void tryBoolean(String name, String prop, String child, String command, NamedNodeMap nodeMap){
         if (Utils.tryBoolean(Utils.check(prop, nodeMap))) sb.append(String.format(command, name, child));
     }
 }

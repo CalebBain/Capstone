@@ -46,7 +46,7 @@ public final class ComponentParser {
                 "public class qt extends QApplication{\n" +
                 "public qt() { super(new String[0]); run(); }\n" +
                 "public void run() {\n" +
-                "final QMainWindow %s = new QMainWindow()", name));
+                "final QMainWindow window = new QMainWindow()"));
         try{
             if (!methods.isEmpty()) sb.append(String.format("{\n%s}", methods));
         }catch (NullPointerException ignored){
@@ -57,8 +57,7 @@ public final class ComponentParser {
         nodeLoop("window", node);
         String styles = StyleSheet();
         if (!styles.isEmpty()) sb.append(String.format("this.setStyleSheet(\"%s\");\n", styles));
-        sb.append("window.show();\n");
-        sb.append("this.exec();\n}\n}");
+        sb.append("window.show();\nthis.exec();\n}\n}");
     }
 
     private String StyleSheet(){
@@ -91,38 +90,6 @@ public final class ComponentParser {
         String methods = methodCalls.get(name);
         String n;
         switch (name) {
-            case "section":
-                n  = methodName(name, "", nodeMap);
-                styles.Section(n, stylesSheet, sb, nodeMap);
-                functions.Widget(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                component = "layout:" + n;
-                break;
-            case "label":
-                n  = methodName(name, node.getTextContent(), nodeMap);
-                styles.Label(n, stylesSheet, sb, nodeMap);
-                functions.Label(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                component = "layout:" + n;
-                break;
-            case "check-box":
-                n  = methodName(name, "", nodeMap);
-                styles.CheckBox(n, stylesSheet, sb, nodeMap);
-                functions.CheckBox(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                break;
-            case "radio":
-                n  = methodName(name, "", nodeMap);
-                styles.RadioButton(n, stylesSheet, sb, nodeMap);
-                functions.AbstractButton(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                break;
-            case "number":
-                n  = methodName(name, "", nodeMap);
-                styles.LCDNumber(n, stylesSheet, sb, nodeMap);
-                functions.Number(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                break;
             case "slider":
                 n  = methodName(name, "", nodeMap);
                 styles.Slider(n, stylesSheet, sb, nodeMap);
@@ -136,38 +103,10 @@ public final class ComponentParser {
                 children.addChild(layoutName, layout, "layout", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
-            case "menubar":
-                n = "menubar";
-                events.Events(file, n, name, "", methods, sb, nodeMap);
-                styles.MenuBar(n, stylesSheet, sb, nodeMap);
-                functions.MenuBar(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "menubar", n, sb, nodeMap);
-                component = "layout:" + n;
-                break;
-            case "menu":
-                n  = methodName(name, "", nodeMap);
-                styles.Menu(n, stylesSheet, sb, nodeMap);
-                functions.Menu(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "menu", n, sb, nodeMap);
-                component = "layout:" + n;
-                break;
-            case "list":
-                n = methodName(name, "", nodeMap);
-                styles.List(n, stylesSheet, sb, nodeMap);
-                functions.list(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                component = "layout:" + n;
-                break;
             case "item":
                 n = methodName(name, node.getTextContent(), nodeMap);
                 styles.Item(n, stylesSheet, sb, nodeMap);
                 children.addChild(layoutName, layout, "item", n, sb, nodeMap);
-                break;
-            case "button":
-                n = methodName(name, node.getTextContent(), nodeMap);
-                styles.PushButton(n, stylesSheet, sb, nodeMap);
-                functions.AbstractButton(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
                 break;
             case "action":
                 n = trySetName("name", name, nodeMap);
@@ -178,39 +117,10 @@ public final class ComponentParser {
                 children.addChild(layoutName, layout, "action", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
-            case "separator":
-                n = trySetName("name", name, nodeMap);
-                children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
-                break;
-            case "splitter":
-                n = methodName(name, "", nodeMap);
-                styles.Splitter(n, stylesSheet, sb, nodeMap);
-                functions.Splitter(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                component = "layout:" + n;
-                break;
-            case "text-area":
-                n = methodName(name, "", nodeMap);
-                styles.TextEdit(n, stylesSheet, sb, nodeMap);
-                functions.LineEdit(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                break;
-            case "group":
-                n = methodName(name, "", nodeMap);
-                styles.Group(n, stylesSheet, sb, nodeMap);
-                functions.Group(n, sb, nodeMap);
-                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
-                component = "layout:" + n;
-                break;
             case "font":
                 n = methodName(name, "", nodeMap);
                 styles.Font(n, stylesSheet, sb, nodeMap);
                 children.addChild(layoutName, layout, "font", n, sb, nodeMap);
-                break;
-            case "brush":
-                n = methodName(name, "", nodeMap);
-                styles.Brush(n, stylesSheet, sb, nodeMap);
-                children.addChild(layoutName, layout, "brush", n, sb, nodeMap);
                 break;
             case "pen":
                 n = methodName(name, "", nodeMap);
@@ -222,12 +132,6 @@ public final class ComponentParser {
                 n = methodName(name, "", nodeMap);
                 styles.Brush(n, stylesSheet, sb, nodeMap);
                 children.addChild(layoutName, layout, "tab", n, sb, nodeMap);
-                break;
-            case "char-format":
-                n = methodName(name, "", nodeMap);
-                styles.CharFormat(n, stylesSheet, sb, nodeMap);
-                children.addChild(layoutName, layout, "char-format", n, sb, nodeMap);
-                component = "layout:" + n;
                 break;
             case "text-option":
                 n = methodName(name, "", nodeMap);
@@ -248,6 +152,109 @@ public final class ComponentParser {
                 children.addChild(layoutName, layout, "document", n, sb, nodeMap);
                 component = "layout:" + n;
                 break;
+            case "char-format":
+                n = methodName(name, "", nodeMap);
+                styles.CharFormat(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "char-format", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "list":
+                n = methodName(name, "", nodeMap);
+                styles.List(n, stylesSheet, sb, nodeMap);
+                functions.list(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "brush":
+                n = methodName(name, "", nodeMap);
+                styles.Brush(n, stylesSheet, sb, nodeMap);
+                children.addChild(layoutName, layout, "brush", n, sb, nodeMap);
+                break;
+            case "text-area":
+                n = methodName(name, "", nodeMap);
+                styles.TextEdit(n, stylesSheet, sb, nodeMap);
+                functions.LineEdit(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "number":
+                n  = methodName(name, "", nodeMap);
+                styles.LCDNumber(n, stylesSheet, sb, nodeMap);
+                functions.Number(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "label":
+                n  = methodName(name, node.getTextContent(), nodeMap);
+                styles.Label(n, stylesSheet, sb, nodeMap);
+                functions.Label(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "splitter":
+                n = methodName(name, "", nodeMap);
+                styles.Splitter(n, stylesSheet, sb, nodeMap);
+                functions.Splitter(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "button":
+                n = methodName(name, node.getTextContent(), nodeMap);
+                styles.PushButton(n, stylesSheet, sb, nodeMap);
+                functions.AbstractButton(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "radio":
+                n  = methodName(name, "", nodeMap);
+                styles.RadioButton(n, stylesSheet, sb, nodeMap);
+                functions.AbstractButton(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "check-box":
+                n  = methodName(name, "", nodeMap);
+                styles.CheckBox(n, stylesSheet, sb, nodeMap);
+                functions.CheckBox(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                break;
+            case "group":
+                n = methodName(name, "", nodeMap);
+                styles.Group(n, stylesSheet, sb, nodeMap);
+                functions.Group(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "menu":
+                n  = methodName(name, "", nodeMap);
+                styles.Menu(n, stylesSheet, sb, nodeMap);
+                functions.Menu(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "menu", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "section":
+                n  = methodName(name, "", nodeMap);
+                styles.Section(n, stylesSheet, sb, nodeMap);
+                functions.Widget(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "widget", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+            case "menubar":
+                n = methodName(name, "", nodeMap);
+                styles.MenuBar(n, stylesSheet, sb, nodeMap);
+                functions.MenuBar(n, sb, nodeMap);
+                children.addChild(layoutName, layout, "menubar", n, sb, nodeMap);
+                component = "layout:" + n;
+                break;
+
+
+            case "gradient":
+                n = trySetName("name", name, nodeMap);
+                String n2 = trySetName("gradient");
+                styles.Gradient(n2, stylesSheet, sb, nodeMap);
+                sb.append(String.format("QBrush %s = new QBrush(%s);\n", n, n2));
+                children.addChild(layoutName, layout, "brush", n, sb, nodeMap);
+                break;
+            case "separator":
+                n = trySetName("name", name, nodeMap);
+                children.addChild(layoutName, layout, "separator", n, sb, nodeMap);
+                break;
         }
         return component;
     }
@@ -261,16 +268,28 @@ public final class ComponentParser {
 
     private static String trySetName(String prop, String replacement, NamedNodeMap nodeMap){
         String p;
-        List<String> comps = ComponentParser.getComponents();
+        replacement = replacement.replaceAll("-", "_");
         if((p = Utils.check(prop, nodeMap)).isEmpty()) p = replacement;
-        if(!Utils.components.containsKey(p)) ComponentParser.getNamedComponents().add(p);
-        else if(!comps.contains(p)) comps.add(p);
+        if(!Utils.components.containsKey(p)) namedComponents.add(p);
+        else if(!components.contains(p)) components.add(p);
         else{
             int count = 0;
-            for(String comp : comps) if(comp.startsWith(p)) count++;
+            for(String comp : components) if(comp.startsWith(p)) count++;
             p += count;
-            comps.add(p);
+            components.add(p);
         }
         return p;
+    }
+
+    private String trySetName(String prop){
+        List<String> comps = getComponents();
+        if(!comps.contains(prop)) comps.add(prop);
+        else{
+            int count = 0;
+            for(String comp : comps) if(comp.startsWith(prop)) count++;
+            prop += count;
+            comps.add(prop);
+        }
+        return prop;
     }
 }
