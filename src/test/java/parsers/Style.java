@@ -1,8 +1,9 @@
+package parsers;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import Compiler.Utils;
 
 public final class Style {
     private String name = "";
@@ -11,12 +12,10 @@ public final class Style {
     private String component;
     private Map<String, String> attributes = new HashMap<>();
 
-    public Style(String name) {
-        parseName(Utils.setName(name));
-    }
+    public Style(String name) { parseName(name); }
 
     public Style(String name, String component) {
-        parseName(Utils.setName(name));
+        parseName(name);
         this.component = component;
     }
 
@@ -29,61 +28,41 @@ public final class Style {
             if (temp[1].contains(":")) {
                 temp = name.split(":");
                 setSubControl(temp[0]);
-                for (int i = 1; i < temp.length; i++)
-                    if (!nameAttributes.contains(temp[i]))
-                        this.addNameAttributes(temp[i]);
+                for (int i = 1; i < temp.length; i++) if (!nameAttributes.contains(temp[i]))
+                    this.addNameAttributes(temp[i]);
             }
         } else if (name.contains(":")) {
             temp = name.split(":");
             this.name = temp[0];
-            for (int i = 1; i < temp.length; i++)
-                if (!nameAttributes.contains(temp[i]))
-                    this.addNameAttributes(temp[i]);
+            for (int i = 1; i < temp.length; i++) if (!nameAttributes.contains(temp[i]))
+                this.addNameAttributes(temp[i]);
         } else this.name = name;
     }
 
-    public boolean isEmpty(){
-        return attributes.isEmpty();
-    }
+    public boolean isEmpty(){ return attributes.isEmpty(); }
 
-    public void addAll(Style style) {
-        this.attributes.putAll(style.getAttributes());
-    }
+    public void addAll(Style style) { this.attributes.putAll(style.getAttributes()); }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public Map<String, String> getAttributes() {
-        return attributes;
-    }
+    public Map<String, String> getAttributes() { return attributes; }
 
     public void setAttributes(String attributes) {
         String[] parts = attributes.split("; ");
         for (String part : parts) {
-            part = part.replaceAll(";", "");
-            String[] params = part.split(":");
+            String[] params = part.replaceAll(";", "").split(":");
             this.attributes.put(params[0], params[1]);
         }
     }
 
-    public void addAttribute(String key, String value) {
-        attributes.put(key, value);
-    }
+    public void addAttribute(String key, String value) { attributes.put(key, value); }
 
-    public void setComponent(String component) {
-        this.component = component;
-    }
+    public void setComponent(String component) { this.component = component; }
 
-    public void setSubControl(String subControl) {
-        this.subControl = subControl;
-    }
+    public void setSubControl(String subControl) { this.subControl = subControl; }
 
-    public void addNameAttributes(String prop) {
-        if (!nameAttributes.contains(prop)) nameAttributes.add(prop);
-    }
+    public void addNameAttributes(String prop) { if (!nameAttributes.contains(prop)) nameAttributes.add(prop); }
 
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (!attributes.isEmpty()) {

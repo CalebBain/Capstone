@@ -1,3 +1,5 @@
+package parsers;
+
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import nodeList.*;
@@ -15,6 +17,8 @@ public class Compiler {
     private nodeList nodeList;
     private String flavor;
     private String file;
+    private Map<String, String> Components = new HashMap<>();
+    private Map<String, Style> styles = new HashMap<>();
     private Map<String, ComponentNode> namedComponents = new HashMap<>();
     private Map<String, ComponentNode> components = new HashMap<>();
     private Map<String, String> methodCalls = new HashMap<>();
@@ -31,6 +35,7 @@ public class Compiler {
     public void Compile(String arg){
         Node node = xmlParse(arg);
         nodeList = new nodeList(paths.get(flavor));
+        Components = ((MapNode)nodeList.getNode("Components")).getMap();
         parse(node);
         String code = sb.toString();
         new GroovyShell(new Binding()).evaluate(code);
@@ -49,7 +54,7 @@ public class Compiler {
                 if (node instanceof Element && node.getNodeName().equals("jaml")) {
                     flavor = ((Element) node).getAttribute("flavor");
                     Node methods = ((Element) node).getElementsByTagName("methods").item(0);
-                    if (methods != null) methodCalls = new SlotParser().Parse(methods);
+                    if (methods != null) methodCalls = Parse(methods);
                     Node window = ((Element)node).getElementsByTagName("window").item(0);
                     if (window != null) return window;
                 }
@@ -143,10 +148,22 @@ public class Compiler {
                             List<String> pars = func.getParams();
                             MakeFunc(n, pars.get(0), pars.get(1), nodeMap);
                         } break;
-                    //case "setStyle": setStyle(n, params.get(0), params.get(1), nodeMap); break;
+                    case "setStyle":
+                        prop = n.replaceAll("\\d", "").replaceAll("-", "_");
+                        if(Components.containsKey(prop)) prop = Components.get(prop);
+                        else prop = n;
+                        setStyle(new Style(prop, Components.get(name)), nodeMap); break;
                 }
             }
         }
+    }
+
+    private void setStyle(Style style, NamedNodeMap nodeMap) {
+        Map<String, String> Styles = ((MapNode) nodeList.getNode("Styles")).getMap();
+        for (Map.Entry<String, String> entry : Styles.entrySet())
+            if (!(prop = check(entry.getKey(), nodeMap)).isEmpty())
+                style.addAttribute(entry.getValue(), prop);
+        if(!style.getAttributes().isEmpty()) styles.put(style.getName(), style);
     }
 
     private void ChildParser(String n, String t, String p, NamedNodeMap nodeMap){
@@ -235,9 +252,8 @@ public class Compiler {
         return node;
     }
 
-    private ComponentNode getNode(String name){
-        Map<String, String> components = ((MapNode) nodeList.getNode("Components")).getMap();
-        ComponentNode result = (ComponentNode) nodeList.getNode(components.get(name.replaceAll("-", "_")));
+    private ComponentNode getNode(String name){;
+        ComponentNode result = (ComponentNode) nodeList.getNode(Components.get(name.replaceAll("-", "_")));
         return result;
     }
 
@@ -245,7 +261,7 @@ public class Compiler {
         replacement = replacement.replaceAll("-", "_");
         ComponentNode result = getNode(type);
         if((prop = check(p, nodeMap)).isEmpty()) prop = replacement;
-        if(!((MapNode)nodeList.getNode("Components")).getMap().containsKey(prop)) namedComponents.put(prop, result);
+        if(!Components.containsKey(prop)) namedComponents.put(prop, result);
         else if(!components.containsKey(prop)) components.put(prop, result);
         else{ int count = 0;
             for(String comp : components.keySet()) if(comp.startsWith(prop)) count++;
@@ -409,30 +425,88 @@ public class Compiler {
         AppendAndPrint(value.toString(), "\t\t\t");
     }
 
-    private void setStyle(Style style, NamedNodeMap nodeMap) {
-        Map<String, String> Styles = ((MapNode) nodeList.getNode("Styles")).getMap();
-        for (Map.Entry<String, String> entry : Styles.entrySet())
-            if (!(prop = check(entry.getKey(), nodeMap)).isEmpty())
-                style.addAttribute(entry.getValue(), prop);
-    }
-
-    private String tryEmpty(String p, String replacement, NamedNodeMap nodeMap){
-        return (!(prop = check(p, nodeMap)).isEmpty()) ? prop : replacement;
-    }
-
-    private String capitalize(final String line) {
+    public String capitalize(final String line) {
         return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
-    private String trySetName(String prop, List<String> comps){
-        if(!comps.contains(prop)) comps.add(prop);
-        else{
-            int count = 0;
-            for(String comp : comps) if(comp.startsWith(prop)) count++;
-            prop += count;
-            comps.add(prop);
+    public String tryEmpty(String prop, String replacement, NamedNodeMap nodeMap){
+        String p;
+        return (!(p = check(prop, nodeMap)).isEmpty()) ? p : replacement;
+    }
+
+    private boolean hasProps(StringBuilder sb, String command, boolean hasProps){
+        if(hasProps) sb.append(command);
+        else hasProps = true;
+        return hasProps;
+    }
+
+    private List<String> types = new ArrayList<String>(){{
+        add("int"); add("short"); add("long"); add("byte");
+        add("float"); add("double"); add("char"); add("boolean");
+    }};
+
+    public Map<String, String> Parse(Node methods){
+        Map<String, String> result = new HashMap<>();
+        NodeList methodCalls = methods.getChildNodes();
+        for(int i = 0; i < methodCalls.getLength(); i++){
+            Node method = methodCalls.item(i);
+            NamedNodeMap attributes = method.getAttributes();
+            String methodName = tryEmpty("name", "method", attributes);
+            if(methodName.contains("-")) methodName = methodName.replaceAll("-", "_");
+            String methodCall = check("call", attributes);
+            String classCall = check("class", attributes);
+            String params = ParamsParser(attributes);
+            String methodParams = ParamsMethodParser(attributes);
+            String refs = check("ref", attributes);
+            if(!refs.isEmpty()) refs = ", " + refs;
+            String owner = tryEmpty("owner", "window", attributes);
+            String Method = (result.containsKey(owner)) ? result.get(owner) : "";
+            if(!methodCall.isEmpty() && !classCall.isEmpty()){
+                if(classCall.contains("("))
+                    Method += String.format("public Object %s(%s){ new %s.%s(%s); return null; }\n", methodName, methodParams, classCall, methodCall, params);
+                else Method += String.format("public Object %s(%s){ new %s().%s(%s%s); return null; }\n", methodName, methodParams, classCall, methodCall, params, refs);
+            }
+
+            result.put(owner, Method);
         }
-        return prop;
+        return result;
+    }
+
+    private String ParamsParser(NamedNodeMap attributes){
+        boolean hasProps = false;
+        String s = check("params", attributes);
+        StringBuilder value = new StringBuilder();
+        for(String p : s.split(",( )?")){
+            if(types.contains(p)){
+                hasProps = hasProps(value, ", ", hasProps);
+                value.append(String.format("%s", capitalize(p)));
+            }else if(!p.isEmpty() && !p.equals("this")){
+                hasProps = hasProps(value, ", ", hasProps);
+                value.append(String.format("%s", p));
+            }else if(p.equals("this")){
+                hasProps = hasProps(value, ", ", hasProps);
+                value.append("this");
+            }
+        }
+        return value.toString();
+    }
+
+    private String ParamsMethodParser(NamedNodeMap attributes){
+        boolean hasProps = false;
+        StringBuilder value = new StringBuilder();
+        String params = check("params", attributes);
+        for(String p : params.split(",( )?")){
+            if(types.contains(p)){
+                hasProps = hasProps(value, ", ", hasProps);
+                value.append(String.format("%s %s", p, capitalize(p)));
+            }else if(!p.isEmpty() && !p.equals("this")){
+                String name = p;
+                if(Components.containsKey(p)) p = Components.get(p);
+                hasProps = hasProps(value, ", ", hasProps);
+                value.append(String.format("%s %s", p, name));
+            }
+        }
+        return value.toString();
     }
 }
 
