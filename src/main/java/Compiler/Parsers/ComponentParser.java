@@ -111,7 +111,7 @@ public final class ComponentParser {
             case "action":
                 n = trySetName("name", name, nodeMap);
                 String text = Utils.tryEmpty("text", "action", nodeMap);
-                events.ActionEvents(file, n, name, text, methods, sb, nodeMap);
+                events.Events(file, n, name, text + ", this", methods, sb, nodeMap);
                 styles.Action(n, stylesSheet, sb, nodeMap);
                 functions.Action(n, sb, nodeMap);
                 children.addChild(layoutName, layout, "action", n, sb, nodeMap);

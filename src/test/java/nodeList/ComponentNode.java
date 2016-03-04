@@ -18,21 +18,24 @@ public class ComponentNode implements node {
         for(String call: calls){
             String[] p = call.split("::"), p2 = p[0].split(":"), p3 = new String[0];
             if(p.length > 1) p3 = p[1].split(":");
+            String value = p2[0];
             switch(p2[0]){
-                case "tryMap":
-                    this.calls.add(new NodeCall("tryMap", p2[1], p3[0], p3[1])); break;
+                case "trySetNameText":
+                case "trySetName":
+                    if(p2.length == 2) value += "Events";
+                    this.calls.add(new NodeCall(value, p3[0]));break;
+                case "trySetNameValue":
+                    if(p2.length == 2) value += "Events";
+                    this.calls.add(new NodeCall(value, p3[0], p3[1]));break;
+                case "tryMap": this.calls.add(new NodeCall("tryMap", p2[1], p3[0], p3[1])); break;
                 case "tryList":
                 case "trySize":
                 case "tryCheck":
                 case "tryValue":
                 case "tryBoolean":
-                case "trySetNameValue":
                     this.calls.add(new NodeCall(p2[0], p3[0], p3[1])); break;
-                case "tryFlags":
-                    this.calls.add(new NodeCall("tryFlags", p3[0], p2[1])); break;
-                case "trySetName":
+                case "tryFlags": this.calls.add(new NodeCall("tryFlags", p3[0], p2[1])); break;
                 case "addChild":
-                case "trySetNameText":
                 case "addChildLayout":
                     this.calls.add(new NodeCall(p2[0], p3[0])); break;
                 case "write":

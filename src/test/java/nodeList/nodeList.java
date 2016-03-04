@@ -29,13 +29,13 @@ public class nodeList {
         for(String part : parts){
             String[] parts2 = part.split("( )?\\{(\r\n)?(\t)?"), partName = parts2[0].split(":");
             switch(partName[1]){
-                case "map":                    nodeList.put(partName[0], new MapNode(parts2[1]));            break;
-                case "component-setup":        nodeList.put(partName[0], new ComponentSetupNode(parts2[1])); break;
-                case "component":              nodeList.put(partName[0], new ComponentNode(parts2[1]));      break;
-                case "string":                 nodeList.put(partName[0], new StringNode(parts2[1]));         break;
-                case "child": ((ComponentNode) nodeList.get(partName[0])).addChildCalls(parts2[1]);          break;
-                case "function":
-                    ((ComponentNode) nodeList.get(partName[0])).addFunctionCalls(parts2[1]); break;
+                case "map": nodeList.put(partName[0], new MapNode(parts2[1]));            break;
+                case "component-setup":           nodeList.put(partName[0], new ComponentSetupNode(parts2[1])); break;
+                case "component":                 nodeList.put(partName[0], new ComponentNode(parts2[1]));      break;
+                case "string":                    nodeList.put(partName[0], new StringNode(parts2[1]));         break;
+                case "child":    ((ComponentNode) nodeList.get(partName[0])).addChildCalls(parts2[1]);          break;
+                case "function": ((ComponentNode) nodeList.get(partName[0])).addFunctionCalls(parts2[1]);       break;
+                case "events":                    nodeList.put(partName[0], new EventNode(parts2[1]));          break;
             }
         }
     }

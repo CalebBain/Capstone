@@ -1,4 +1,3 @@
-import Compiler.Parsers.*;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import nodeList.*;
@@ -15,6 +14,7 @@ public class Compiler {
     private String prop;
     private nodeList nodeList;
     private String flavor;
+    private String file;
     private Map<String, ComponentNode> namedComponents = new HashMap<>();
     private Map<String, ComponentNode> components = new HashMap<>();
     private Map<String, String> methodCalls = new HashMap<>();
@@ -39,6 +39,7 @@ public class Compiler {
     private Node xmlParse(String file) {
         try {
             File fXmlFile = new File(file);
+            this.file = fXmlFile.getName().replaceAll(".jaml", "");
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = dBuilder.parse(fXmlFile);
             doc.getDocumentElement().normalize();
@@ -87,19 +88,30 @@ public class Compiler {
     private void MethodParse(String n, String parent, ComponentNode component, Node node){
         NamedNodeMap nodeMap = node.getAttributes();
         if(component.Type(ComponentNode.class)||component.Type(ComponentSetupNode.class)){
+            String name = node.getNodeName();
             for(NodeCall call : component.getCalls()){
                 List<String> params = call.getParams();
                 switch(call.getMethod()){
                     case "trySetName":
-                        n = trySetName("name", n, node.getNodeName(), nodeMap);
+                        n = trySetName("name", n, name, nodeMap);
                         Method(n, String.format(params.get(0), n)); break;
+                    case "trySetNameEvents":
+                        n = trySetName("name", n, name, nodeMap);
+                        MethodEvents(n, String.format(params.get(0), n), nodeMap); break;
                     case "trySetNameText":
-                        n = trySetName("name", n, node.getNodeName(), nodeMap);
+                        n = trySetName("name", n, name, nodeMap);
                         Method(n, String.format(params.get(0), n, node.getTextContent())); break;
+                    case "trySetNameTextEvents":
+                        n = trySetName("name", n, name, nodeMap);
+                        MethodEvents(n, String.format(params.get(0), n, node.getTextContent()), nodeMap);  break;
                     case "trySetNameValue":
-                        n = trySetName("name", n, node.getNodeName(), nodeMap);
+                        n = trySetName("name", n, name, nodeMap);
                         prop = check(params.get(0), nodeMap);
-                        Method(n, String.format(params.get(1), n, (prop.isEmpty())? "menu" : prop));
+                        Method(n, String.format(params.get(1), n, (prop.isEmpty())? "menu" : prop)); break;
+                    case "trySetNameValueEvents":
+                        n = trySetName("name", n, name, nodeMap);
+                        prop = check(params.get(0), nodeMap);
+                        MethodEvents(n, String.format(params.get(1), n, (prop.isEmpty()) ? "menu" : prop), nodeMap);
                         break;
                     case "writeName": int i = countWildCards(params.get(0));
                         if (i == 2) AppendAndPrint(String.format(params.get(0), n, n), "\t\t\t");
@@ -115,31 +127,25 @@ public class Compiler {
                     case "tryList": tryList(n, params.get(0), params.get(1), nodeMap); break;
                     case "call": MethodParse(n, parent, (ComponentNode)nodeList.getNode(params.get(0)), node); break;
                     case "addChild": ChildParser(n, params.get(0), parent, nodeMap); break;
-                    case "addChildLayout": ChildParser(n, params.get(0), parent, nodeMap);
-                        for(Node child : XmlUtil.asList(node.getChildNodes())) if(!child.getNodeName().equals("#text")){
-                            if (!(prop = check("name", child.getAttributes())).isEmpty()) MethodParse(prop, n, getNode(child.getNodeName()), child);
-                            else MethodParse(child.getNodeName(), n, getNode(child.getNodeName()), child);
+                    case "addChildLayout":
+                        ChildParser(n, params.get(0), parent, nodeMap);
+                        for(Node child : XmlUtil.asList(node.getChildNodes())){
+                            String cName = child.getNodeName();
+                            if (!cName.equals("#text")) {
+                                if (!(prop = check("name", child.getAttributes())).isEmpty())
+                                    MethodParse(prop, n, getNode(cName), child);
+                                else MethodParse(cName, n, getNode(cName), child);
+                            }
                         } break;
                     case "write": AppendAndPrint(params.get(0), "\t\t\t"); break;
                     case "functions":
-                        FunctionNode funcs = component.getFunctionCalls();
-                        for(NodeCall func : funcs.getCalls()){
+                        for(NodeCall func : component.getFunctionCalls().getCalls()){
                             List<String> pars = func.getParams();
                             MakeFunc(n, pars.get(0), pars.get(1), nodeMap);
                         } break;
                     //case "setStyle": setStyle(n, params.get(0), params.get(1), nodeMap); break;
                 }
             }
-        }
-    }
-
-    private void MakeFunc(String name, String p, String command, NamedNodeMap nodeMap){
-        String[] callParts = new String[0];
-        if (!(prop = check(p, nodeMap)).isEmpty()){
-            if (!prop.isEmpty()) callParts = prop.split(":");
-            if(callParts.length == 1) AppendAndPrint(String.format(command, name, "this", callParts[0]), "\t\t\t");
-            else if(callParts.length == 2)
-                AppendAndPrint(String.format(command, name, callParts[0], callParts[1]), "\t\t\t");
         }
     }
 
@@ -170,6 +176,16 @@ public class Compiler {
         }
     }
 
+    private void MakeFunc(String name, String p, String command, NamedNodeMap nodeMap){
+        String[] callParts = new String[0];
+        if (!(prop = check(p, nodeMap)).isEmpty()){
+            if (!prop.isEmpty()) callParts = prop.split(":");
+            if(callParts.length == 1) AppendAndPrint(String.format(command, name, "this", callParts[0]), "\t\t\t");
+            else if(callParts.length == 2)
+                AppendAndPrint(String.format(command, name, callParts[0], callParts[1]), "\t\t\t");
+        }
+    }
+
     private void Method(String name, String object){
         String Result = object;
         String method = methodCalls.get(name);
@@ -178,6 +194,38 @@ public class Compiler {
         AppendAndPrint(Result, "\t\t\t");
         if(method != null) AppendAndPrint(method, "\t\t\t\t");
         if(method != null) AppendAndPrint("};", "\t\t\t");
+    }
+
+    private String EventParser(String name, NamedNodeMap nodeMap){
+        EventNode events = (EventNode) nodeList.getNode("Events");
+        String code = null;
+        for(NodeCall event : events.getCalls()){
+            List<String> params = event.getParams();
+            if(!check(params.get(0), nodeMap).isEmpty()){
+                String Class = file, Event = params.get(0),
+                        Method = name + "_" + Event.replaceAll("when_", "").replaceAll("-", "_");
+                for (String param : check(Event, nodeMap).split(" ")){
+                    String[] parts = param.split(":");
+                    if(parts[0].equals("class")) Class = parts[1];
+                    if(parts[0].equals("method")) Method = parts[1];
+                }
+                if(code == null) code = "";
+                code += String.format(events.getTemplate(), params.get(2), params.get(1), Class, Method);
+            }
+        }
+        return code;
+    }
+
+    private void MethodEvents(String name, String object, NamedNodeMap nodeMap){
+        String Result = object;
+        String method = methodCalls.get(name);
+        String events = EventParser(name, nodeMap);
+        if(method != null||events != null) Result += "{";
+        if(method == null&&events == null) Result += ";";
+        AppendAndPrint(Result, "\t\t\t");
+        if(method != null) AppendAndPrint(method, "\t\t\t\t");
+        if(events != null) AppendAndPrint(events, "\t\t\t\t");
+        if(method != null||events != null) AppendAndPrint("};", "\t\t\t");
     }
 
     private ComponentNode FindComponent(String component){

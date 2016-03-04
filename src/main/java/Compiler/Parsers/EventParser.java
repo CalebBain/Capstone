@@ -33,21 +33,6 @@ public final class EventParser {
         put("when-mouse-wheel-moves", "wheelEvent");
     }};
 
-    public boolean ActionEvents(String file, String name, String component, String param, String methods, StringBuilder sb, NamedNodeMap nodeMap){
-        component = Utils.setName(component);
-        if(!param.isEmpty()) param = String.format("\"%s\"", param);
-        sb.append(String.format("final %s %s = new %s(%s, this)", component, name, component, param));
-        try{
-            if(!methods.isEmpty()){
-                hasProps = true;
-                sb.append(String.format("{\n%s", methods));
-            }
-        }catch (NullPointerException ignored){
-        }
-        callEvents(file, name, sb, nodeMap);
-        return hasProps;
-    }
-
     public boolean Events(String file, String name, String component, String param, String methods, StringBuilder sb, NamedNodeMap nodeMap){
         component = Utils.setName(component);
         if(!param.isEmpty()) param = String.format("\"%s\"", param);
@@ -57,13 +42,7 @@ public final class EventParser {
                 hasProps = true;
                 sb.append(String.format("{\n%s", methods));
             }
-        }catch (NullPointerException ignored){
-        }
-        callEvents(file, name, sb, nodeMap);
-        return hasProps;
-    }
-
-    private void callEvents(String file, String name, StringBuilder sb, NamedNodeMap nodeMap){
+        }catch (NullPointerException ignored){}
         for(String prop : events.keySet()) PropCheck(file, name, prop, sb, nodeMap);
         PropCheck(file, name, "when-mouse-is-released", sb, nodeMap);
         PropCheck(file, name, "when-mouse-is-pressed", sb, nodeMap);
@@ -77,16 +56,7 @@ public final class EventParser {
             sb.append("}");
         }
         sb.append(";\n");
-    }
-
-    public boolean exists(String keyword, NamedNodeMap nodeMap){
-        try {
-            Node word = nodeMap.getNamedItem(keyword);
-            word.getNodeValue();
-            return true;
-        } catch (NullPointerException ignored) {
-            return false;
-        }
+        return hasProps;
     }
 
     private void PropCheck(String file, String name, String command, StringBuilder sb, NamedNodeMap nodeMap){
@@ -96,40 +66,25 @@ public final class EventParser {
                 hasProps = true;
                 sb.append("{\n");
             }
-            String[] array = ParamSwitch(file, name, command, props);
-            Write(array, sb);
-        }
-    }
-
-    private String[] ParamSwitch(String file, String name, String event, String... params){
-        String Class = file.replaceAll(".jaml", "");
-        name = name.replaceAll("-","_");
-        String Event = event;
-        event = event.replaceAll("-","_");
-        String Method = name + "_" + event.replaceAll("when_", "");
-        List<String> parameters = new ArrayList<>();
-        for (String param : params){
-            String[] parts = param.split(":");
-            switch(parts[0]){
-                case "class": Class = parts[1]; break;
-                case "method": Method = parts[1]; break;
+            String Class = file, Event = command,
+                Method = name.replaceAll("-","_") + "_" + command.replaceAll("when_", "").replaceAll("-", "_");
+            for (String param : props){
+                String[] parts = param.split(":");
+                if(parts[0].equals("class")) Class = parts[1];
+                if(parts[0].equals("method")) Method = parts[1];
             }
+            sb.append(String.format("protected void %s(%s) { new %s().%s(this, event); }\n",
+                    EventFind(Event, false), EventFind(Event, true), Class, Method));
         }
-        String[] result = new String[parameters.size() + 3];
-        result[0] = Event;
-        result[1] = Class;
-        result[2] = Method;
-        System.arraycopy(parameters.toArray(), 0, result, 2, parameters.size());
-        return result;
     }
 
-    private String EventFind(String event, boolean prop, boolean complete){
+    private String EventFind(String event, boolean prop){
         String result = "";
         if(events.containsKey(event)){
             String Event = events.get(event);
             if (prop) result = String.format(" Q%s", Utils.capitalize(Event));
             else result = Event;
-        }else {
+        } else {
             switch (event){
                 case "when-mouse-is-released": result = (prop) ? "QMouseEvent" : "mouseReleaseEvent"; break;
                 case "when-mouse-is-pressed": result = (prop) ? "QMouseEvent" : "mousePressEvent"; break;
@@ -140,16 +95,17 @@ public final class EventParser {
                 case "when-change": result = (prop) ? "QEvent" : "changeEvent"; break;
             }
         }
-        if(complete) result += " event";
+        if(prop) result += " event";
         return result;
     }
 
-    private void Write(String[] Params, StringBuilder sb){
-        sb.append(String.format("protected void %s(%s) {\n",
-                EventFind(Params[0], false, false), EventFind(Params[0], true, true)));
-        String prop1 = Params[1], prop2 = Params[2];
-        if(prop2.contains("(")) sb.append(String.format("new %s().%s;\n", prop1, prop2));
-        else sb.append(String.format("new %s().%s(this, event);\n", prop1, prop2));
-        sb.append("}\n");
+    public boolean exists(String keyword, NamedNodeMap nodeMap){
+        try {
+            Node word = nodeMap.getNamedItem(keyword);
+            word.getNodeValue();
+            return true;
+        } catch (NullPointerException ignored) {
+            return false;
+        }
     }
 }

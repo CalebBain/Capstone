@@ -16,8 +16,39 @@ ending:string{
 <=o
 }
 
+Events:events{
+	template::protected void %s(%s event) o=> new %s().%s(this, event); <=o
+	event:when-double-clicked::QMouseEvent:mouseDoubleClickEvent
+	event:when-mouse-is-released::QMouseEvent:mouseReleaseEvent
+	event:when-context-menu::QContextMenuEvent:contextMenuEvent
+	event:when-method-input::QInputMethodEvent:inputMethodEvent
+	event:when-mouse-is-pressed::QMouseEvent:mousePressEvent
+	event:when-key-release::QKeyReleaseEvent:keyReleaseEvent
+	event:when-drag-entered::QDragEnterEvent:dragEnterEvent
+	event:when-out-of-focus::QFocusOutEvent:focusOutEvent
+	event:when-drag-left::QDragLeaveEvent:dragLeaveEvent
+	event:when-key-pressed::QKeyPressEvent:keyPressEvent
+	event:when-mouse-wheel-moves::QWheelEvent:wheelEvent
+	event:when-drag-moves::QDragMoveEvent:dragMoveEvent
+	event:when-mouse-moves::QMouseEvent:mouseMoveEvent
+	event:when-touch-screen::QTabletEvent:tabletEvent
+	event:when-in-focus::QFocusInEvent:focusInEvent
+	event:when-resized::QResizeEvent:resizeEvent
+	event:when-action::QActionEvent:actionEvent
+	event:when-painted::QPaintEvent:paintEvent
+	event:when-closed::QCloseEvent:closeEvent
+	event:when-dropped::QDropEvent:dropEvent
+	event:when-timed::QTimerEvent:timerEvent
+	event:when-hidden::QHideEvent:hideEvent
+	event:when-shown::QShowEvent:showEvent
+	event:when-moved::QMoveEvent:moveEvent
+	event:when-entered::QEvent:enterEvent
+	event:when-change::QEvent:changeEvent
+	event:when-left::QEvent:leaveEvent
+}
+
 QMainWindow:component{
-	trySetName::final QMainWindow %s = new QMainWindow()
+	trySetName:event::final QMainWindow %s = new QMainWindow()
 	write:name::%s.setObjectName("%s");
 	write::QWidget centerWidget = new QWidget();
 	write:name::%s.setCentralWidget(centerWidget);
@@ -37,7 +68,7 @@ QMainWindow:component{
 }
 
 QListWidget:component{
-	trySetName::final QListWidget %s = new QListWidget()
+	trySetName:event::final QListWidget %s = new QListWidget()
 	write:name::%s.setObjectName("%s");
 	tryBoolean::sorting:%s.setSortingEnabled(%s);
 	setStyle
@@ -47,7 +78,7 @@ QListWidget:component{
 }
 
 QBrush:component{
-	trySetName::final QBrush %s = new QBrush()
+	trySetName:event::final QBrush %s = new QBrush()
 	write:name::%s.setObjectName("%s");
 	tryMap:Colors::color:%s.setColor(new QColor(\"%s\"));
 	tryMap:Patterns::pattern:%s.setStyle(%s);
@@ -55,7 +86,7 @@ QBrush:component{
 }
 
 QTextEdit:component{
-	trySetName::final QTextEdit %s = new QTextEdit()
+	trySetName:event::final QTextEdit %s = new QTextEdit()
 	write:name::%s.setObjectName("%s");
 	tryMap:TextEditAutoFormats::auto-format:%s.setAutoFormatting(%s);
 	tryMap:LineWrapModes::line-wrap-mode:%s.setLineWrapMode(%s);
@@ -76,7 +107,7 @@ QTextEdit:component{
 }
 
 QLCDNumber:component{
-	trySetName::final QLCDNumber %s = new QLCDNumber()
+	trySetName:event::final QLCDNumber %s = new QLCDNumber()
 	write:name::%s.setObjectName("%s");
 	tryMap:SegmentStyle::segment-style:%s.setSegmentStyle(%s);
 	tryMap:NumberMode::mode:%s.setMode(%s);
@@ -90,7 +121,7 @@ QLCDNumber:component{
 }
 
 QLabel:component{
-	trySetNameText::final QLabel %s = new QLabel("%s")
+	trySetNameText:event::final QLabel %s = new QLabel("%s")
 	write:name::%s.setObjectName("%s");
 	tryMap:Alignments::align:%s.setAlignment(%s);
 	tryMap:TextFormats::text-format:%s.setTextFormat(%s);
@@ -108,7 +139,7 @@ QLabel:component{
 }
 
 QSplitter:component{
-	trySetName::final QSplitter %s = new QSplitter()
+	trySetName:event::final QSplitter %s = new QSplitter()
 	write:name::%s.setObjectName("%s");
 	tryMap:Orientations::orientation:%s.setOrientation(%s);
 	tryBoolean::resizeable:%s.setOpaqueResize(%s);
@@ -121,7 +152,7 @@ QSplitter:component{
 }
 
 QPushButton:component{
-	trySetNameText::final QPushButton %s = new QPushButton("%s")
+	trySetNameText:event::final QPushButton %s = new QPushButton("%s")
 	write:name::%s.setObjectName("%s");
 	tryCheck::shortcut:%s.setShortcut(new QKeySequence("%s"));
 	tryBoolean::default:%s.setDefault(%s);
@@ -133,7 +164,7 @@ QPushButton:component{
 }
 
 QRadioButton:component{
-	trySetName::final QRadioButton %s = new QRadioButton()
+	trySetName:event::final QRadioButton %s = new QRadioButton()
 	write:name::%s.setObjectName("%s");
 	setStyle
 	call:QAbstractButton
@@ -142,7 +173,7 @@ QRadioButton:component{
 }
 
 QCheckBox:component{
-	trySetName::final QCheckBox %s = new QCheckBox()
+	trySetName:event::final QCheckBox %s = new QCheckBox()
 	write:name::%s.setObjectName("%s");
 	tryMap:CheckStates::check-state:%s.setCheckState(%s);
 	tryBoolean::checkable:%s.setTristate(%s);
@@ -155,7 +186,7 @@ QCheckBox:component{
 }
 
 QLineEdit:component{
-	trySetName::final QLineEdit %s = new QLineEdit()
+	trySetName:event::final QLineEdit %s = new QLineEdit()
 	write:name::%s.setObjectName("%s");
 	tryMap:Alignments::align:%s.setAlignment(%s);
 	tryMap:EchoModes::echo-mode:%s.setEchoMode(%s);
@@ -173,7 +204,7 @@ QLineEdit:component{
 }
 
 QGroupBox:component{
-	trySetName::final QGroupBox %s = new QGroupBox()
+	trySetName:event::final QGroupBox %s = new QGroupBox()
 	write:name::%s.setObjectName("%s");
 	tryMap:TextAlignments::align:%s.setTextAlignment(%s);
 	tryCheck::title:%s.setTitle("%s");
@@ -186,7 +217,7 @@ QGroupBox:component{
 }
 
 QMenu:component{
-	trySetNameValue::name:final QMenu %s = new QMenu("%s")
+	trySetNameValue:event::name:final QMenu %s = new QMenu("%s")
 	write:name::%s.setObjectName("%s");
 	tryCheck::icon:%s.setIcon("%s");
 	tryCheck::title:menu:%s.setTitle("%s");
@@ -207,7 +238,7 @@ QSection:component{
 }
 
 QMenuBar:component{
-	trySetName::final QMenuBar %s = new QMenuBar()
+	trySetName:event::final QMenuBar %s = new QMenuBar()
 	write:name::%s.setObjectName("%s");
 	setStyle
 	call:QWidget
@@ -216,7 +247,7 @@ QMenuBar:component{
 }
 
 QTextCharFormat:component{
-	trySetName::final QTextCharFormat %s = new QTextCharFormat()
+	trySetName:event::final QTextCharFormat %s = new QTextCharFormat()
 	write:name::%s.setObjectName("%s");
 	tryList::anchor-names:AnchorNames
 	tryMap:FontCapitalizationTypes::capitalize:%s.setFontCapitalization(%s);
@@ -231,7 +262,7 @@ QTextCharFormat:component{
 }
 
 QTextDocument:component{
-	trySetName::final QTextDocument %s = new QTextDocument()
+	trySetName:event::final QTextDocument %s = new QTextDocument()
 	write:name::%s.setObjectName("%s");
 	tryMap:CursorMoveStyles::cursor-move-style:%s.setCursorMoveStyle(%s);
 	tryCheck::text-option:%s.setToolTip("%s");
@@ -248,7 +279,7 @@ QTextDocument:component{
 }
 
 QPlainTextDocumentLayout:component{
-	trySetName::final QPlainTextDocumentLayout %s = new QPlainTextDocumentLayout()
+	trySetName:event::final QPlainTextDocumentLayout %s = new QPlainTextDocumentLayout()
 	write:name::%s.setObjectName("%s");
 	tryValue::cursor-width:%s.setCursorWidth(%s);
 	functions
@@ -256,7 +287,7 @@ QPlainTextDocumentLayout:component{
 }
 
 QTextOption:component{
-	trySetName::final QTextOption_Tab %s = new QTextOption_Tab()
+	trySetName:event::final QTextOption_Tab %s = new QTextOption_Tab()
 	write:name::%s.setObjectName("%s");
 	tryMap:Alignments::align:%s.setAlignment(%s);
 	tryMap:LayoutDirections::direction:%s.setTextDirection(%s);
@@ -267,7 +298,7 @@ QTextOption:component{
 }
 
 QTextOption_Tab:component{
-	trySetName::final QTextOption_Tab %s = new QTextOption_Tab()
+	trySetName:event::final QTextOption_Tab %s = new QTextOption_Tab()
 	setName::%s.setObjectName("%s");
 	tryMap:TabTypes::type:%s.setType(%s);
 	tryCheck::delimiter:%s.setText('%s');
@@ -277,7 +308,7 @@ QTextOption_Tab:component{
 }
 
 QPen:component{
-	trySetName::final QPen %s = new QPen()
+	trySetName:event::final QPen %s = new QPen()
 	write:name::%s.setObjectName("%s");
 	tryMap:PenCapStyles::cap-style:%s.setCapStyle(%s);
 	tryMap:PenJoinStyles::joint:%s.setJoinStyle(%s);
@@ -291,7 +322,7 @@ QPen:component{
 }
 
 QFont:component{
-	trySetName::final QFont %s = new QFont()
+	trySetName:event::final QFont %s = new QFont()
 	write:name::%s.setObjectName("%s");
 	tryMap:FontCapitalizationTypes::capitalization:%s.setCapitalization(%s);
 	tryMap:FontHintingPreferences::hint-preference:%s.setHintingPreference(%s);
@@ -339,7 +370,7 @@ QAction:component{
 }
 
 QListItem:component{
-	trySetNameText::final QListWidgetItem %s = new QListWidgetItem("%s")
+	trySetNameText:event::final QListWidgetItem %s = new QListWidgetItem("%s")
 	write:name::%s.setObjectName("%s");
 	tryFlags:ItemFlags::%s.setFlags(%s
 	tryMap:TextAlignments::align:%s.setTextAlignment(%s);
@@ -355,7 +386,7 @@ QListItem:component{
 }
 
 QGridLayout:component{
-	trySetName::final QGridLayout %s = new QGridLayout()
+	trySetName:event::final QGridLayout %s = new QGridLayout()
 	write:name::%s.setObjectName("%s");
 	tryMap:ToolButtonStyles::tool-button-style:%s.setToolButtonStyle(%s);
 	tryValue::spacing:%s.setSpacing(%s);
@@ -367,7 +398,7 @@ QGridLayout:component{
 }
 
 QSlider:component{
-	trySetName::final QSlider %s = new QSlider()
+	trySetName:event::final QSlider %s = new QSlider()
 	write:name::%s.setObjectName("%s");
 	tryMap:SliderTickPositions::tick-position:%s.setTickPosition(%s);
 	tryValue::interval:%s.setTickInterval(%s);
