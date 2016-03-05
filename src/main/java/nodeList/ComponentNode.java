@@ -22,11 +22,19 @@ public class ComponentNode implements node {
             switch(p2[0]){
                 case "trySetNameText":
                 case "trySetName":
-                    if(p2.length == 2) value += "Events";
-                    this.calls.add(new NodeCall(value, p3[0]));break;
+                    if(p2.length == 3) value += "MethodsEvents";
+                    if(p2.length == 2) {
+                        if(p2[1].equals("method")) value += "Methods";
+                        else value += "Events";
+                    }
+                    this.calls.add(new NodeCall(value, p3[0])); break;
                 case "trySetNameValue":
-                    if(p2.length == 2) value += "Events";
-                    this.calls.add(new NodeCall(value, p3[0], p3[1]));break;
+                    if(p2.length == 3) value += "MethodsEvents";
+                    if(p2.length == 2) {
+                        if(p2[1].equals("method")) value += "Methods";
+                        else value += "Events";
+                    }
+                    this.calls.add(new NodeCall(value, p3[0], p3[1])); break;
                 case "tryMap": this.calls.add(new NodeCall("tryMap", p2[1], p3[0], p3[1])); break;
                 case "tryList":
                 case "trySize":

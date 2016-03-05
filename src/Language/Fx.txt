@@ -11,19 +11,33 @@ public class HelloWorld extends Application o=>
     public static void main(String[] args)o=>
             launch(HelloWorld.class, args);
     <=o
-	public void start(Stage Window) throws Exception o=>
+
 }
 
 ending:string{
-    Window.show();
 	<=o
 <=o
 }
 
-Window:component{
+Components:map{
+	window:Stage
+}
+
+Stage:component{
+	write:name::public void start(Stage %s) throws Exception o=>
 	write::final GridPane grid = new GridPane();
-	write::final Scene scene = new Scene(grid);
+	write:name::final Scene centerWidget = new Scene(grid);
 	tryCheck::title:%s.setTitle("%s");
+	tryCheck::fullscreen-exit-hint:%s.setFullScreenExitHint("%s");
+	tryBoolean::always-on-top:%s.setAlwaysOnTop(%s);
+	tryBoolean::fullscreen:%s.setFullScreen(%s);
+	tryBoolean::iconified:%s.setIconified(%s);
+	tryBoolean::maximized:%s.setMaximized(%s);
+	tryBoolean::resizable:%s.setResizable(%s);
+	tryValue::max-height:%s.setMaxHeight(%s);
+	tryValue::min-height:%s.setMinHeight(%s);
+	tryValue::max-width:%s.setMaxWidth(%s);
+	tryValue::min-width:%s.setMinWidth(%s);
+	write:name::%s.setScene(scene);
 	write:name::%s.show();
-	write::Window.setScene(scene);
 }

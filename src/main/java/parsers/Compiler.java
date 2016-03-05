@@ -97,27 +97,25 @@ public class Compiler {
             for(NodeCall call : component.getCalls()){
                 List<String> params = call.getParams();
                 switch(call.getMethod()){
-                    case "trySetName":
-                        n = trySetName("name", n, name, nodeMap);
-                        Method(n, String.format(params.get(0), n)); break;
-                    case "trySetNameEvents":
-                        n = trySetName("name", n, name, nodeMap);
-                        MethodEvents(n, String.format(params.get(0), n), nodeMap); break;
-                    case "trySetNameText":
-                        n = trySetName("name", n, name, nodeMap);
-                        Method(n, String.format(params.get(0), n, node.getTextContent())); break;
-                    case "trySetNameTextEvents":
-                        n = trySetName("name", n, name, nodeMap);
-                        MethodEvents(n, String.format(params.get(0), n, node.getTextContent()), nodeMap);  break;
+                    case "trySetName": n = Nones(n, name, params.get(0), "missing text", "", nodeMap); break;
+                    case "trySetNameEvents": n = Events(n, name, params.get(0), "missing text", "", nodeMap); break;
+                    case "trySetNameMethods": n = Methods(n, name, params.get(0), "missing text", "", nodeMap); break;
+                    case "trySetNameMethodsEvents": n = MethodEvents(n, name, params.get(0), "missing text", "", nodeMap); break;
+
+                    case "trySetNameText": n = Nones(n, name, params.get(0), "missing text", node.getTextContent(), nodeMap); break;
+                    case "trySetNameTextEvents": n = Events(n, name, params.get(0), "missing text", node.getTextContent(), nodeMap); break;
+                    case "trySetNameTextMethods": n = Methods(n, name, params.get(0), "missing text", node.getTextContent(), nodeMap); break;
+                    case "trySetNameTextMethodsEvents": n = MethodEvents(n, name, params.get(0), "missing text", node.getTextContent(), nodeMap);  break;
+
                     case "trySetNameValue":
-                        n = trySetName("name", n, name, nodeMap);
-                        prop = check(params.get(0), nodeMap);
-                        Method(n, String.format(params.get(1), n, (prop.isEmpty())? "menu" : prop)); break;
+                        n = Nones(n, name, params.get(1), "missing text", check(params.get(0), nodeMap), nodeMap); break;
                     case "trySetNameValueEvents":
-                        n = trySetName("name", n, name, nodeMap);
-                        prop = check(params.get(0), nodeMap);
-                        MethodEvents(n, String.format(params.get(1), n, (prop.isEmpty()) ? "menu" : prop), nodeMap);
-                        break;
+                        n = Events(n, name, params.get(1), "missing text", check(params.get(0), nodeMap), nodeMap); break;
+                    case "trySetNameValueMethods":
+                        n = Methods(n, name, params.get(1), "missing text", check(params.get(0), nodeMap), nodeMap); break;
+                    case "trySetNameValueMethodsEvents":
+                        n = MethodEvents(n, name, params.get(1), "missing text", check(params.get(0), nodeMap), nodeMap); break;
+
                     case "writeName": int i = countWildCards(params.get(0));
                         if (i == 2) AppendAndPrint(String.format(params.get(0), n, n), "\t\t\t");
                         else if(i == 1) AppendAndPrint(String.format(params.get(0), n), "\t\t\t"); break;
@@ -217,14 +215,49 @@ public class Compiler {
         }
     }
 
-    private void Method(String name, String object){
-        String Result = object;
+    private String Nones(String name, String type, String command, String replacement, String text, NamedNodeMap nodeMap){
+        name = trySetName("name", name, type, nodeMap);
+        String Result = String.format(command, name, (text.isEmpty()? replacement : text));
+        AppendAndPrint(Result, "\t\t\t");
+        return name;
+    }
+
+    private String Events(String name, String type, String command, String replacement, String text, NamedNodeMap nodeMap){
+        name = trySetName("name", name, type, nodeMap);
+        String Result = String.format(command, name, (text.isEmpty()? replacement : text));
+        String events = EventParser(name, nodeMap);
+        if(events != null) Result += "{";
+        if(events == null) Result += ";";
+        AppendAndPrint(Result, "\t\t\t");
+        if(events != null) AppendAndPrint(events, "\t\t\t\t");
+        if(events != null) AppendAndPrint("};", "\t\t\t");
+        return name;
+    }
+
+    private String Methods(String name, String type, String command, String replacement, String text, NamedNodeMap nodeMap){
+        name = trySetName("name", name, type, nodeMap);
+        String Result = String.format(command, name, (text.isEmpty()? replacement : text));
         String method = methodCalls.get(name);
         if(method != null) Result += "{";
         if(method == null) Result += ";";
         AppendAndPrint(Result, "\t\t\t");
         if(method != null) AppendAndPrint(method, "\t\t\t\t");
         if(method != null) AppendAndPrint("};", "\t\t\t");
+        return name;
+    }
+
+    private String MethodEvents(String name, String type, String command, String replacement, String text, NamedNodeMap nodeMap){
+        name = trySetName("name", name, type, nodeMap);
+        String Result = String.format(command, name, (text.isEmpty()? replacement : text));
+        String method = methodCalls.get(name);
+        String events = EventParser(name, nodeMap);
+        if(method != null||events != null) Result += "{";
+        if(method == null&&events == null) Result += ";";
+        AppendAndPrint(Result, "\t\t\t");
+        if(method != null) AppendAndPrint(method, "\t\t\t\t");
+        if(events != null) AppendAndPrint(events, "\t\t\t\t");
+        if(method != null||events != null) AppendAndPrint("};", "\t\t\t");
+        return name;
     }
 
     private String EventParser(String name, NamedNodeMap nodeMap){
@@ -247,18 +280,6 @@ public class Compiler {
         return code;
     }
 
-    private void MethodEvents(String name, String object, NamedNodeMap nodeMap){
-        String Result = object;
-        String method = methodCalls.get(name);
-        String events = EventParser(name, nodeMap);
-        if(method != null||events != null) Result += "{";
-        if(method == null&&events == null) Result += ";";
-        AppendAndPrint(Result, "\t\t\t");
-        if(method != null) AppendAndPrint(method, "\t\t\t\t");
-        if(events != null) AppendAndPrint(events, "\t\t\t\t");
-        if(method != null||events != null) AppendAndPrint("};", "\t\t\t");
-    }
-
     private ComponentNode FindComponent(String component){
         ComponentNode node = null;
         if(namedComponents.containsKey(component)) node = namedComponents.get(component);
@@ -266,7 +287,7 @@ public class Compiler {
         return node;
     }
 
-    private ComponentNode getNode(String name){;
+    private ComponentNode getNode(String name){
         ComponentNode result = (ComponentNode) nodeList.getNode(Components.get(name.replaceAll("-", "_")));
         return result;
     }
@@ -411,6 +432,11 @@ public class Compiler {
     private String check(String keyword, NamedNodeMap nodeMap) {
         try { Node word = nodeMap.getNamedItem(keyword); return (word != null) ? word.getNodeValue() : "";
         } catch (NullPointerException ignored) { return ""; }
+    }
+
+    private String check(String keyword, String replacement, NamedNodeMap nodeMap) {
+        try { Node word = nodeMap.getNamedItem(keyword); return (word != null) ? word.getNodeValue() : "";
+        } catch (NullPointerException ignored) { return replacement; }
     }
 
     private boolean tryBoolean(String value){
