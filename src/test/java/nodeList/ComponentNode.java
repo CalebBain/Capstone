@@ -37,6 +37,7 @@ public class ComponentNode implements node {
                 case "tryFlags": this.calls.add(new NodeCall("tryFlags", p3[0], p2[1])); break;
                 case "addChild":
                 case "addChildLayout":
+                case "setStylesheet":
                     this.calls.add(new NodeCall(p2[0], p3[0])); break;
                 case "write":
                     if(p2.length == 2) this.calls.add(new NodeCall("writeName", p3[0]));

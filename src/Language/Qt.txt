@@ -64,6 +64,7 @@ QMainWindow:component{
 	call:QWidget
 	functions
 	addChildLayout::widget
+	setStylesheet::this.setStyleSheet("%s");
 	write:name::%s.show();
 }
 

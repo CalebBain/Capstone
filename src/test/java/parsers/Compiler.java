@@ -152,7 +152,9 @@ public class Compiler {
                         prop = n.replaceAll("\\d", "").replaceAll("-", "_");
                         if(Components.containsKey(prop)) prop = Components.get(prop);
                         else prop = n;
-                        setStyle(new Style(prop, Components.get(name)), nodeMap); break;
+                        String comp = Components.get(name.replaceAll("-", "_"));
+                        setStyle(new Style(prop, comp), nodeMap); break;
+                    case "setStylesheet": setStylesheet(params.get(0)); break;
                 }
             }
         }
@@ -191,6 +193,18 @@ public class Compiler {
                 }
             }
         }
+    }
+
+    private void setStylesheet(String command){
+        final StringBuilder sb = new StringBuilder();
+        Collection<Style> temp = styles.values();
+        Style[] styles = temp.toArray(new Style[temp.size()]);
+        for(int i = 0; i < styles.length;){
+            sb.append(styles[i].toString());
+            if(++i < styles.length) sb.append("\\n\"+\n\"");
+        }
+        if (!sb.toString().isEmpty())
+            AppendAndPrint(String.format(command, sb.toString()), "\t\t\t");
     }
 
     private void MakeFunc(String name, String p, String command, NamedNodeMap nodeMap){
