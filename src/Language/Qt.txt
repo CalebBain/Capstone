@@ -37,7 +37,7 @@ Components:map{
 	menubar:QMenuBar
 	section:QWidget
 	group:QGroupBox
-	action:QAction
+	item:QAction
 	slider:QSlider
 	brush:QBrush
 	label:QLabel

@@ -29,7 +29,7 @@ Components:map{
 	window:Stage
 	menubar:MenuBar
 	menu:Menu
-	action:MenuItem
+	item:MenuItem
 	grid:GridPane
 	label:Label
 	group:TitledPane

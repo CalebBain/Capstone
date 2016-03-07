@@ -118,20 +118,15 @@ public class Compiler {
                     case "trySetNameTextMethods":
                         n = Methods(n, name, params.get(0), "missing text", node.getTextContent(), nodeMap); break;
                     case "trySetNameTextMethodsEvents":
-                        n = MethodEvents(n, name, params.get(0), "missing text", node.getTextContent(), nodeMap);
-                        break;
+                        n = MethodEvents(n, name, params.get(0), "missing text", node.getTextContent(), nodeMap); break;
                     case "trySetNameValue":
-                        n = Nones(n, name, params.get(1), "missing text", check(params.get(0), "", nodeMap), nodeMap);
-                        break;
+                        n = Nones(n, name, params.get(1), "missing text", check(params.get(0), "", nodeMap), nodeMap); break;
                     case "trySetNameValueEvents":
-                        n = Events(n, name, params.get(1), "missing text", check(params.get(0), "", nodeMap), nodeMap);
-                        break;
+                        n = Events(n, name, params.get(1), "missing text", check(params.get(0), "", nodeMap), nodeMap); break;
                     case "trySetNameValueMethods":
-                        n = Methods(n, name, params.get(1), "missing text", check(params.get(0), "", nodeMap), nodeMap);
-                        break;
+                        n = Methods(n, name, params.get(1), "missing text", check(params.get(0), "", nodeMap), nodeMap); break;
                     case "trySetNameValueMethodsEvents":
-                        n = MethodEvents(n, name, params.get(1), "missing text", check(params.get(0), "", nodeMap), nodeMap);
-                        break;
+                        n = MethodEvents(n, name, params.get(1), "missing text", check(params.get(0), "", nodeMap), nodeMap); break;
                     case "writeName": int i = countWildCards(params.get(0));
                         if (i == 2) AppendAndPrint(String.format(params.get(0), n, n), "\t\t\t");
                         else if(i == 1) AppendAndPrint(String.format(params.get(0), n), "\t\t\t"); break;
