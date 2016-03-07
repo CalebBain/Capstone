@@ -17,725 +17,725 @@ ending:string{
 }
 
 Components:map{
-	button:QPushButton
-	window:QMainWindow
-	number:QLCDNumber
-	radio:QRadioButton
-	slider:QSlider
-	check_box:QCheckBox
-	grid:QGridLayout
-	menubar:QMenuBar
-	label:QLabel
-	menu:QMenu
-	action:QAction
-	list:QListWidget
-	section:QWidget
-	splitter:QSplitter
-	item:QListWidgetItem
-	text_area:QTextEdit
-	group:QGroupBox
+	document_layout:QPlainTextDocumentLayout
 	text_format:QTextCharFormat
-	brush:QBrush
-	pen:QPen
-	tab:QTextOption_Tab
-	font:QFont
-	gradient:QGradient
 	char_format:QTextCharFormat
 	text_option:QTextOption
 	document:QTextDocument
-	document_layout:QPlainTextDocumentLayout
+	item:QListWidgetItem
+	text_area:QTextEdit
+	check_box:QCheckBox
+	tab:QTextOption_Tab
+	gradient:QGradient
+	splitter:QSplitter
+	radio:QRadioButton
+	window:QMainWindow
+	button:QPushButton
+	number:QLCDNumber
+	list:QListWidget
+	grid:QGridLayout
+	menubar:QMenuBar
+	section:QWidget
+	group:QGroupBox
+	action:QAction
+	slider:QSlider
+	brush:QBrush
+	label:QLabel
+	menu:QMenu
+	font:QFont
+	pen:QPen
 }
 
 Events:events{
-	template::protected void %s(%s event) o=> new %s().%s(this, event); <=o
-	event:when-double-clicked::QMouseEvent:mouseDoubleClickEvent
-	event:when-mouse-is-released::QMouseEvent:mouseReleaseEvent
-	event:when-context-menu::QContextMenuEvent:contextMenuEvent
-	event:when-method-input::QInputMethodEvent:inputMethodEvent
-	event:when-mouse-is-pressed::QMouseEvent:mousePressEvent
-	event:when-key-release::QKeyReleaseEvent:keyReleaseEvent
-	event:when-drag-entered::QDragEnterEvent:dragEnterEvent
-	event:when-out-of-focus::QFocusOutEvent:focusOutEvent
-	event:when-drag-left::QDragLeaveEvent:dragLeaveEvent
-	event:when-key-pressed::QKeyPressEvent:keyPressEvent
-	event:when-mouse-wheel-moves::QWheelEvent:wheelEvent
-	event:when-drag-moves::QDragMoveEvent:dragMoveEvent
-	event:when-mouse-moves::QMouseEvent:mouseMoveEvent
-	event:when-touch-screen::QTabletEvent:tabletEvent
-	event:when-in-focus::QFocusInEvent:focusInEvent
-	event:when-resized::QResizeEvent:resizeEvent
-	event:when-action::QActionEvent:actionEvent
-	event:when-painted::QPaintEvent:paintEvent
-	event:when-closed::QCloseEvent:closeEvent
-	event:when-dropped::QDropEvent:dropEvent
-	event:when-timed::QTimerEvent:timerEvent
-	event:when-hidden::QHideEvent:hideEvent
-	event:when-shown::QShowEvent:showEvent
-	event:when-moved::QMoveEvent:moveEvent
-	event:when-entered::QEvent:enterEvent
-	event:when-change::QEvent:changeEvent
-	event:when-left::QEvent:leaveEvent
+	~template::protected void %s(%s event) o=> new %s().%s(this, event); <=o
+	~event:when-double-clicked::QMouseEvent:mouseDoubleClickEvent
+	~event:when-mouse-is-released::QMouseEvent:mouseReleaseEvent
+	~event:when-context-menu::QContextMenuEvent:contextMenuEvent
+	~event:when-method-input::QInputMethodEvent:inputMethodEvent
+	~event:when-mouse-is-pressed::QMouseEvent:mousePressEvent
+	~event:when-key-release::QKeyReleaseEvent:keyReleaseEvent
+	~event:when-drag-entered::QDragEnterEvent:dragEnterEvent
+	~event:when-out-of-focus::QFocusOutEvent:focusOutEvent
+	~event:when-drag-left::QDragLeaveEvent:dragLeaveEvent
+	~event:when-key-pressed::QKeyPressEvent:keyPressEvent
+	~event:when-mouse-wheel-moves::QWheelEvent:wheelEvent
+	~event:when-drag-moves::QDragMoveEvent:dragMoveEvent
+	~event:when-mouse-moves::QMouseEvent:mouseMoveEvent
+	~event:when-touch-screen::QTabletEvent:tabletEvent
+	~event:when-in-focus::QFocusInEvent:focusInEvent
+	~event:when-resized::QResizeEvent:resizeEvent
+	~event:when-action::QActionEvent:actionEvent
+	~event:when-painted::QPaintEvent:paintEvent
+	~event:when-closed::QCloseEvent:closeEvent
+	~event:when-dropped::QDropEvent:dropEvent
+	~event:when-timed::QTimerEvent:timerEvent
+	~event:when-hidden::QHideEvent:hideEvent
+	~event:when-shown::QShowEvent:showEvent
+	~event:when-moved::QMoveEvent:moveEvent
+	~event:when-entered::QEvent:enterEvent
+	~event:when-change::QEvent:changeEvent
+	~event:when-left::QEvent:leaveEvent
 }
 
 QMainWindow:component{
-	trySetName:method:event::final QMainWindow %s = new QMainWindow()
-	write:name::%s.setObjectName("%s");
-	write::QWidget centerWidget = new QWidget();
-	write:name::%s.setCentralWidget(centerWidget);
-	tryMap:DockOptions::dock-option:%s.setDockOptions(%s);
-	tryMap:TabShapes::tab-shape:%s.setTabShape(%s);
-	tryMap:ToolButtonStyles::tool-button-style:%s.setToolButtonStyle(%s);
-	tryCheck::title:%s.setWindowTitle("%s");
-	tryBoolean::dock-animation:%s.setAnimated(%s);
-	tryBoolean::dock-nesting:%s.setDockNestingEnabled(%s);
-	tryBoolean::document-mode:%s.setDocumentMode(%s);
-	tryBoolean::unified-mac-title-toolbar:%s.setUnifiedTitleAndToolBarOnMac(%s);
-	setStyle
-	call:QWidget
-	functions
-	addChildLayout::widget
-	setStylesheet::this.setStyleSheet("%s");
-	write:name::%s.show();
+	~trySetName:method:event::final QMainWindow %s = new QMainWindow()
+	~write:name::%s.setObjectName("%s");
+	~write::QWidget centerWidget = new QWidget();
+	~write:name::%s.setCentralWidget(centerWidget);
+	~tryMap:DockOptions::dock-option:%s.setDockOptions(%s);
+	~tryMap:TabShapes::tab-shape:%s.setTabShape(%s);
+	~tryMap:ToolButtonStyles::tool-button-style:%s.setToolButtonStyle(%s);
+	~tryCheck::title:%s.setWindowTitle("%s");
+	~tryBoolean::dock-animation:%s.setAnimated(%s);
+	~tryBoolean::dock-nesting:%s.setDockNestingEnabled(%s);
+	~tryBoolean::document-mode:%s.setDocumentMode(%s);
+	~tryBoolean::unified-mac-title-toolbar:%s.setUnifiedTitleAndToolBarOnMac(%s);
+	~setStyle
+	~call:QWidget
+	~functions
+	~addChildLayout::widget
+	~setStylesheet::this.setStyleSheet("%s");
+	~write:name::%s.show();
 }
 
 QListWidget:component{
-	trySetName:method:event::final QListWidget %s = new QListWidget()
-	write:name::%s.setObjectName("%s");
-	tryBoolean::sorting:%s.setSortingEnabled(%s);
-	setStyle
-	call:QListView
-	functions
-	addChildLayout::widget
+	~trySetName:method:event::final QListWidget %s = new QListWidget()
+	~write:name::%s.setObjectName("%s");
+	~tryBoolean::sorting:%s.setSortingEnabled(%s);
+	~setStyle
+	~call:QListView
+	~functions
+	~addChildLayout::widget
 }
 
 QBrush:component{
-	trySetName:method:event::final QBrush %s = new QBrush()
-	write:name::%s.setObjectName("%s");
-	tryMap:Colors::color:%s.setColor(new QColor(\"%s\"));
-	tryMap:Patterns::pattern:%s.setStyle(%s);
-	addChild::brush
+	~trySetName:method:event::final QBrush %s = new QBrush()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:Colors::color:%s.setColor(new QColor(\"%s\"));
+	~tryMap:Patterns::pattern:%s.~setStyle(%s);
+	~addChild::brush
 }
 
 QTextEdit:component{
-	trySetName:method:event::final QTextEdit %s = new QTextEdit()
-	write:name::%s.setObjectName("%s");
-	tryMap:TextEditAutoFormats::auto-format:%s.setAutoFormatting(%s);
-	tryMap:LineWrapModes::line-wrap-mode:%s.setLineWrapMode(%s);
-	tryMap:TextOptionWrapMode::wrap-mode:%s.setWordWrapMode(%s);
-	tryCheck::doc-title:%s.setDocumentTitle("%s");
-	tryBoolean::rich-text:%s.setRichText(%s);
-	tryBoolean::overwrite-mode:%s.setOverwriteMode(%s);
-	tryBoolean::read-only:%s.setReadOnly(%s);
-	tryBoolean::tab-changes-focus:%s.setTabChangesFocus(%s);
-	tryBoolean::undo-and-redo:%s.setUndoRedoEnabled(%s);
-	tryValue::cursor-width:%s.setCursorWidth(%s);
-	tryValue::line-wrap-column:%s.setLineWrapColumnOrWidth(%s);
-	tryValue::tab-stop-width:%s.setTabStopWidth(%s);
-	setStyle
-	call:QAbstractScrollArea
-	functions
-	addChild::widget
+	~trySetName:method:event::final QTextEdit %s = new QTextEdit()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:TextEditAutoFormats::auto-format:%s.setAutoFormatting(%s);
+	~tryMap:LineWrapModes::line-wrap-mode:%s.setLineWrapMode(%s);
+	~tryMap:TextOptionWrapMode::wrap-mode:%s.setWordWrapMode(%s);
+	~tryCheck::doc-title:%s.setDocumentTitle("%s");
+	~tryBoolean::rich-text:%s.setRichText(%s);
+	~tryBoolean::overwrite-mode:%s.setOverwriteMode(%s);
+	~tryBoolean::read-only:%s.setReadOnly(%s);
+	~tryBoolean::tab-changes-focus:%s.setTabChangesFocus(%s);
+	~tryBoolean::undo-and-redo:%s.setUndoRedoEnabled(%s);
+	~tryValue::cursor-width:%s.setCursorWidth(%s);
+	~tryValue::line-wrap-column:%s.setLineWrapColumnOrWidth(%s);
+	~tryValue::tab-stop-width:%s.setTabStopWidth(%s);
+	~setStyle
+	~call:QAbstractScrollArea
+	~functions
+	~addChild::widget
 }
 
 QLCDNumber:component{
-	trySetName:method:event::final QLCDNumber %s = new QLCDNumber()
-	write:name::%s.setObjectName("%s");
-	tryMap:SegmentStyle::segment-style:%s.setSegmentStyle(%s);
-	tryMap:NumberMode::mode:%s.setMode(%s);
-	tryBoolean::small-decimal-point:%s.setSmallDecimalPoint(%s);
-	tryValue::digit-count:%s.setDigitCount(%s);
-	tryValue::value:%s.display(%s);
-	setStyle
-	call:QFrame
-	functions
-	addChild::widget
+	~trySetName:method:event::final QLCDNumber %s = new QLCDNumber()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:SegmentStyle::segment-style:%s.setSegmentStyle(%s);
+	~tryMap:NumberMode::mode:%s.setMode(%s);
+	~tryBoolean::small-decimal-point:%s.setSmallDecimalPoint(%s);
+	~tryValue::digit-count:%s.setDigitCount(%s);
+	~tryValue::value:%s.display(%s);
+	~setStyle
+	~call:QFrame
+	~functions
+	~addChild::widget
 }
 
 QLabel:component{
-	trySetNameText:method:event::final QLabel %s = new QLabel("%s")
-	write:name::%s.setObjectName("%s");
-	tryMap:Alignments::align:%s.setAlignment(%s);
-	tryMap:TextFormats::text-format:%s.setTextFormat(%s);
-	tryMap:TextInteractionFlags::text-interaction:%s.setTextInteractionFlags(%s);
-	tryCheck::text:%s.setText(tr("%s"));
-	tryBoolean::open-external-links:%s.setOpenExternalLinks(%s);
-	tryBoolean::word-warp:%s.setWordWrap(%s);
-	tryBoolean::scaled-contents:%s.setScaledContents(%s);
-	tryValue::indent:%s.setIndent(%s);
-	tryValue::margin:%s.setMargin(%s);
-	setStyle
-	call:QFrame
-	functions
-	addChildLayout::widget
+	~trySetNameText:method:event::final QLabel %s = new QLabel("%s")
+	~write:name::%s.setObjectName("%s");
+	~tryMap:Alignments::align:%s.setAlignment(%s);
+	~tryMap:TextFormats::text-format:%s.setTextFormat(%s);
+	~tryMap:TextInteractionFlags::text-interaction:%s.setTextInteractionFlags(%s);
+	~tryCheck::text:%s.setText(tr("%s"));
+	~tryBoolean::open-external-links:%s.setOpenExternalLinks(%s);
+	~tryBoolean::word-warp:%s.setWordWrap(%s);
+	~tryBoolean::scaled-contents:%s.setScaledContents(%s);
+	~tryValue::indent:%s.setIndent(%s);
+	~tryValue::margin:%s.setMargin(%s);
+	~setStyle
+	~call:QFrame
+	~functions
+	~addChildLayout::widget
 }
 
 QSplitter:component{
-	trySetName:method:event::final QSplitter %s = new QSplitter()
-	write:name::%s.setObjectName("%s");
-	tryMap:Orientations::orientation:%s.setOrientation(%s);
-	tryBoolean::resizeable:%s.setOpaqueResize(%s);
-	tryValue::handle-width:%s.setHandleWidth(%s);
-	tryValue::rubber-band:%s.setRubberBand(%s);
-	setStyle
-	call:QFrame
-	functions
-	addChildLayout::widget
+	~trySetName:method:event::final QSplitter %s = new QSplitter()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:Orientations::orientation:%s.setOrientation(%s);
+	~tryBoolean::resizeable:%s.setOpaqueResize(%s);
+	~tryValue::handle-width:%s.setHandleWidth(%s);
+	~tryValue::rubber-band:%s.setRubberBand(%s);
+	~setStyle
+	~call:QFrame
+	~functions
+	~addChildLayout::widget
 }
 
 QPushButton:component{
-	trySetNameText:method:event::final QPushButton %s = new QPushButton("%s")
-	write:name::%s.setObjectName("%s");
-	tryCheck::shortcut:%s.setShortcut(new QKeySequence("%s"));
-	tryBoolean::default:%s.setDefault(%s);
-	tryBoolean::flat:%s.setFlat(%s);
-	setStyle
-	call:QAbstractButton
-	functions
-	addChild::widget
+	~trySetNameText:method:event::final QPushButton %s = new QPushButton("%s")
+	~write:name::%s.setObjectName("%s");
+	~tryCheck::shortcut:%s.setShortcut(new QKeySequence("%s"));
+	~tryBoolean::default:%s.setDefault(%s);
+	~tryBoolean::flat:%s.setFlat(%s);
+	~setStyle
+	~call:QAbstractButton
+	~functions
+	~addChild::widget
 }
 
 QRadioButton:component{
-	trySetName:method:event::final QRadioButton %s = new QRadioButton()
-	write:name::%s.setObjectName("%s");
-	setStyle
-	call:QAbstractButton
-	functions
-	addChild::widget
+	~trySetName:method:event::final QRadioButton %s = new QRadioButton()
+	~write:name::%s.setObjectName("%s");
+	~setStyle
+	~call:QAbstractButton
+	~functions
+	~addChild::widget
 }
 
 QCheckBox:component{
-	trySetName:method:event::final QCheckBox %s = new QCheckBox()
-	write:name::%s.setObjectName("%s");
-	tryMap:CheckStates::check-state:%s.setCheckState(%s);
-	tryBoolean::checkable:%s.setTristate(%s);
-	tryBoolean::default:%s.setDefaultUp(%s);
-	tryBoolean::native-menubar:%s.setNativeMenuBar(%s);
-	setStyle
-	call:QAbstractButton
-	functions
-	addChild::widget
+	~trySetName:method:event::final QCheckBox %s = new QCheckBox()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:CheckStates::check-state:%s.setCheckState(%s);
+	~tryBoolean::checkable:%s.setTristate(%s);
+	~tryBoolean::default:%s.setDefaultUp(%s);
+	~tryBoolean::native-menubar:%s.setNativeMenuBar(%s);
+	~setStyle
+	~call:QAbstractButton
+	~functions
+	~addChild::widget
 }
 
 QLineEdit:component{
-	trySetName:method:event::final QLineEdit %s = new QLineEdit()
-	write:name::%s.setObjectName("%s");
-	tryMap:Alignments::align:%s.setAlignment(%s);
-	tryMap:EchoModes::echo-mode:%s.setEchoMode(%s);
-	tryMap:CursorMoveStyles::cursor-move-style:%s.setCursorMoveStyle(%s);
-	tryCheck::placeholder:%s.setPlaceholderText("%s");
-	tryBoolean::draggable:%s.setDragEnabled(%s);
-	tryBoolean::frame:%s.setFrame(%s);
-	tryBoolean::modified:%s.setModified(%s);
-	tryBoolean::read-only:%s.setReadOnly(%s);
-	tryValue::max-length:%s.setMaxLength(%s);
-	setStyle
-	call:QWidget
-	functions
-	addChild::widget
+	~trySetName:method:event::final QLineEdit %s = new QLineEdit()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:Alignments::align:%s.setAlignment(%s);
+	~tryMap:EchoModes::echo-mode:%s.setEchoMode(%s);
+	~tryMap:CursorMoveStyles::cursor-move-style:%s.setCursorMoveStyle(%s);
+	~tryCheck::placeholder:%s.setPlaceholderText("%s");
+	~tryBoolean::draggable:%s.setDragEnabled(%s);
+	~tryBoolean::frame:%s.setFrame(%s);
+	~tryBoolean::modified:%s.setModified(%s);
+	~tryBoolean::read-only:%s.setReadOnly(%s);
+	~tryValue::max-length:%s.setMaxLength(%s);
+	~setStyle
+	~call:QWidget
+	~functions
+	~addChild::widget
 }
 
 QGroupBox:component{
-	trySetName:method:event::final QGroupBox %s = new QGroupBox()
-	write:name::%s.setObjectName("%s");
-	tryMap:TextAlignments::align:%s.setTextAlignment(%s);
-	tryCheck::title:%s.setTitle("%s");
-	tryBoolean::flat:%s.setFlat(%s);
-	tryBoolean::checkable:%s.setCheckable(%s);
-	setStyle
-	call:QWidget
-	functions
-	addChildLayout::widget
+	~trySetName:method:event::final QGroupBox %s = new QGroupBox()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:TextAlignments::align:%s.setTextAlignment(%s);
+	~tryCheck::title:%s.setTitle("%s");
+	~tryBoolean::flat:%s.setFlat(%s);
+	~tryBoolean::checkable:%s.setCheckable(%s);
+	~setStyle
+	~call:QWidget
+	~functions
+	~addChildLayout::widget
 }
 
 QMenu:component{
-	trySetNameValue:method:event::name:final QMenu %s = new QMenu("%s")
-	write:name::%s.setObjectName("%s");
-	tryCheck::icon:%s.setIcon("%s");
-	tryCheck::title:menu:%s.setTitle("%s");
-	tryBoolean::tear-off:%s.setTearOffEnabled(%s);
-	setStyle
-	call:QWidget
-	functions
-	addChildLayout::menu
+	~trySetNameValue:method:event::name:final QMenu %s = new QMenu("%s")
+	~write:name::%s.setObjectName("%s");
+	~tryCheck::icon:%s.setIcon("%s");
+	~tryCheck::title:menu:%s.setTitle("%s");
+	~tryBoolean::tear-off:%s.setTearOffEnabled(%s);
+	~setStyle
+	~call:QWidget
+	~functions
+	~addChildLayout::menu
 }
 
 QSection:component{
-	trySetName:method::final QWidget %s = new QWidget()
-	write:name::%s.setObjectName("%s");
-	setStyle
-	call:QWidget
-	functions
-	addChildLayout::widget
+	~trySetName:method::final QWidget %s = new QWidget()
+	~write:name::%s.setObjectName("%s");
+	~setStyle
+	~call:QWidget
+	~functions
+	~addChildLayout::widget
 }
 
 QMenuBar:component{
-	trySetName:method:event::final QMenuBar %s = new QMenuBar()
-	write:name::%s.setObjectName("%s");
-	setStyle
-	call:QWidget
-	functions
-	addChildLayout::menubar
+	~trySetName:method:event::final QMenuBar %s = new QMenuBar()
+	~write:name::%s.setObjectName("%s");
+	~setStyle
+	~call:QWidget
+	~functions
+	~addChildLayout::menubar
 }
 
 QTextCharFormat:component{
-	trySetName:method:event::final QTextCharFormat %s = new QTextCharFormat()
-	write:name::%s.setObjectName("%s");
-	tryList::anchor-names:AnchorNames
-	tryMap:FontCapitalizationTypes::capitalize:%s.setFontCapitalization(%s);
-	tryMap:TextCharFormatUnderlineStyles::underline-style:%s.setUnderlineStyle(%s);
-	tryMap:TextCharFormatVerticalAlignments::vertical-alignment:%s.setVerticalAlignment(%s);
-	tryCheck::anchor-href:%s.setAnchorHref("%s");
-	tryCheck::tool-tip:%s.setToolTip("%s");
-	tryBoolean::anchor:%s.setAnchor(%s);
-	setStyle
-	call:QTextFormat
-	addChildLayout::char-format
+	~trySetName:method:event::final QTextCharFormat %s = new QTextCharFormat()
+	~write:name::%s.setObjectName("%s");
+	~tryList::anchor-names:AnchorNames
+	~tryMap:FontCapitalizationTypes::capitalize:%s.setFontCapitalization(%s);
+	~tryMap:TextCharFormatUnderlineStyles::underline-style:%s.setUnderlineStyle(%s);
+	~tryMap:TextCharFormatVerticalAlignments::vertical-alignment:%s.setVerticalAlignment(%s);
+	~tryCheck::anchor-href:%s.setAnchorHref("%s");
+	~tryCheck::tool-tip:%s.setToolTip("%s");
+	~tryBoolean::anchor:%s.setAnchor(%s);
+	~setStyle
+	~call:QTextFormat
+	~addChildLayout::char-format
 }
 
 QTextDocument:component{
-	trySetName:method:event::final QTextDocument %s = new QTextDocument()
-	write:name::%s.setObjectName("%s");
-	tryMap:CursorMoveStyles::cursor-move-style:%s.setCursorMoveStyle(%s);
-	tryCheck::text-option:%s.setToolTip("%s");
-	tryCheck::html:%s.setHtml("%s");
-	tryCheck::text:%s.setPlainText("%s");
-	tryBoolean::undo-and-redo:%s.setUndoRedoEnabled(%s);
-	tryBoolean::use-design-metrics:%s.setUseDesignMetrics(%s);
-	tryValue::document-margin:%s.setDocumentMargin(%s);
-	tryValue::indent-width:%s.setIndentWidth(%s);
-	tryValue::block-limit:%s.setMaximumBlockCount(%s);
-	tryValue::text-width:%s.setTextWidth(%s);
-	setStyle
-	addChildLayout::document
+	~trySetName:method:~event::final QTextDocument %s = new QTextDocument()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:CursorMoveStyles::cursor-move-style:%s.setCursorMoveStyle(%s);
+	~tryCheck::text-option:%s.setToolTip("%s");
+	~tryCheck::html:%s.setHtml("%s");
+	~tryCheck::text:%s.setPlainText("%s");
+	~tryBoolean::undo-and-redo:%s.setUndoRedoEnabled(%s);
+	~tryBoolean::use-design-metrics:%s.setUseDesignMetrics(%s);
+	~tryValue::document-margin:%s.setDocumentMargin(%s);
+	~tryValue::indent-width:%s.setIndentWidth(%s);
+	~tryValue::block-limit:%s.setMaximumBlockCount(%s);
+	~tryValue::text-width:%s.setTextWidth(%s);
+	~setStyle
+	~addChildLayout::document
 }
 
 QPlainTextDocumentLayout:component{
-	trySetName:method:event::final QPlainTextDocumentLayout %s = new QPlainTextDocumentLayout()
-	write:name::%s.setObjectName("%s");
-	tryValue::cursor-width:%s.setCursorWidth(%s);
-	functions
-	addChildLayout::document-layout
+	~trySetName:method:~event::final QPlainTextDocumentLayout %s = new QPlainTextDocumentLayout()
+	~write:name::%s.setObjectName("%s");
+	~tryValue::cursor-width:%s.setCursorWidth(%s);
+	~functions
+	~addChildLayout::document-layout
 }
 
 QTextOption:component{
-	trySetName:method:event::final QTextOption_Tab %s = new QTextOption_Tab()
-	write:name::%s.setObjectName("%s");
-	tryMap:Alignments::align:%s.setAlignment(%s);
-	tryMap:LayoutDirections::direction:%s.setTextDirection(%s);
-	tryMap:TextOptionWrapMode::wrap-mode:%s.setWrapMode(%s);
-	tryBoolean::use-design-metrics:%s.setUseDesignMetrics(%s);
-	setStyle
-	addChildLayout::text-option
+	~trySetName:method:~event::final QTextOption_Tab %s = new QTextOption_Tab()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:Alignments::align:%s.setAlignment(%s);
+	~tryMap:LayoutDirections::direction:%s.setTextDirection(%s);
+	~tryMap:TextOptionWrapMode::wrap-mode:%s.setWrapMode(%s);
+	~tryBoolean::use-design-metrics:%s.setUseDesignMetrics(%s);
+	~setStyle
+	~addChildLayout::text-option
 }
 
 QTextOption_Tab:component{
-	trySetName:method:event::final QTextOption_Tab %s = new QTextOption_Tab()
-	setName::%s.setObjectName("%s");
-	tryMap:TabTypes::type:%s.setType(%s);
-	tryCheck::delimiter:%s.setText('%s');
-	tryValue::position:%s.setPosition(%s);
-	setStyle
-	addChild::tab
+	~trySetName:method:~event::final QTextOption_Tab %s = new QTextOption_Tab()
+	~setName::%s.setObjectName("%s");
+	~tryMap:TabTypes::type:%s.setType(%s);
+	~tryCheck::delimiter:%s.setText('%s');
+	~tryValue::position:%s.setPosition(%s);
+	~setStyle
+	~addChild::tab
 }
 
 QPen:component{
-	trySetName:method:event::final QPen %s = new QPen()
-	write:name::%s.setObjectName("%s");
-	tryMap:PenCapStyles::cap-style:%s.setCapStyle(%s);
-	tryMap:PenJoinStyles::joint:%s.setJoinStyle(%s);
-	tryMap:PenStyles::style:%s.setStyle(%s);
-	tryBoolean::pen-cosmetic:%s.setCosmetic(%s);
-	tryValue::pen-dash-offset:%s.setDashOffset(%s);
-	tryValue::pen-miter-limit:%s.setMiterLimit(%s);
-	tryValue::pen-width:%s.setWidth(%s);
-	setStyle
-	addChildLayout::pen
+	~trySetName:method:~event::final QPen %s = new QPen()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:PenCapStyles::cap-style:%s.setCapStyle(%s);
+	~tryMap:PenJoinStyles::joint:%s.setJoinStyle(%s);
+	~tryMap:PenStyles::style:%s.~setStyle(%s);
+	~tryBoolean::pen-cosmetic:%s.setCosmetic(%s);
+	~tryValue::pen-dash-offset:%s.setDashOffset(%s);
+	~tryValue::pen-miter-limit:%s.setMiterLimit(%s);
+	~tryValue::pen-width:%s.setWidth(%s);
+	~setStyle
+	~addChildLayout::pen
 }
 
 QFont:component{
-	trySetName:method:event::final QFont %s = new QFont()
-	write:name::%s.setObjectName("%s");
-	tryMap:FontCapitalizationTypes::capitalization:%s.setCapitalization(%s);
-	tryMap:FontHintingPreferences::hint-preference:%s.setHintingPreference(%s);
-	tryMap:FontStyleStrategies::style-strategy:%s.setStyleStrategy(%s);
-	tryMap:FontSpacingType::spacing-type:%s.setLetterSpacingType(%s);
-	tryMap:FontStyleHints::style-hint:%s.setStyleHint(%s);
-	tryCheck::family:%s.setFamily("%s");
-	tryCheck::raw-name:%s.setRawName("%s");
-	tryBoolean::bold:%s.setBold(%s);
-	tryBoolean::italic:%s.setItalic(%s);
-	tryBoolean::overline:%s.setOverline(%s);
-	tryBoolean::fixed-pitch:%s.setFixedPitch(%s);
-	tryBoolean::kerning:%s.setKerning(%s);
-	tryBoolean::raw-mode:%s.setRawMode(%s);
-	tryBoolean::strikeout:%s.setStrikeOut(%s);
-	tryBoolean::underline:%s.setUnderLine(%s);
-	tryValue::spacing:%s.setWordSpacing(%s);
-	tryValue::stretch:%s.setStretch(%s);
-	tryValue::pixel-size:%s.setPixelSize(%s);
-	tryValue::point-size:%s.setPointSizeF(%s);
-	tryValue::weight:%s.setWeight(%s);
-	addChild::font
+	~trySetName:method:~event::final QFont %s = new QFont()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:FontCapitalizationTypes::capitalization:%s.setCapitalization(%s);
+	~tryMap:FontHintingPreferences::hint-preference:%s.setHintingPreference(%s);
+	~tryMap:FontStyleStrategies::style-strategy:%s.~setStyleStrategy(%s);
+	~tryMap:FontSpacingType::spacing-type:%s.setLetterSpacingType(%s);
+	~tryMap:FontStyleHints::style-hint:%s.~setStyleHint(%s);
+	~tryCheck::family:%s.setFamily("%s");
+	~tryCheck::raw-name:%s.setRawName("%s");
+	~tryBoolean::bold:%s.setBold(%s);
+	~tryBoolean::italic:%s.setItalic(%s);
+	~tryBoolean::overline:%s.setOverline(%s);
+	~tryBoolean::fixed-pitch:%s.setFixedPitch(%s);
+	~tryBoolean::kerning:%s.setKerning(%s);
+	~tryBoolean::raw-mode:%s.setRawMode(%s);
+	~tryBoolean::strikeout:%s.setStrikeOut(%s);
+	~tryBoolean::underline:%s.setUnderLine(%s);
+	~tryValue::spacing:%s.setWordSpacing(%s);
+	~tryValue::stretch:%s.setStretch(%s);
+	~tryValue::pixel-size:%s.setPixelSize(%s);
+	~tryValue::point-size:%s.setPointSizeF(%s);
+	~tryValue::weight:%s.setWeight(%s);
+	~addChild::font
 }
 
 QAction:component{
-	trySetNameText:method::final QAction %s = new QAction("%s", this)
-	write:name::%s.setObjectName("%s");
-	tryMap:ActionMenuRoles::menu-role:%s.setMenuRole(%s);
-	tryMap:ActionPriorities::priority:%s.setPriority(%s);
-	tryMap:ActionSoftKeyRoles::soft-key-role:%s.setSoftKeyRole(%s);
-	tryMap:ShortcutContexts::shortcut-context:%s.setShortcutContext(%s);
-	tryBoolean::repeatable:%s.setAutoRepeat(%s);
-	tryBoolean::checkable:%s.setCheckable(%s);
-	tryBoolean::icon-visible:%s.setIconVisibleMenu(%s);
-	tryBoolean::is-separator:%s.setSeparator(%s);
-	tryCheck::shortcut:%s.setShortcut(new QKeySequence(tr("%s")));
-	tryCheck::status-tip:%s.setStatusTip("%s");
-	tryCheck::tool-tip:%s.setToolTip("%s");
-	tryCheck::what-is-this:%s.setWhatsThis("%s");
-	tryCheck::icon:%s.setIcon(new QIcon("%s"));
-	tryCheck::icon-Text:%s.setIconText("%s");
-	setStyle
-	functions
-	addChildLayout::action
+	~trySetNameText:method::final QAction %s = new QAction("%s", this)
+	~write:name::%s.setObjectName("%s");
+	~tryMap:ActionMenuRoles::menu-role:%s.setMenuRole(%s);
+	~tryMap:ActionPriorities::priority:%s.setPriority(%s);
+	~tryMap:ActionSoftKeyRoles::soft-key-role:%s.setSoftKeyRole(%s);
+	~tryMap:ShortcutContexts::shortcut-context:%s.setShortcutContext(%s);
+	~tryBoolean::repeatable:%s.setAutoRepeat(%s);
+	~tryBoolean::checkable:%s.setCheckable(%s);
+	~tryBoolean::icon-visible:%s.setIconVisibleMenu(%s);
+	~tryBoolean::is-separator:%s.setSeparator(%s);
+	~tryCheck::shortcut:%s.setShortcut(new QKeySequence(tr("%s")));
+	~tryCheck::status-tip:%s.setStatusTip("%s");
+	~tryCheck::tool-tip:%s.setToolTip("%s");
+	~tryCheck::what-is-this:%s.setWhatsThis("%s");
+	~tryCheck::icon:%s.setIcon(new QIcon("%s"));
+	~tryCheck::icon-Text:%s.setIconText("%s");
+	~setStyle
+	~functions
+	~addChildLayout::action
 }
 
 QListItem:component{
-	trySetNameText:method:event::final QListWidgetItem %s = new QListWidgetItem("%s")
-	write:name::%s.setObjectName("%s");
-	tryFlags:ItemFlags::%s.setFlags(%s
-	tryMap:TextAlignments::align:%s.setTextAlignment(%s);
-	tryCheck::status-tip:%s.setStatusTip("%s");
-	tryCheck::text:%s.setText("%s");
-	tryCheck::icon:%s.setIcon(new QIcon("%s"));
-	tryCheck::tool-tip:%s.setToolTip("%s");
-	tryCheck::what-is-this:%s.setWhatsThis("%s");
-	tryBoolean::hidden:%s.setHidden(%s);
-	tryBoolean::selected:%s.setSelected(%s);
-	setStyle
-	addChild::item
+	~trySetNameText:method:~event::final QListWidgetItem %s = new QListWidgetItem("%s")
+	~write:name::%s.setObjectName("%s");
+	~tryFlags:ItemFlags::%s.setFlags(%s
+	~tryMap:TextAlignments::align:%s.setTextAlignment(%s);
+	~tryCheck::status-tip:%s.setStatusTip("%s");
+	~tryCheck::text:%s.setText("%s");
+	~tryCheck::icon:%s.setIcon(new QIcon("%s"));
+	~tryCheck::tool-tip:%s.setToolTip("%s");
+	~tryCheck::what-is-this:%s.setWhatsThis("%s");
+	~tryBoolean::hidden:%s.setHidden(%s);
+	~tryBoolean::selected:%s.setSelected(%s);
+	~setStyle
+	~addChild::item
 }
 
 QGridLayout:component{
-	trySetName:method:event::final QGridLayout %s = new QGridLayout()
-	write:name::%s.setObjectName("%s");
-	tryMap:ToolButtonStyles::tool-button-style:%s.setToolButtonStyle(%s);
-	tryValue::spacing:%s.setSpacing(%s);
-	tryValue::row-spacing:%s.setVerticalSpacing(%s);
-	tryValue::column-spacing:%s.setHorizontalSpacing(%s);
-	setStyle
-	functions
-	addChildLayout::layout
+	~trySetName:method:~event::final QGridLayout %s = new QGridLayout()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:ToolButtonStyles::tool-button-style:%s.setToolButtonStyle(%s);
+	~tryValue::spacing:%s.setSpacing(%s);
+	~tryValue::row-spacing:%s.setVerticalSpacing(%s);
+	~tryValue::column-spacing:%s.setHorizontalSpacing(%s);
+	~setStyle
+	~functions
+	~addChildLayout::layout
 }
 
 QSlider:component{
-	trySetName:method:event::final QSlider %s = new QSlider()
-	write:name::%s.setObjectName("%s");
-	tryMap:SliderTickPositions::tick-position:%s.setTickPosition(%s);
-	tryValue::interval:%s.setTickInterval(%s);
-	setStyle
-	call:AbstractSlider
-	functions
-	addChild::widget
+	~trySetName:method:~event::final QSlider %s = new QSlider()
+	~write:name::%s.setObjectName("%s");
+	~tryMap:SliderTickPositions::tick-position:%s.setTickPosition(%s);
+	~tryValue::interval:%s.setTickInterval(%s);
+	~setStyle
+	~call:AbstractSlider
+	~functions
+	~addChild::widget
 }
 
 QTextFormat:component-setup{
-	tryMap:LayoutDirections::direction:%s.setLayoutDirection(%s);
-	tryMap:TextFormatTypes::type:%s.setObjectType(%s);
-	tryValue::index:%s.setObjectIndex(%s);
-	PropertiesParser
+	~tryMap:LayoutDirections::direction:%s.setLayoutDirection(%s);
+	~tryMap:TextFormatTypes::type:%s.setObjectType(%s);
+	~tryValue::index:%s.setObjectIndex(%s);
+	~PropertiesParser
 }
 
 QWidget:component-setup{
-	tryMap:Cursors::cursor:%s.setCursor(new QCursor(%s));
-	tryCheck::margin:%s.setsetContentsMargins(%s);
-	tryCheck::tool-tip:%s.setToolTip("%s");
-	tryBoolean::mouse-tracking:%s.setMouseTracking(%s);
-	tryBoolean::visibility:%s.setHidden(%s);
-	tryBoolean::update:%s.setUpdatesEnabled(%s);
+	~tryMap:Cursors::cursor:%s.setCursor(new QCursor(%s));
+	~tryCheck::margin:%s.setContentsMargins(%s);
+	~tryCheck::tool-tip:%s.setToolTip("%s");
+	~tryBoolean::mouse-tracking:%s.setMouseTracking(%s);
+	~tryBoolean::visibility:%s.setHidden(%s);
+	~tryBoolean::update:%s.setUpdatesEnabled(%s);
 }
 
 QAbstractButton:component-setup{
-	tryCheck::text:%s.setText("%s");
-	tryBoolean::checkable:%s.setCheckable(%s);
-	tryBoolean::checked:%s.setChecked(%s);
-	tryBoolean::pressed:%s.setDown(%s);
-	tryBoolean::repeatable:%s.setAutoRepeat(%s);
-	tryBoolean::exclusive:%s.setAutoExclusive(%s);
-	tryValue::repeatable-delay:%s.setAutoRepeatDelay(%s);
-	tryValue::repeatable-interval:%s.setAutoRepeatInterval(%s);
-	call:QWidget
+	~tryCheck::text:%s.setText("%s");
+	~tryBoolean::checkable:%s.setCheckable(%s);
+	~tryBoolean::checked:%s.setChecked(%s);
+	~tryBoolean::pressed:%s.setDown(%s);
+	~tryBoolean::repeatable:%s.setAutoRepeat(%s);
+	~tryBoolean::exclusive:%s.setAutoExclusive(%s);
+	~tryValue::repeatable-delay:%s.setAutoRepeatDelay(%s);
+	~tryValue::repeatable-interval:%s.setAutoRepeatInterval(%s);
+	~call:QWidget
 }
 
 QFrame:component-setup{
-	tryMap:FrameShadows::shadow:%s.setFrameShadow(%s);
-	tryMap:FrameShapes::shape:%s.setFrameShape(%s);
-	tryCheck::size:%s.setFrameRect(new QRect(%s));
-	call:QWidget
+	~tryMap:FrameShadows::shadow:%s.setFrameShadow(%s);
+	~tryMap:FrameShapes::shape:%s.setFrameShape(%s);
+	~tryCheck::size:%s.setFrameRect(new QRect(%s));
+	~call:QWidget
 }
 
 QAbstractSlider:component-setup{
-	trySize::range:%s.setRange(%s, %s);
-	tryMap:Orientations::orientation:%s.setOrientation(%s);
-	tryMap:Orientations::invert-numbers:%s.setInvertedControls(%s);
-	tryBoolean::invert-numbers:%s.setInvertedControls(%s);
-	tryBoolean::invert-controls:%s.setInvertedAppearance(%s);
-	tryBoolean::tracking:%s.setTracking(%s);
-	tryBoolean::slide-down-tracking:%s.setSliderPosition(%s);
-	tryValue::min-value:%s.setMinimum(%s);
-	tryValue::max-value:%s.setMaximum(%s);
-	tryValue::value:%s.setValue(%s);
-	tryValue::page-steps:%s.setPageStep(%s);
-	tryValue::single-steps:%s.setSingleStep(%s);
-	tryValue::slide-position:%s.setSliderPosition(%s);
-	call:QWidget
+	~trySize::range:%s.setRange(%s, %s);
+	~tryMap:Orientations::orientation:%s.setOrientation(%s);
+	~tryMap:Orientations::invert-numbers:%s.setInvertedControls(%s);
+	~tryBoolean::invert-numbers:%s.setInvertedControls(%s);
+	~tryBoolean::invert-controls:%s.setInvertedAppearance(%s);
+	~tryBoolean::tracking:%s.setTracking(%s);
+	~tryBoolean::slide-down-tracking:%s.setSliderPosition(%s);
+	~tryValue::min-value:%s.setMinimum(%s);
+	~tryValue::max-value:%s.setMaximum(%s);
+	~tryValue::value:%s.setValue(%s);
+	~tryValue::page-steps:%s.setPageStep(%s);
+	~tryValue::single-steps:%s.setSingleStep(%s);
+	~tryValue::slide-position:%s.setSliderPosition(%s);
+	~call:QWidget
 }
 
 QAbstractScrollArea:component-setup{
-	tryMap:ScrollBarPolicies::horizontal-scroll-bar-policy:%s.setHorizontalScrollBarPolicy(%s);
-	tryMap:ScrollBarPolicies::vertical-scroll-bar-policy:%s.setVerticalScrollBarPolicy(%s);
-	call:QFrame
+	~tryMap:ScrollBarPolicies::horizontal-scroll-bar-policy:%s.setHorizontalScrollBarPolicy(%s);
+	~tryMap:ScrollBarPolicies::vertical-scroll-bar-policy:%s.setVerticalScrollBarPolicy(%s);
+	~call:QFrame
 }
 
 QListView:component-setup{
-	trySize::grid-size:%s.setGridSize(new QSize(%s, %s);
-	tryMap:ListMovements::movement:%s.setMovement(%s);
-	tryMap:ListLayoutModes::layout-mode:%s.setLayoutMode(%s);
-	tryMap:ListFlows::orientation:%s.setFlow(%s);
-	tryMap:ListViewModes::view-mode:%s.setViewMode(%s);
-	tryMap:ListResizeModes::resize-mode:%s.setResizeMode(%s);
-	tryBoolean::selection-rectangle-visible:%s.setSelectionRectVisible(%s);
-	tryBoolean::uniform-sizes:%s.setUniformItemSizes(%s);
-	tryBoolean::word-wrap:%s.setWordWrap(%s);
-	tryBoolean::wrapping:%s.setWrapping(%s);
-	tryValue::batch-size:%s.setBatchSize(%s);
-	tryValue::model-column:%s.setModelColumn(%s);
-	tryValue::spacing:%s.setSpacing(%s);
-	call:QAbstractItemView
+	~trySize::grid-size:%s.setGridSize(new QSize(%s, %s);
+	~tryMap:ListMovements::movement:%s.setMovement(%s);
+	~tryMap:ListLayoutModes::layout-mode:%s.setLayoutMode(%s);
+	~tryMap:ListFlows::orientation:%s.setFlow(%s);
+	~tryMap:ListViewModes::view-mode:%s.setViewMode(%s);
+	~tryMap:ListResizeModes::resize-mode:%s.setResizeMode(%s);
+	~tryBoolean::selection-rectangle-visible:%s.setSelectionRectVisible(%s);
+	~tryBoolean::uniform-sizes:%s.setUniformItemSizes(%s);
+	~tryBoolean::word-wrap:%s.setWordWrap(%s);
+	~tryBoolean::wrapping:%s.setWrapping(%s);
+	~tryValue::batch-size:%s.setBatchSize(%s);
+	~tryValue::model-column:%s.setModelColumn(%s);
+	~tryValue::spacing:%s.setSpacing(%s);
+	~call:QAbstractItemView
 }
 
 QAbstractItemView:component-setup{
-	tryMap:AbstractItemViewDragDropModes::"drag-drop-mode:%s.setDragDropMode(%s);
-	tryMap:AbstractItemViewEditTriggers::"edit-trigger:%s.setEditTriggers(%s);
-	tryMap:AbstractItemViewScrollModes::"horizontal-scroll-mode:%s.setHorizontalScrollMode(%s);
-	tryMap:AbstractItemViewSelectionBehaviors::"selection-behavior:%s.setSelectionBehavior(%s);
-	tryMap:AbstractItemViewTextElideModes::"text-elide-mode:%s.setTextElideMode(%s);
-	tryMap:AbstractItemViewScrollModes::"vertical-scroll-mode:%s.setVerticalScrollMode(%s);
-	tryBoolean::"alt-row-color:%s.setAlternatingRowColors(%s);
-	tryBoolean::"draggable:%s.setDragEnabled(%s);
-	tryBoolean::"auto-scroll:%s.setAutoScroll(%s);
-	tryBoolean::"drop-indicator:%s.setDropIndicatorShown(%s);
-	tryBoolean::"tab-key-navigation:%s.TabKeyNavigation(%s);
-	tryValue::"auto-scroll-margin:%s.setAutoScrollMargin(%s);
-	call:QAbstractScrollArea
+	~tryMap:AbstractItemViewDragDropModes::"drag-drop-mode:%s.setDragDropMode(%s);
+	~tryMap:AbstractItemViewEditTriggers::"edit-trigger:%s.setEditTriggers(%s);
+	~tryMap:AbstractItemViewScrollModes::"horizontal-scroll-mode:%s.setHorizontalScrollMode(%s);
+	~tryMap:AbstractItemViewSelectionBehaviors::"selection-behavior:%s.setSelectionBehavior(%s);
+	~tryMap:AbstractItemViewTextElideModes::"text-elide-mode:%s.setTextElideMode(%s);
+	~tryMap:AbstractItemViewScrollModes::"vertical-scroll-mode:%s.setVerticalScrollMode(%s);
+	~tryBoolean::"alt-row-color:%s.setAlternatingRowColors(%s);
+	~tryBoolean::"draggable:%s.setDragEnabled(%s);
+	~tryBoolean::"auto-scroll:%s.setAutoScroll(%s);
+	~tryBoolean::"drop-indicator:%s.setDropIndicatorShown(%s);
+	~tryBoolean::"tab-key-navigation:%s.TabKeyNavigation(%s);
+	~tryValue::"auto-scroll-margin:%s.setAutoScrollMargin(%s);
+	~call:QAbstractScrollArea
 }
 
 QTextDocument:child{
-	tryChildParent::font:%s.setDefaultFont(%s);
-	tryChildParent::text-option:%s.setDefaultTextOption(%s);
-	tryChildParent::document-layout:%s.setDocumentLayout(%s);
+	~tryChildParent::font:%s.setDefaultFont(%s);
+	~tryChildParent::text-option:%s.setDefaultTextOption(%s);
+	~tryChildParent::document-layout:%s.setDocumentLayout(%s);
 }
 
 QTextEdit:child{
-	tryChildParent::char-format:%s.setCurrentCharFormat(%s);
-	tryChildParent::document:%s.setDocument(%s);
+	~tryChildParent::char-format:%s.setCurrentCharFormat(%s);
+	~tryChildParent::document:%s.setDocument(%s);
 }
 
 QTextCharFormat:child{
-	tryChildParent::font:%s.setFont(%s);
-	tryChildParent::pen:%s.setTextOutline(%s);
-	tryChildParent::color:%s.setUnderlineColor(%s);
-	tryChildParent::tab:%s.setProperty(0x1035, %s);
-	tryChildType::brush&foreground:%s.setProperty(0x821, %s);
-	tryChildType::brush&background:%s.setProperty(0x820, %s);
-	tryChildType::brush&border:%s.setProperty(0x4009 %s);
-	tryChildMapDefault:PenProperties::%s.setProperty(0x810, %s);
+	~tryChildParent::font:%s.setFont(%s);
+	~tryChildParent::pen:%s.setTextOutline(%s);
+	~tryChildParent::color:%s.setUnderlineColor(%s);
+	~tryChildParent::tab:%s.setProperty(0x1035, %s);
+	~tryChildType::brush&foreground:%s.setProperty(0x821, %s);
+	~tryChildType::brush&background:%s.setProperty(0x820, %s);
+	~tryChildType::brush&border:%s.setProperty(0x4009 %s);
+	~tryChildMapDefault:PenProperties::%s.setProperty(0x810, %s);
 }
 
 QPen:child{
-	tryChildParent::brush:%s.setBrush(%s);
+	~tryChildParent::brush:%s.setBrush(%s);
 }
 
 QGroupBox:child{
-	tryChildParent::layout:%s.setLayout(%s);
+	~tryChildParent::layout:%s.setLayout(%s);
 }
 
 QListWidget:child{
-	tryChildParent::item:%s.addItem(%s);
+	~tryChildParent::item:%s.addItem(%s);
 }
 
 QSplitter:child{
-	tryChildParent::widget:%s.addWidget(%s);
+	~tryChildParent::widget:%s.addWidget(%s);
 }
 
 QWidget:child{
-	tryChildParent::layout:%s.setLayout(%s);
-	tryChildParent::widget:%s.setParent(%s);
+	~tryChildParent::layout:%s.setLayout(%s);
+	~tryChildParent::widget:%s.setParent(%s);
 }
 
 QLabel:child{
-	tryChildParent::widget:%s.setBuddy(%s);
-	tryChildParent::movie:%s.setMovie(%s);
-	tryChildParent::picture:%s.setPicture(%s);
-	tryChildParent::drawing:%s.setPixmap(%s);
+	~tryChildParent::widget:%s.setBuddy(%s);
+	~tryChildParent::movie:%s.setMovie(%s);
+	~tryChildParent::picture:%s.setPicture(%s);
+	~tryChildParent::drawing:%s.setPixmap(%s);
 }
 
 QMainWindow:child{
-	tryChild::layout:centerWidget.setLayout(%s);
-	tryChild::widget:%s.setParent(centreWidget);
-	tryChild::menubar:window.setMenuBar(%s);
+	~tryChild::layout:centerWidget.setLayout(%s);
+	~tryChild::widget:%s.setParent(centreWidget);
+	~tryChild::menubar:window.setMenuBar(%s);
 }
 
 QGridLayout:child{
-	tryFindAppend:widget::%s.addWidget(%s, %s, %s, %s, %s, %s);:row/int/1:column/int/1:row-span/int/row:column-span/int/column:position/map/Alignments/absolute
-	tryFindAppend:layout::%s.addLayout(%s, %s, %s, %s, %s, %s);:row/int/1:column/int/1:row-span/int/row:column-span/int/column:position/map/Alignments/absolute
-	tryFindAppend:item::%s.addItem(%s, %s, %s, %s, %s, %s);:row/int/1:column/int/1:row-span/int/row:column-span/int/column:position/map/Alignments/absolute
+	~tryFindAppend:widget::%s.addWidget(%s, %s, %s, %s, %s, %s);:row/int/1:column/int/1:row-span/int/row:column-span/int/column:position/map/Alignments/absolute
+	~tryFindAppend:layout::%s.addLayout(%s, %s, %s, %s, %s, %s);:row/int/1:column/int/1:row-span/int/row:column-span/int/column:position/map/Alignments/absolute
+	~tryFindAppend:item::%s.addItem(%s, %s, %s, %s, %s, %s);:row/int/1:column/int/1:row-span/int/row:column-span/int/column:position/map/Alignments/absolute
 }
 
 QMenuBar:child{
-	tryChildMap:MenuCorner::widget:%s.setCornerWidget(%s, %s);
-	tryChildParent::menu:%s.addMenu(%s);
-	tryChildParent::action:%s.addAction(%s);
-	tryBoolean::default:%s.setDefaultUp(%s);
-	tryBoolean::active:%s.setNativeMenuBar(%s);
-	tryCheck::separator:%s.addSeparator();
+	~tryChildMap:MenuCorner::widget:%s.setCornerWidget(%s, %s);
+	~tryChildParent::menu:%s.addMenu(%s);
+	~tryChildParent::action:%s.addAction(%s);
+	~tryBoolean::default:%s.setDefaultUp(%s);
+	~tryBoolean::active:%s.setNativeMenuBar(%s);
+	~tryCheck::separator:%s.addSeparator();
 }
 
 QMenu:child{
-	tryChildParent::menu:%s.addMenu(%s);
-	tryChildParent::action:%s.addAction(%s);
-	tryBoolean::default:%s.setDefaultUp(%s);
-	tryBoolean::active:%s.setNativeMenuBar(%s);
-	tryBoolean::collapsible:%s.setSeparatorsCollapsible(%s);
-	tryCheck::separator:%s.addSeparator();
+	~tryChildParent::menu:%s.addMenu(%s);
+	~tryChildParent::action:%s.addAction(%s);
+	~tryBoolean::default:%s.setDefaultUp(%s);
+	~tryBoolean::active:%s.setNativeMenuBar(%s);
+	~tryBoolean::collapsible:%s.setSeparatorsCollapsible(%s);
+	~tryCheck::separator:%s.addSeparator();
 }
 
 QSlider:function{
-	func::on-value-change:%s.valueChanged.connect(%s, "%s");
-	func::on-release:%s.sliderReleased.connect(%s, "%s");
-	func::on-move:%s.sliderMoved.connect(%s, "%s");
-	func::on-press:%s.sliderPressed.connect(%s, "%s");
-	func::on-action-trigger:%s.actionTriggered.connect(%s, "%s");
-	func::on-range-change:%s.actionTriggered.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-value-change:%s.valueChanged.connect(%s, "%s");
+	~func::on-release:%s.sliderReleased.connect(%s, "%s");
+	~func::on-move:%s.sliderMoved.connect(%s, "%s");
+	~func::on-press:%s.sliderPressed.connect(%s, "%s");
+	~func::on-action-trigger:%s.actionTriggered.connect(%s, "%s");
+	~func::on-range-change:%s.actionTriggered.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QGridLayout:function{
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QWidget:function{
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QAction:function{
-	func::method:%s.triggered.connect(%s, "%s");
+	~func::method:%s.triggered.connect(%s, "%s");
 }
 
 QPlainTextDocumentLayout:function{
-	func::on-size-change:%s.documentSizeChanged.connect(%s, "%s");
-	func::on-page-count-change:%s.pageCountChanged.connect(%s, "%s");
-	func::on-update:%s.update.connect(%s, "%s");
-	func::on-update-block:%s.updateBlock.connect(%s, "%s");
+	~func::on-size-change:%s.documentSizeChanged.connect(%s, "%s");
+	~func::on-page-count-change:%s.pageCountChanged.connect(%s, "%s");
+	~func::on-update:%s.update.connect(%s, "%s");
+	~func::on-update-block:%s.updateBlock.connect(%s, "%s");
 }
 
 QListWidget:function{
-	func::on-current-item-change:%s.currentItemChanged.connect(%s, "%s");
-	func::on-current-row-change:%s.currentRowChanged.connect(%s, "%s");
-	func::on-active-item:%s.itemActivated.connect(%s, "%s");
-	func::on-item-change:%s.itemChanged.connect(%s, "%s");
-	func::on-item-click:%s.itemClicked.connect(%s, "%s");
-	func::on-item-double-click:%s.itemDoubleClicked.connect(%s, "%s");
-	func::on-item-enter:%s.itemEntered.connect(%s, "%s");
-	func::on-item-press:%s.itemPressed.connect(%s, "%s");
-	func::on-item-selection-change:%s.itemSelectionChanged.connect(%s, "%s");
-	func::on-index-move:%s.indexesMoved.connect(%s, "%s");
-	func::on-click:%s.clicked.connect(this, "%s");
-	func::on-press:%s.pressed.connect(this, "%s");
-	func::on-double-click:%s.doubleClicked.connect(this, "%s");
-	func::on-activate:%s.activated.connect(this, "%s");
-	func::on-enter:%s.entered.connect(this, "%s");
-	func::on-viewport-enter:%s.viewportEntered.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-current-item-change:%s.currentItemChanged.connect(%s, "%s");
+	~func::on-current-row-change:%s.currentRowChanged.connect(%s, "%s");
+	~func::on-active-item:%s.itemActivated.connect(%s, "%s");
+	~func::on-item-change:%s.itemChanged.connect(%s, "%s");
+	~func::on-item-click:%s.itemClicked.connect(%s, "%s");
+	~func::on-item-double-click:%s.itemDoubleClicked.connect(%s, "%s");
+	~func::on-item-enter:%s.itemEntered.connect(%s, "%s");
+	~func::on-item-press:%s.itemPressed.connect(%s, "%s");
+	~func::on-item-selection-change:%s.itemSelectionChanged.connect(%s, "%s");
+	~func::on-index-move:%s.indexesMoved.connect(%s, "%s");
+	~func::on-click:%s.clicked.connect(this, "%s");
+	~func::on-press:%s.pressed.connect(this, "%s");
+	~func::on-double-click:%s.doubleClicked.connect(this, "%s");
+	~func::on-activate:%s.activated.connect(this, "%s");
+	~func::on-enter:%s.entered.connect(this, "%s");
+	~func::on-viewport-enter:%s.viewportEntered.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QLineEdit:function{
-	func::on-text-edit:%s.textEdited.connect(%s, "%s");
-	func::on-text-change:%s.textChanged.connect(%s, "%s");
-	func::on-return-press:%s.returnPressed.connect(%s, "%s");
-	func::on-edit-finish:%s.editingFinished.connect(%s, "%s");
-	func::on-cursor-move:%s.cursorPositionChanged.connect(%s, "%s");
-	func::on-selection-change:%s.selectionChanged.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-text-edit:%s.textEdited.connect(%s, "%s");
+	~func::on-text-change:%s.textChanged.connect(%s, "%s");
+	~func::on-return-press:%s.returnPressed.connect(%s, "%s");
+	~func::on-edit-finish:%s.editingFinished.connect(%s, "%s");
+	~func::on-cursor-move:%s.cursorPositionChanged.connect(%s, "%s");
+	~func::on-selection-change:%s.selectionChanged.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QLCDNumber:function{
-	func::on-overflow:%s.overflow.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-overflow:%s.overflow.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QLabel:function{
-	func::on-active:%s.linkActivated.connect(%s, "%s");
-	func::on-hover:%s.linkHovered.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-active:%s.linkActivated.connect(%s, "%s");
+	~func::on-hover:%s.linkHovered.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QSplitter:function{
-	func::on-move:%s.splitterMoved.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-move:%s.splitterMoved.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QPushButton:function{
-	func::on-click:%s.clicked.connect(%s, "%s");
-	func::on-release:%s.released.connect(%s, "%s");
-	func::on-press:%s.pressed.connect(%s, "%s");
-	func::on-toggle:%s.toggled.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-click:%s.clicked.connect(%s, "%s");
+	~func::on-release:%s.released.connect(%s, "%s");
+	~func::on-press:%s.pressed.connect(%s, "%s");
+	~func::on-toggle:%s.toggled.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QRadioButton:function{
-	func::on-click:%s.clicked.connect(%s, "%s");
-	func::on-release:%s.released.connect(%s, "%s");
-	func::on-press:%s.pressed.connect(%s, "%s");
-	func::on-toggle:%s.toggled.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-click:%s.clicked.connect(%s, "%s");
+	~func::on-release:%s.released.connect(%s, "%s");
+	~func::on-press:%s.pressed.connect(%s, "%s");
+	~func::on-toggle:%s.toggled.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QCheckBox:function{
-	func::on-state-change:%s.stateChanged.connect(%s, "%s");
-	func::on-click:%s.clicked.connect(this, "%s");
-	func::on-press:%s.pressed.connect(this, "%s");
-	func::on-double-click:%s.doubleClicked.connect(this, "%s");
-	func::on-activate:%s.activated.connect(this, "%s");
-	func::on-enter:%s.entered.connect(this, "%s");
-	func::on-viewport-enter:%s.viewportEntered.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-state-change:%s.stateChanged.connect(%s, "%s");
+	~func::on-click:%s.clicked.connect(this, "%s");
+	~func::on-press:%s.pressed.connect(this, "%s");
+	~func::on-double-click:%s.doubleClicked.connect(this, "%s");
+	~func::on-activate:%s.activated.connect(this, "%s");
+	~func::on-enter:%s.entered.connect(this, "%s");
+	~func::on-viewport-enter:%s.viewportEntered.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QGroupBox:function{
-	func::on-click:%s.clicked.connect(%s, "%s");
-	func::on-toggle:%s.toggled.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-click:%s.clicked.connect(%s, "%s");
+	~func::on-toggle:%s.toggled.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QMenu:function{
-	func::on-hide:%s.aboutToHide.connect(%s, "%s");
-	func::on-show:%s.aboutToShow.connect(%s, "%s");
-	func::on-hover:%s.hovered.connect(%s, "%s");
-	func::on-trigger:%s.triggered.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-hide:%s.aboutToHide.connect(%s, "%s");
+	~func::on-show:%s.aboutToShow.connect(%s, "%s");
+	~func::on-hover:%s.hovered.connect(%s, "%s");
+	~func::on-trigger:%s.triggered.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QMenuBar:function{
-	func::on-hover:%s.hovered.connect(%s, "%s");
-	func::on-trigger:%s.triggered.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-hover:%s.hovered.connect(%s, "%s");
+	~func::on-trigger:%s.triggered.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 QMainWindow:function{
-	func::on-icon-size-change:%s.iconSizeChanged.connect(%s, "%s");
-	func::on-tool-button-style-change:%s.toolButtonStyleChanged.connect(%s, "%s");
-	func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
+	~func::on-icon-size-change:%s.iconSizeChanged.connect(%s, "%s");
+	~func::on-tool-button-style-change:%s.toolButtonStyleChanged.connect(%s, "%s");
+	~func::on-custom-context-menu-request:%s.customContextMenuRequested.connect(%s, "%s");
 }
 
 PenProperties:map{

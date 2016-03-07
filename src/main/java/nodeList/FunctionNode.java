@@ -11,11 +11,14 @@ public class FunctionNode implements node {
     private List<NodeCall> calls = new ArrayList<>();
 
     public node addCalls(String prop){
-        String[] calls = prop.split("\r\n(\t)?");
+        prop = prop.replaceFirst("~", "");
+        String[] calls = prop.split("\r\n(\t)?~");
         for(String call: calls){
-            String[] p = call.split("::"), p3 = new String[0];
+            String[] p = call.split("::"), p2 = p[0].split(":"), p3 = new String[0];
             if(p.length > 1) p3 = p[1].split(":");
-            if(p[0].equals("func")) this.calls.add(new NodeCall("function", p3[0], p3[1]));
+            p3[1] = p3[1].replaceAll("o=>", "{").replaceAll("<=o", "}");
+            if(p2[0].equals("func") && p2.length == 2) this.calls.add(new NodeCall("functionRef", p3[0], p3[1]));
+            else if(p2[0].equals("func")) this.calls.add(new NodeCall("function", p3[0], p3[1]));
         }
         return this;
     }

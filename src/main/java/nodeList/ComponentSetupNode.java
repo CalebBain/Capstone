@@ -11,7 +11,8 @@ public class ComponentSetupNode extends ComponentNode {
     public ComponentSetupNode(String prop) { addCalls(prop); }
 
     public node addCalls(String prop){
-        String[] calls = prop.split("\r\n(\t)?");
+        prop = prop.replaceFirst("~", "");
+        String[] calls = prop.split("\r\n(\t)?~");
         for(String call: calls){
             String[] p = call.split("::"), p2 = p[0].split(":"), p3 = new String[0];
             if(p.length > 1) p3 = p[1].split(":");

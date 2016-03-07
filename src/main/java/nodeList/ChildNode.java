@@ -17,7 +17,8 @@ public class ChildNode implements node {
     private List<NodeCall> calls = new ArrayList<>();
 
     public node addCalls(String prop){
-        String[] calls = prop.split("\r\n(\t)?");
+        prop = prop.replaceFirst("~", "");
+        String[] calls = prop.split("\r\n(\t)?~");
         for(String call: calls){
             String[] p = call.split("::"),
                     p2 = p[0].split(":"), p3 = new String[0];
@@ -42,7 +43,9 @@ public class ChildNode implements node {
                     else this.calls.add(new NodeCall("write", p3[0])); break;
                 case "tryFindAppend":
                     String[] params = {p2[1]};
-                    this.calls.add(new NodeCall("tryFindAppend", ArrayUtils.addAll(params, p3))); break;
+                    if(p2.length == 3)
+                        this.calls.add(new NodeCall("tryFindAppendNoName", ArrayUtils.addAll(params, p3)));
+                    else this.calls.add(new NodeCall("tryFindAppend", ArrayUtils.addAll(params, p3))); break;
             }
         }
         return this;

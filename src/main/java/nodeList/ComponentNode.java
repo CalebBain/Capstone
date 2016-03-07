@@ -14,7 +14,8 @@ public class ComponentNode implements node {
     private FunctionNode functionCalls = new FunctionNode();
 
     public node addCalls(String prop){
-        String[] calls = prop.split("\r\n(\t)?");
+        prop = prop.replaceFirst("~", "");
+        String[] calls = prop.split("\r\n(\t)?~");
         for(String call: calls){
             String[] p = call.split("::"), p2 = p[0].split(":"), p3 = new String[0];
             if(p.length > 1) p3 = p[1].split(":");
@@ -22,12 +23,14 @@ public class ComponentNode implements node {
             switch(p2[0]){
                 case "trySetNameText":
                 case "trySetName":
+                    String prop1 = p3[0];
                     if(p2.length == 3) value += "MethodsEvents";
                     if(p2.length == 2) {
                         if(p2[1].equals("method")) value += "Methods";
-                        else value += "Events";
+                        else if(p2[1].equals("event"))  value += "Events";
+                        else if(p2[1].equals("noName")) value += "NoName";
                     }
-                    this.calls.add(new NodeCall(value, p3[0])); break;
+                    this.calls.add(new NodeCall(value, prop1)); break;
                 case "trySetNameValue":
                     if(p2.length == 3) value += "MethodsEvents";
                     if(p2.length == 2) {
@@ -41,7 +44,8 @@ public class ComponentNode implements node {
                 case "tryCheck":
                 case "tryValue":
                 case "tryBoolean":
-                    this.calls.add(new NodeCall(p2[0], p3[0], p3[1])); break;
+                    if(p2.length == 2) this.calls.add(new NodeCall(p2[0] + "NoName", p3[0], p3[1]));
+                    else this.calls.add(new NodeCall(p2[0], p3[0], p3[1])); break;
                 case "tryFlags": this.calls.add(new NodeCall("tryFlags", p3[0], p2[1])); break;
                 case "addChild":
                 case "addChildLayout":
